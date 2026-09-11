@@ -111,7 +111,7 @@ function get_fede_wa($msg = '') {
           <span class="fede-pill">🔥 Marca Personal • Mentalidad • Negocios Digitales</span>
           <h1 class="fede-h1">
             Dejá de ser uno más.<br>
-            <span class="fire-grad">Viniste a destacar</span> y a monetizar tu conocimiento.
+            <span class="fire-grad">Aprendé a vender</span> siendo vos mismo.
           </h1>
           <p class="fede-lead">
             Te enseño el método estratégico para vencer el miedo a la cámara, crear contenido con intención de compra y transformar tus redes en un canal predecible de clientes.
@@ -158,17 +158,17 @@ function get_fede_wa($msg = '') {
     </div>
   </section>
 
-  <!-- Banner Destacado del Evento Próximo -->
+  <!-- Banner Destacado de Programas -->
   <section style="background: linear-gradient(135deg, #1f0800 0%, #3a0d02 100%); border-top: 1px solid var(--fede-fire-orange); border-bottom: 1px solid var(--fede-fire-orange); padding: 24px 0;">
     <div class="fede-container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
       <div>
-        <span style="background: #ff5500; color: #fff; font-size: 0.75rem; font-weight: 900; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">Próximo Evento Presencial</span>
+        <span style="background: #ff5500; color: #fff; font-size: 0.75rem; font-weight: 900; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">Acompañamiento Exclusivo</span>
         <h3 style="font-family: var(--fede-font-heading); font-size: 1.3rem; font-weight: 900; margin-top: 4px;">
-          "ENCENDÉ TU FUEGO" — Sábado 12 de Septiembre en Lavalle 362 (CABA)
+          "ENCENDÉ TU FUEGO" — 3 Formas de Trabajar y Escalar Conmigo
         </h3>
       </div>
       <a href="/encende-tu-fuego" class="btn-fede-fire" style="padding: 10px 24px; font-size: 0.9rem;">
-        🎟️ Ver Detalles & Reservar Lugar
+        ⚡ Ver las 3 Opciones de Acompañamiento
       </a>
     </div>
   </section>
@@ -185,26 +185,26 @@ function get_fede_wa($msg = '') {
       <div class="fede-grid-2">
         <div class="fede-card">
           <div class="fede-card-icon">❌</div>
-          <h3 class="fede-card-h3">Postear sin Intención Comercial</h3>
-          <p class="fede-card-p">Subir reels diarios o fotos sin una llamada a la acción clara solo alimenta métricas de vanidad (likes y reproducciones), pero deja vacía tu cuenta bancaria.</p>
+          <h3 class="fede-card-h3">No vendés por no tener constancia al publicar</h3>
+          <p class="fede-card-p">Subir contenidos sin una frecuencia sostenida ni una dirección clara hace que tu audiencia te olvide y nunca consolides tracción.</p>
         </div>
 
         <div class="fede-card">
           <div class="fede-card-icon">❌</div>
-          <h3 class="fede-card-h3">Miedo a la Exposición y al Juicio</h3>
-          <p class="fede-card-p">El temor a encender la cámara, a que te critiquen conocidos o a sentirte "pesado" vendiendo frena el 90% de las marcas personales antes de despegar.</p>
+          <h3 class="fede-card-h3">Miedo a filmarte y que te critiquen</h3>
+          <p class="fede-card-p">El temor a encender la cámara, a que te juzguen conocidos o a exponerte frena el 90% de los proyectos antes de despegar.</p>
         </div>
 
         <div class="fede-card">
           <div class="fede-card-icon">❌</div>
-          <h3 class="fede-card-h3">Competir por Precio por Falta de Autoridad</h3>
-          <p class="fede-card-p">Si tus prospectos te piden descuentos o te comparan con colegas es porque tu mensaje es genérico y no proyectás una propuesta de valor única.</p>
+          <h3 class="fede-card-h3">Miedo a hacer valer tu servicio o tu conocimiento</h3>
+          <p class="fede-card-p">Dudar de tus precios o rebajar tus tarifas por inseguridad destruye tu rentabilidad y te posiciona como una opción genérica.</p>
         </div>
 
         <div class="fede-card">
           <div class="fede-card-icon">❌</div>
-          <h3 class="fede-card-h3">La Trampa de Esperar la "Viralidad"</h3>
-          <p class="fede-card-p">No necesitás 100.000 seguidores para facturar. Más vale 200 seguidores cualificados y con poder de compra que un millón de espectadores que nunca compran nada.</p>
+          <h3 class="fede-card-h3">Creer que tener seguidores es igual a ventas</h3>
+          <p class="fede-card-p">No necesitás 100.000 seguidores para facturar. Más vale una comunidad comprometida y cualificada que un millón de espectadores que nunca compran nada.</p>
         </div>
       </div>
     </div>

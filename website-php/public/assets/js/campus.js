@@ -74,17 +74,24 @@ window.closeLoginModal = function() {
 };
 
 // Lesson Player Modal
-function playLessonModal(title, videoUrl, desc) {
-  document.getElementById('playerLessonTitle').textContent = title || 'Clase de la Academia';
-  document.getElementById('playerLessonIframe').src = videoUrl || '';
-  document.getElementById('playerLessonDesc').textContent = desc || '';
+window.playLessonModal = function(title, videoUrl, desc) {
+  const formattedUrl = formatYouTubeEmbedUrl(videoUrl) || 'https://www.youtube.com/embed/NGmRSA8aWAk';
+  const titleEl = document.getElementById('playerLessonTitle');
+  const iframeEl = document.getElementById('playerLessonIframe');
+  const descEl = document.getElementById('playerLessonDesc');
+  
+  if (titleEl) titleEl.textContent = title || 'Clase de la Academia';
+  if (iframeEl) iframeEl.src = formattedUrl;
+  if (descEl) descEl.textContent = desc || '';
+  
   openAdminModal('modalLessonPlayer');
-}
+};
 
-function closeLessonPlayerModal() {
-  document.getElementById('playerLessonIframe').src = '';
+window.closeLessonPlayerModal = function() {
+  const iframeEl = document.getElementById('playerLessonIframe');
+  if (iframeEl) iframeEl.src = '';
   closeAdminModal('modalLessonPlayer');
-}
+};
 
 // Admin ABM Modal Openers
 function openAdminUserModal(id, name = '', email = '', role = 'member', points = 10) {

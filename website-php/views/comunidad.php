@@ -415,6 +415,22 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               </div>
             <?php endif; ?>
 
+            <!-- Comunidad WhatsApp Box -->
+            <div class="campus-card" style="margin-bottom: 20px; border-left: 4px solid #22c55e; background: linear-gradient(135deg, rgba(34, 197, 94, 0.06) 0%, var(--c-card) 100%);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-size: 1.3rem;">💬</span>
+                <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.02rem; color: var(--c-text-main);">
+                  Comunidad en WhatsApp
+                </h4>
+              </div>
+              <p style="font-size: 0.84rem; color: var(--c-text-sub); margin-bottom: 14px; line-height: 1.45;">
+                Sumate al grupo exclusivo de miembros para debates diarios, networking y avisos directos de Fede.
+              </p>
+              <a href="https://wa.me/5491138205570?text=<?= urlencode('Hola Fede! Quiero sumarme al grupo oficial de WhatsApp de la Comunidad Nowback.') ?>" target="_blank" rel="noopener noreferrer" class="btn-post-submit" style="width: 100%; justify-content: center; background: #22c55e; text-decoration: none; padding: 10px 0; font-weight: 800; font-size: 0.88rem;">
+                🚀 Unirme al Grupo de WhatsApp
+              </a>
+            </div>
+
             <!-- Planes & Precios Box -->
             <div id="plansWidgetBox" class="campus-card" style="margin-bottom: 20px;">
               <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 10px;">
@@ -1325,12 +1341,12 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
             <!-- Quick Auto-Fill Buttons -->
             <div style="border-top: 1px dashed var(--c-border); padding-top: 14px; display: flex; flex-direction: column; gap: 8px;">
-              <div style="font-size: 0.75rem; font-weight: 800; color: var(--c-text-muted); text-transform: uppercase;">Accesos Rápidos Demo:</div>
+              <div style="font-size: 0.75rem; font-weight: 800; color: var(--c-text-muted); text-transform: uppercase;">Accesos Demo:</div>
               <button type="button" class="btn-reaction" style="width: 100%; justify-content: center; font-size: 0.82rem;" onclick="document.getElementById('loginEmailInput').value='mfmujic@gmail.com'; document.getElementById('loginPasswordInput').value='marcelito';">
-                👑 Cargar Admin (mfmujic@gmail.com)
+                👑 Ingresar como Administrador (Fede Nowback)
               </button>
               <button type="button" class="btn-reaction" style="width: 100%; justify-content: center; font-size: 0.82rem;" onclick="document.getElementById('loginEmailInput').value='alumno@fedenowback.com'; document.getElementById('loginPasswordInput').value='alumno123';">
-                👤 Cargar Alumno (alumno@fedenowback.com)
+                👤 Ingresar como Alumno Pro
               </button>
             </div>
           </form>
