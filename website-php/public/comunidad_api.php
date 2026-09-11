@@ -24,7 +24,13 @@ $action = $_POST['action'] ?? $json_data['action'] ?? $_GET['action'] ?? '';
 $csrf_token = $_POST['csrf_token'] ?? $json_data['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
 
 // Basic CSRF verification for modifying actions
-if (in_array($action, ['create_post', 'like_post', 'add_comment', 'complete_lesson', 'send_chat', 'create_meet', 'switch_role', 'admin_save_user', 'admin_delete_user', 'admin_save_course', 'admin_delete_course', 'admin_save_lesson', 'admin_delete_lesson', 'admin_save_plan', 'admin_delete_plan', 'admin_save_meet', 'admin_delete_meet', 'admin_update_settings'])) {
+if (in_array($action, [
+    'create_post', 'like_post', 'add_comment', 'complete_lesson', 'send_chat', 'create_meet', 'switch_role',
+    'delete_post', 'admin_delete_post', 'delete_comment', 'admin_delete_comment', 'delete_chat', 'admin_delete_chat',
+    'admin_save_user', 'admin_delete_user', 'admin_save_course', 'admin_delete_course',
+    'admin_save_lesson', 'admin_delete_lesson', 'admin_save_plan', 'admin_delete_plan',
+    'admin_save_meet', 'admin_delete_meet', 'admin_update_settings'
+])) {
     if (!fede_verify_csrf($csrf_token)) {
         http_response_code(403);
         echo json_encode(['success' => false, 'error' => 'Token de seguridad inválido o expirado. Por favor recarga la página.']);
@@ -633,6 +639,97 @@ switch ($action) {
         fede_set_setting('admin_whatsapp', $admin_whatsapp);
 
         echo json_encode(['success' => true, 'message' => 'Configuración actualizada exitosamente']);
+        exit;
+
+    // ==========================================
+    // 🗑️ ENDPOINTS DE ELIMINACIÓN DE CONTENIDOS (ADMIN / AUTOR)
+    // ==========================================
+
+    case 'delete_post':
+    case 'admin_delete_post':
+        fede_require_auth($user);
+        $post_id_raw = $json_data['post_id'] ?? $_POST['post_id'] ?? 0;
+        $post_id = (int)str_replace('post_', '', $post_id_raw);
+
+        if ($post_id <= 0) {
+            echo json_encode(['success' => false, 'error' => 'ID de publicación inválido']);
+            exit;
+        }
+
+        if ($pdo) {
+            // Verificar si es admin o autor
+            $is_admin_user = (!empty($user['role']) && $user['role'] === 'admin');
+            $current_user_id = is_numeric($user['id']) ? (int)$user['id'] : 0;
+
+            if ($is_admin_user) {
+                $stmt = $pdo->prepare("DELETE FROM `fede_posts` WHERE `id` = ?");
+                $stmt->execute([$post_id]);
+            } else {
+                $stmt = $pdo->prepare("DELETE FROM `fede_posts` WHERE `id` = ? AND `user_id` = ?");
+                $stmt->execute([$post_id, $current_user_id]);
+            }
+
+            if ($stmt->rowCount() > 0) {
+                echo json_encode(['success' => true, 'message' => 'Publicación eliminada correctamente', 'post_id' => $post_id_raw]);
+                exit;
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No tienes permisos para eliminar esta publicación o ya no existe.']);
+                exit;
+            }
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Publicación eliminada', 'post_id' => $post_id_raw]);
+        exit;
+
+    case 'delete_comment':
+    case 'admin_delete_comment':
+        fede_require_auth($user);
+        $comment_id_raw = $json_data['comment_id'] ?? $_POST['comment_id'] ?? 0;
+        $comment_id = (int)str_replace('comm_', '', $comment_id_raw);
+
+        if ($comment_id <= 0) {
+            echo json_encode(['success' => false, 'error' => 'ID de comentario inválido']);
+            exit;
+        }
+
+        if ($pdo) {
+            $is_admin_user = (!empty($user['role']) && $user['role'] === 'admin');
+            $current_user_id = is_numeric($user['id']) ? (int)$user['id'] : 0;
+
+            if ($is_admin_user) {
+                $stmt = $pdo->prepare("DELETE FROM `fede_comments` WHERE `id` = ?");
+                $stmt->execute([$comment_id]);
+            } else {
+                $stmt = $pdo->prepare("DELETE FROM `fede_comments` WHERE `id` = ? AND `user_id` = ?");
+                $stmt->execute([$comment_id, $current_user_id]);
+            }
+
+            if ($stmt->rowCount() > 0) {
+                echo json_encode(['success' => true, 'message' => 'Comentario eliminado correctamente', 'comment_id' => $comment_id_raw]);
+                exit;
+            } else {
+                echo json_encode(['success' => false, 'error' => 'No tienes permisos para eliminar este comentario o ya no existe.']);
+                exit;
+            }
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Comentario eliminado', 'comment_id' => $comment_id_raw]);
+        exit;
+
+    case 'delete_chat':
+    case 'admin_delete_chat':
+        fede_require_admin($user);
+        $chat_id_raw = $json_data['chat_id'] ?? $_POST['chat_id'] ?? 0;
+        $chat_id = (int)str_replace('chat_', '', $chat_id_raw);
+
+        if ($chat_id > 0 && $pdo) {
+            $stmt = $pdo->prepare("DELETE FROM `fede_chat_messages` WHERE `id` = ?");
+            $stmt->execute([$chat_id]);
+            echo json_encode(['success' => true, 'message' => 'Mensaje de chat eliminado']);
+            exit;
+        }
+
+        echo json_encode(['success' => false, 'error' => 'ID de mensaje inválido']);
         exit;
 
     default:

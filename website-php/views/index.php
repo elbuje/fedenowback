@@ -136,7 +136,7 @@ function get_fede_wa($msg = '') {
               <div style="font-size: 0.78rem; color: var(--fede-text-muted); text-transform: uppercase; font-weight: 700;">Comunidad en Redes</div>
             </div>
             <div>
-              <div style="font-family: var(--fede-font-heading); font-size: 1.6rem; font-weight: 900; color: var(--fede-fire-yellow);">+300</div>
+              <div style="font-family: var(--fede-font-heading); font-size: 1.6rem; font-weight: 900; color: var(--fede-fire-yellow);">+100</div>
               <div style="font-size: 0.78rem; color: var(--fede-text-muted); text-transform: uppercase; font-weight: 700;">Alumnos & Mentorías</div>
             </div>
             <div>
@@ -351,46 +351,62 @@ function get_fede_wa($msg = '') {
       <div class="fede-grid-2">
         
         <!-- Mentoría 1 a 1 -->
-        <div class="fede-card" style="border: 2px solid var(--fede-fire-yellow); box-shadow: 0 0 35px rgba(255, 183, 3, 0.15);">
-          <div style="background: var(--fede-fire-yellow); color: #000; font-family: var(--fede-font-heading); font-weight: 900; font-size: 0.75rem; padding: 3px 12px; border-radius: 9999px; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">
-            ⭐ Máximo Rendimiento
+        <div class="fede-card" style="border: 2px solid var(--fede-fire-yellow); box-shadow: 0 0 35px rgba(255, 183, 3, 0.15); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="background: var(--fede-fire-yellow); color: #000; font-family: var(--fede-font-heading); font-weight: 900; font-size: 0.75rem; padding: 3px 12px; border-radius: 9999px; text-transform: uppercase;">
+                ⭐ Máximo Rendimiento
+              </span>
+              <span style="font-family: var(--fede-font-heading); font-size: 1.4rem; font-weight: 900; color: var(--fede-fire-yellow);">
+                U$D 390
+              </span>
+            </div>
+            <h3 class="fede-card-h3" style="font-size: 1.4rem;">Mentoría Privada 1 a 1</h3>
+            <p class="fede-card-p">
+              Trabajo mano a mano conmigo para convertir lo que sabés, tu experiencia y tu historia en una marca personal que conecte, genere confianza y venda.
+            </p>
+            <ul style="list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem; color: var(--fede-text-sub);">
+              <li><strong style="color: #10b981;">✓</strong> Sesiones semanales individuales vía Zoom</li>
+              <li><strong style="color: #10b981;">✓</strong> Auditoría total de tu bio, oferta y contenidos</li>
+              <li><strong style="color: #10b981;">✓</strong> Creación de tus guiones de Reels y Carruseles</li>
+              <li><strong style="color: #10b981;">✓</strong> Acompañamiento continuo y feedback por WhatsApp directo</li>
+            </ul>
           </div>
-          <h3 class="fede-card-h3" style="font-size: 1.4rem;">Mentoría Privada 1 a 1</h3>
-          <p class="fede-card-p">
-            Trabajo mano a mano conmigo para convertir lo que sabés, tu experiencia y tu historia en una marca personal que conecte, genere confianza y venda.
-          </p>
-          <ul style="list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem; color: var(--fede-text-sub);">
-            <li><strong style="color: #10b981;">✓</strong> Sesiones semanales individuales vía Zoom</li>
-            <li><strong style="color: #10b981;">✓</strong> Auditoría total de tu bio, oferta y contenidos</li>
-            <li><strong style="color: #10b981;">✓</strong> Creación de tus guiones de Reels y Carruseles</li>
-            <li><strong style="color: #10b981;">✓</strong> Acompañamiento continuo y feedback por WhatsApp directo</li>
-          </ul>
-          <a href="<?= get_fede_wa('Hola Fede! Quiero postularme a la Mentoría 1 a 1 de Marca Personal.') ?>" target="_blank" rel="noopener noreferrer" class="btn-fede-fire" style="width: 100%; text-align: center;">
+          <a href="<?= get_fede_wa('Hola Fede! Quiero postularme a la Mentoría 1 a 1 de Marca Personal (U$D 390).') ?>" target="_blank" rel="noopener noreferrer" class="btn-fede-fire" style="width: 100%; text-align: center;">
             💬 Postular a Mentoría 1 a 1
           </a>
         </div>
 
         <!-- Comunidad Oficial Fede Nowback -->
-        <div class="fede-card" id="comunidad">
-          <div style="background: rgba(255,255,255,0.1); color: #fff; font-family: var(--fede-font-heading); font-weight: 800; font-size: 0.75rem; padding: 3px 12px; border-radius: 9999px; display: inline-block; margin-bottom: 12px; text-transform: uppercase;">
-            🚀 Networking & Clases
+        <div class="fede-card" id="comunidad" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="background: rgba(255,255,255,0.1); color: #fff; font-family: var(--fede-font-heading); font-weight: 800; font-size: 0.75rem; padding: 3px 12px; border-radius: 9999px; text-transform: uppercase;">
+                🚀 Networking & Clases
+              </span>
+              <span style="font-family: var(--fede-font-heading); font-size: 1.4rem; font-weight: 900; color: #ff8c00;">
+                U$D 58 <span style="font-size: 0.82rem; font-weight: normal; color: var(--fede-text-muted);">/ mes</span>
+              </span>
+            </div>
+            <h3 class="fede-card-h3" style="font-size: 1.4rem;">Comunidad & Campus Nowback</h3>
+            <p class="fede-card-p">
+              El espacio para emprendedores y profesionales que buscan rodearse de personas con su misma ambición. Clases en vivo, debates y motivación diaria.
+            </p>
+            <ul style="list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem; color: var(--fede-text-sub);">
+              <li><strong style="color: #10b981;">✓</strong> Acceso al grupo exclusivo de emprendedores</li>
+              <li><strong style="color: #10b981;">✓</strong> Clases periódicas sobre marketing y mentalidad</li>
+              <li><strong style="color: #10b981;">✓</strong> Desafíos semanales de grabación y exposición</li>
+              <li><strong style="color: #10b981;">✓</strong> Conexiones con profesionales de diversas industrias</li>
+            </ul>
           </div>
-          <h3 class="fede-card-h3" style="font-size: 1.4rem;">Comunidad & Campus Nowback</h3>
-          <p class="fede-card-p">
-            El espacio para emprendedores y profesionales que buscan rodearse de personas con su misma ambición. Clases en vivo, debates y motivación diaria.
-          </p>
-          <ul style="list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem; color: var(--fede-text-sub);">
-            <li><strong style="color: #10b981;">✓</strong> Acceso al grupo exclusivo de emprendedores</li>
-            <li><strong style="color: #10b981;">✓</strong> Clases periódicas sobre marketing y mentalidad</li>
-            <li><strong style="color: #10b981;">✓</strong> Desafíos semanales de grabación y exposición</li>
-            <li><strong style="color: #10b981;">✓</strong> Conexiones con profesionales de diversas industrias</li>
-          </ul>
-          <a href="/comunidad" class="btn-fede-outline" style="width: 100%; text-align: center; margin-bottom: 8px;">
-            ⚡ Entrar al Campus Pro
-          </a>
-          <a href="<?= get_fede_wa('Hola Fede! Quiero consultar sobre la Comunidad de Creadores y Emprendedores.') ?>" target="_blank" rel="noopener noreferrer" style="font-size: 0.85rem; color: var(--fede-fire-yellow); text-decoration: none; text-align: center; display: block;">
-            💬 O consultá por WhatsApp
-          </a>
+          <div>
+            <a href="/comunidad" class="btn-fede-outline" style="width: 100%; text-align: center; margin-bottom: 8px;">
+              ⚡ Entrar al Campus Pro
+            </a>
+            <a href="<?= get_fede_wa('Hola Fede! Quiero consultar sobre la Membresía del Campus Nowback (U$D 58).') ?>" target="_blank" rel="noopener noreferrer" style="font-size: 0.85rem; color: var(--fede-fire-yellow); text-decoration: none; text-align: center; display: block;">
+              💬 O consultá por WhatsApp
+            </a>
+          </div>
         </div>
 
       </div>
@@ -597,7 +613,7 @@ function get_fede_wa($msg = '') {
   <!-- WhatsApp Flotante -->
   <a href="<?= get_fede_wa() ?>" target="_blank" rel="noopener noreferrer" class="fede-floating-wa" aria-label="WhatsApp Fede Nowback">
     <span style="font-size: 1.25rem;">💬</span>
-    <span>WhatsApp (+54 9 11 3820 5570)</span>
+    <span>WhatsApp</span>
   </a>
 
   <!-- Script para el Visor Interactivo de YouTube -->

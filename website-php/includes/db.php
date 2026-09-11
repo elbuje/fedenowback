@@ -300,7 +300,7 @@ function fede_db_init_schema() {
         }
     }
 
-    // Seed Plans if empty
+    // Seed or sync Plans
     $stmt = $pdo->query("SELECT COUNT(*) FROM `fede_plans`");
     if ($stmt->fetchColumn() == 0) {
         $ins_plan = $pdo->prepare("
@@ -311,8 +311,8 @@ function fede_db_init_schema() {
             'mensual-pro',
             'Campus Nowback Pro (Mensual)',
             'Acceso Básico',
-            35000,
-            29,
+            58000,
+            58,
             'mensual',
             'Acceso completo a la comunidad, muro de debates y academia nivel 1 y 2.',
             json_encode([
@@ -321,15 +321,15 @@ function fede_db_init_schema() {
                 'Chat grupal de la comunidad',
                 '1 Meet grupal mensual'
             ]),
-            'https://wa.me/5491138205570?text=Quiero+sumarme+al+Campus+Pro+Mensual',
+            'https://wa.me/5491138205570?text=Quiero+sumarme+al+Campus+Pro+Mensual+(USD+58)',
             1
         ]);
         $ins_plan->execute([
             'trimestral-pro',
             'Plan Trimestral + Hot Seats',
             '🔥 Más Elegido',
-            95000,
-            79,
+            145000,
+            145,
             'trimestral',
             'Acompañamiento intensivo de 90 días con Hot Seats semanales y todas las masterclasses.',
             json_encode([
@@ -339,15 +339,15 @@ function fede_db_init_schema() {
                 'Auditoría express de tu perfil de Instagram',
                 'Descuento del 15% en Workshops presenciales'
             ]),
-            'https://wa.me/5491138205570?text=Quiero+sumarme+al+Plan+Trimestral+Hot+Seats',
+            'https://wa.me/5491138205570?text=Quiero+sumarme+al+Plan+Trimestral+Hot+Seats+(USD+145)',
             2
         ]);
         $ins_plan->execute([
             'mentoria-vip',
             'Programa Mentoría 1 a 1 VIP',
             '👑 Exclusivo',
-            540000,
-            450,
+            390000,
+            390,
             'único',
             'Mentoring uno a uno personalizado con Fede Nowback. Cupos muy limitados.',
             json_encode([
@@ -356,9 +356,14 @@ function fede_db_init_schema() {
                 'Revisión directa de guiones y ofertas por WhatsApp privado',
                 'Diseño de funnel y estrategia de monetización personalizada'
             ]),
-            'https://wa.me/5491138205570?text=Quiero+postularme+a+la+Mentoria+1a1+VIP',
+            'https://wa.me/5491138205570?text=Quiero+postularme+a+la+Mentoria+1a1+VIP+(USD+390)',
             3
         ]);
+    } else {
+        // Auto-update standard prices if defaults were 29 or 450
+        $pdo->exec("UPDATE `fede_plans` SET `price_usd` = 58, `price_ars` = 58000 WHERE `slug` = 'mensual-pro' AND `price_usd` = 29");
+        $pdo->exec("UPDATE `fede_plans` SET `price_usd` = 390, `price_ars` = 390000 WHERE `slug` = 'mentoria-vip' AND `price_usd` = 450");
+        $pdo->exec("UPDATE `fede_plans` SET `price_usd` = 145, `price_ars` = 145000 WHERE `slug` = 'trimestral-pro' AND `price_usd` = 79");
     }
 
     // Seed Courses & Lessons if empty

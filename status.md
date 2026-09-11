@@ -25,7 +25,11 @@
 - [x] Sitio creado y desplegado en Ploi (`errante` - Site ID `406351`).
 - [x] Configuración de auto-inicio en `start-dev-servers.sh` y registro en `PORT_REGISTRY.md`.
 - [x] Estandarización total de LLM Wiki bajo arquitectura de 3 capas con frontmatter YAML y guías operativas.
-- [x] Diagnóstico completo de Certbot / SSL y validación de resolución DNS global.
+- [x] Actualización de métricas de autoridad: de +300 a `+100 Alumnos & Mentorías`.
+- [x] Precios oficiales configurados: Mentoría 1 a 1 a `U$D 390` y Membresía Campus a `U$D 58 / mes` con botones de consulta directa a WhatsApp.
+- [x] Herramientas de moderación y borrado total (posts del muro, comentarios, mensajes de chat y lecciones) para administradores.
+- [x] Barra superior de acceso rápido para Administrador (`.campus-admin-topbar`) y botones de creación/edición directa en cada sección (Zoom, Clases, Cursos).
+- [x] Conversión automática de enlaces de YouTube (watch/shorts/share a embed) en el modal de lecciones.
 
 ---
 

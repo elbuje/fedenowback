@@ -150,8 +150,99 @@ function openAdminMeetModal(id, title = '', desc = '', date = '', time = '', pla
   openAdminModal('modalAdminMeet');
 }
 
-// Delete Helpers
-async function deleteAdminUser(id) {
+// Delete & Moderation Helpers (Exposed Globally)
+window.deletePost = async function(id) {
+  if (!confirm('¿Estás seguro de eliminar esta publicación del muro?')) return;
+  try {
+    const res = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+      body: JSON.stringify({ action: 'delete_post', post_id: id, csrf_token: csrfToken })
+    });
+    const data = await res.json();
+    if (data.success) {
+      const postCard = document.querySelector(`.post-card[data-post-id="${id}"]`);
+      if (postCard) {
+        postCard.style.transition = 'opacity 0.3s, transform 0.3s';
+        postCard.style.opacity = '0';
+        postCard.style.transform = 'translateY(-10px)';
+        setTimeout(() => postCard.remove(), 300);
+      } else {
+        window.location.reload();
+      }
+    } else {
+      alert(data.error || 'Error al eliminar la publicación');
+    }
+  } catch (err) {
+    console.error('Error deleting post:', err);
+    alert('Error al conectar con el servidor.');
+  }
+};
+
+window.deleteComment = async function(id) {
+  if (!confirm('¿Estás seguro de eliminar este comentario?')) return;
+  try {
+    const res = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+      body: JSON.stringify({ action: 'delete_comment', comment_id: id, csrf_token: csrfToken })
+    });
+    const data = await res.json();
+    if (data.success) {
+      const commentRow = document.querySelector(`.comment-row[data-comment-id="${id}"]`);
+      if (commentRow) {
+        commentRow.remove();
+      } else {
+        window.location.reload();
+      }
+    } else {
+      alert(data.error || 'Error al eliminar el comentario');
+    }
+  } catch (err) {
+    console.error('Error deleting comment:', err);
+  }
+};
+
+window.deleteChatMessage = async function(id) {
+  if (!confirm('¿Estás seguro de eliminar este mensaje del chat?')) return;
+  try {
+    const res = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+      body: JSON.stringify({ action: 'delete_chat', chat_id: id, csrf_token: csrfToken })
+    });
+    const data = await res.json();
+    if (data.success) {
+      window.location.reload();
+    } else {
+      alert(data.error || 'Error al eliminar el mensaje');
+    }
+  } catch (err) {
+    console.error('Error deleting chat message:', err);
+  }
+};
+
+window.deleteAdminLesson = async function(id) {
+  if (!confirm('¿Estás seguro de eliminar esta lección/video?')) return;
+  try {
+    const res = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+      body: JSON.stringify({ action: 'admin_delete_lesson', lesson_id: id, csrf_token: csrfToken })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('Lección eliminada correctamente');
+      window.location.reload();
+    } else {
+      alert(data.error || 'Error al eliminar lección');
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+window.deleteAdminUser = async function(id) {
   if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
   try {
     const res = await fetch(API_ENDPOINT, {
@@ -169,9 +260,9 @@ async function deleteAdminUser(id) {
   } catch (err) {
     console.error(err);
   }
-}
+};
 
-async function deleteAdminCourse(id) {
+window.deleteAdminCourse = async function(id) {
   if (!confirm('¿Estás seguro de eliminar este curso y sus lecciones?')) return;
   try {
     const res = await fetch(API_ENDPOINT, {
@@ -189,9 +280,9 @@ async function deleteAdminCourse(id) {
   } catch (err) {
     console.error(err);
   }
-}
+};
 
-async function deleteAdminPlan(id) {
+window.deleteAdminPlan = async function(id) {
   if (!confirm('¿Estás seguro de eliminar este plan?')) return;
   try {
     const res = await fetch(API_ENDPOINT, {
@@ -209,9 +300,9 @@ async function deleteAdminPlan(id) {
   } catch (err) {
     console.error(err);
   }
-}
+};
 
-async function deleteAdminMeet(id) {
+window.deleteAdminMeet = async function(id) {
   if (!confirm('¿Estás seguro de eliminar este Meet?')) return;
   try {
     const res = await fetch(API_ENDPOINT, {
@@ -229,6 +320,18 @@ async function deleteAdminMeet(id) {
   } catch (err) {
     console.error(err);
   }
+};
+
+// Helper: Normalize YouTube URL to /embed/ format
+function formatYouTubeEmbedUrl(url) {
+  if (!url) return '';
+  url = url.trim();
+  // Standard youtube watch URL: https://www.youtube.com/watch?v=VIDEO_ID
+  const watchMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+  if (watchMatch && watchMatch[1]) {
+    return `https://www.youtube.com/embed/${watchMatch[1]}`;
+  }
+  return url;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -571,15 +674,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Lesson Form
   const formAdminLesson = document.getElementById('formAdminLesson');
+  const videoInput = document.getElementById('adminLessonVideoInput');
+  if (videoInput) {
+    videoInput.addEventListener('blur', () => {
+      videoInput.value = formatYouTubeEmbedUrl(videoInput.value);
+    });
+  }
+
   if (formAdminLesson) {
     formAdminLesson.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const rawVideoUrl = document.getElementById('adminLessonVideoInput').value.trim();
+      const formattedVideoUrl = formatYouTubeEmbedUrl(rawVideoUrl);
+
       const payload = {
         action: 'admin_save_lesson',
         lesson_id: document.getElementById('adminLessonIdInput').value,
         course_id: document.getElementById('adminLessonCourseSelect').value,
         title: document.getElementById('adminLessonTitleInput').value.trim(),
-        video_url: document.getElementById('adminLessonVideoInput').value.trim(),
+        video_url: formattedVideoUrl,
         duration: document.getElementById('adminLessonDurationInput').value.trim(),
         description: document.getElementById('adminLessonDescInput').value.trim(),
         is_free: document.getElementById('adminLessonIsFreeInput')?.checked ? 1 : 0,

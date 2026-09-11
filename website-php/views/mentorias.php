@@ -41,7 +41,7 @@ $page_seo = [
   <div class="fede-container">
     <div class="fede-hero-grid">
       <div>
-        <span class="fede-pill">🚀 Programa Exclusivo • Cupos Limitados por Mes</span>
+        <span class="fede-pill">🚀 Programa Exclusivo • U$D 390 • Cupos Limitados por Mes</span>
         <h1 class="fede-h1" style="font-size: 2.8rem; line-height: 1.15;">
           Dejá de improvisar.<br>
           <span class="fire-grad">Construí una Marca Personal</span> que atraiga clientes reales.
@@ -51,8 +51,8 @@ $page_seo = [
         </p>
 
         <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 30px;">
-          <a href="<?= get_whatsapp_url('Hola Fede! Quiero postularme a tu Programa de Mentoría 1 a 1 de Marca Personal.') ?>" target="_blank" rel="noopener" class="btn-fede-fire">
-            🔥 Postularme a la Mentoría 1 a 1
+          <a href="<?= get_whatsapp_url('Hola Fede! Quiero postularme a tu Programa de Mentoría 1 a 1 de Marca Personal (U$D 390).') ?>" target="_blank" rel="noopener" class="btn-fede-fire">
+            🔥 Postularme a la Mentoría 1 a 1 (U$D 390)
           </a>
           <a href="#programa" class="btn-fede-outline">
             Ver los 4 Pilares del Programa

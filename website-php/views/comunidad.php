@@ -195,6 +195,33 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
     </div>
   </nav>
 
+  <?php if ($is_admin): ?>
+    <!-- 👑 BARRA SUPERIOR DE ACCESO RÁPIDO PARA ADMINISTRADOR -->
+    <div class="campus-admin-topbar">
+      <div class="campus-container">
+        <div class="admin-topbar-wrap">
+          <div class="admin-topbar-badge">
+            <span>👑</span> <strong>MODO ADMINISTRADOR ACTIVO</strong>
+          </div>
+          <div class="admin-topbar-actions">
+            <button type="button" class="btn-topbar-action" onclick="openAdminLessonModal(0)" title="Cargar nueva masterclass o video">
+              🎬 + Cargar Video / Clase
+            </button>
+            <button type="button" class="btn-topbar-action" onclick="openAdminMeetModal(0)" title="Programar sesión en vivo de Zoom">
+              📅 + Configurar Zoom / Meet
+            </button>
+            <button type="button" class="btn-topbar-action" onclick="openAdminCourseModal(0)" title="Crear un nuevo curso en la academia">
+              🎓 + Nuevo Curso
+            </button>
+            <button type="button" class="btn-topbar-action btn-topbar-highlight" onclick="switchTab('admin')">
+              ⚙️ Abrir Panel ABM
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <?php endif; ?>
+
   <!-- Main Content Layout -->
   <main class="campus-main">
     <div class="campus-container">
@@ -268,15 +295,23 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                     <div class="post-pinned-tag">📌 COMUNICADO FIJADO POR FEDE</div>
                   <?php endif; ?>
 
-                  <div class="post-header-row">
-                    <img src="<?= htmlspecialchars($post['author']['avatar']) ?>" alt="<?= htmlspecialchars($post['author']['name']) ?>" class="post-author-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
-                    <div>
-                      <div style="display: flex; align-items: center; gap: 8px;">
-                        <span class="post-author-name"><?= htmlspecialchars($post['author']['name']) ?></span>
-                        <span class="badge-role <?= !empty($post['author']['is_host']) ? 'host' : '' ?>"><?= htmlspecialchars($post['author']['badge'] ?? 'Miembro') ?></span>
+                  <div class="post-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                      <img src="<?= htmlspecialchars($post['author']['avatar']) ?>" alt="<?= htmlspecialchars($post['author']['name']) ?>" class="post-author-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+                      <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <span class="post-author-name"><?= htmlspecialchars($post['author']['name']) ?></span>
+                          <span class="badge-role <?= !empty($post['author']['is_host']) ? 'host' : '' ?>"><?= htmlspecialchars($post['author']['badge'] ?? 'Miembro') ?></span>
+                        </div>
+                        <div class="post-date-line"><?= htmlspecialchars($post['author']['handle']) ?> • <?= htmlspecialchars($post['created_at']) ?></div>
                       </div>
-                      <div class="post-date-line"><?= htmlspecialchars($post['author']['handle']) ?> • <?= htmlspecialchars($post['created_at']) ?></div>
                     </div>
+
+                    <?php if ($is_admin || ($is_logged_in && ($user['id'] ?? '') === ($post['author']['id'] ?? ''))): ?>
+                      <button type="button" class="admin-btn-action admin-btn-del btn-delete-post" data-post-id="<?= htmlspecialchars($post['id']) ?>" onclick="deletePost('<?= htmlspecialchars($post['id']) ?>')" title="Eliminar este post">
+                        🗑️ Borrar Post
+                      </button>
+                    <?php endif; ?>
                   </div>
 
                   <h3 class="post-card-title"><?= htmlspecialchars($post['title']) ?></h3>
@@ -301,11 +336,18 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                   <div class="post-comments-container" id="comments-<?= htmlspecialchars($post['id']) ?>">
                     <div class="comments-list">
                       <?php foreach ($post['comments'] as $comm): ?>
-                        <div class="comment-bubble">
+                        <div class="comment-bubble" id="comment-<?= htmlspecialchars($comm['id']) ?>">
                           <img src="<?= htmlspecialchars($comm['author']['avatar']) ?>" alt="Avatar" class="comment-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
-                          <div class="comment-body">
-                            <div class="comment-author-title">
-                              <?= htmlspecialchars($comm['author']['name']) ?> • <span style="color: var(--c-text-light); font-weight: 400;"><?= htmlspecialchars($comm['created_at']) ?></span>
+                          <div class="comment-body" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                              <div class="comment-author-title">
+                                <?= htmlspecialchars($comm['author']['name']) ?> • <span style="color: var(--c-text-light); font-weight: 400;"><?= htmlspecialchars($comm['created_at']) ?></span>
+                              </div>
+                              <?php if ($is_admin): ?>
+                                <button type="button" class="btn-delete-comment" onclick="deleteComment('<?= htmlspecialchars($comm['id']) ?>')" title="Eliminar este comentario" style="background: none; border: none; font-size: 0.85rem; cursor: pointer; opacity: 0.6; padding: 2px 6px;">
+                                  🗑️
+                                </button>
+                              <?php endif; ?>
                             </div>
                             <div class="comment-text"><?= nl2br(htmlspecialchars($comm['content'])) ?></div>
                           </div>
@@ -364,6 +406,11 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                   <a href="<?= htmlspecialchars($next_meet['google_cal_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-reaction" style="font-size: 0.82rem; text-decoration: none;">
                     📅 Agendar
                   </a>
+                  <?php if ($is_admin): ?>
+                    <button type="button" class="admin-btn-action admin-btn-edit" style="width: 100%; justify-content: center; text-align: center; margin-top: 6px; padding: 6px 12px; font-size: 0.82rem;" onclick="openAdminMeetModal(<?= (int)$next_meet['id'] ?>, '<?= htmlspecialchars(addslashes($next_meet['title'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['description'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['date'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['time'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['platform'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['google_cal_url'])) ?>')">
+                      ✏️ Configurar / Editar este Zoom
+                    </button>
+                  <?php endif; ?>
                 </div>
               </div>
             <?php endif; ?>
@@ -378,13 +425,18 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               </p>
               <div style="display: flex; flex-direction: column; gap: 10px;">
                 <?php foreach ($data['plans'] as $plan): ?>
-                  <div style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--c-border); background: var(--c-bg-subtle);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <div style="padding: 12px 14px; border-radius: 10px; border: 1px solid var(--c-border); background: var(--c-bg-subtle);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                       <strong style="font-size: 0.88rem;"><?= htmlspecialchars($plan['name']) ?></strong>
                       <span style="font-size: 0.72rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($plan['badge']) ?></span>
                     </div>
-                    <div style="font-size: 0.85rem; font-weight: 800; color: var(--c-fire-primary);">
-                      $<?= number_format($plan['price_ars'], 0, ',', '.') ?> ARS <span style="font-size: 0.75rem; color: var(--c-text-muted); font-weight: normal;">($<?= $plan['price_usd'] ?> USD)</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                      <div style="font-size: 0.95rem; font-weight: 900; color: var(--c-fire-primary);">
+                        U$D <?= (int)$plan['price_usd'] ?> <span style="font-size: 0.75rem; color: var(--c-text-muted); font-weight: normal;">(<?= htmlspecialchars($plan['period']) ?>)</span>
+                      </div>
+                      <a href="<?= htmlspecialchars($plan['checkout_url'] ?: ('https://wa.me/5491138205570?text=' . urlencode('Hola Fede! Quiero consultar sobre el plan ' . $plan['name'] . ' (U$D ' . $plan['price_usd'] . ')'))) ?>" target="_blank" rel="noopener" class="btn-reaction" style="padding: 4px 10px; font-size: 0.76rem; font-weight: 700; color: #15803d; background: #dcfce7; text-decoration: none; border-color: #86efac;">
+                        💬 Consultar
+                      </a>
                     </div>
                   </div>
                 <?php endforeach; ?>
@@ -410,9 +462,21 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
       <!-- TAB 2: ACADEMIA / CLASES -->
       <section id="tab-classroom" class="campus-tab-pane" style="display: none;">
-        <div style="margin-bottom: 24px;">
-          <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-bottom: 6px;">🎓 Academia Fede Nowback</h2>
-          <p style="color: var(--c-text-muted); font-size: 0.95rem;">Masterclasses, estructuras paso a paso y guiones probados para monetizar tu marca personal.</p>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-bottom: 6px;">🎓 Academia Fede Nowback</h2>
+            <p style="color: var(--c-text-muted); font-size: 0.95rem;">Masterclasses, estructuras paso a paso y guiones probados para monetizar tu marca personal.</p>
+          </div>
+          <?php if ($is_admin): ?>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="admin-btn-add" onclick="openAdminCourseModal(0)">
+                ➕ Cargar Nuevo Curso
+              </button>
+              <button type="button" class="admin-btn-action" style="background: #0f172a; color: #fff; padding: 10px 16px; font-size: 0.88rem; font-weight: 800; border-radius: 8px;" onclick="openAdminLessonModal(0)">
+                🎬 + Cargar Nueva Clase / Video
+              </button>
+            </div>
+          <?php endif; ?>
         </div>
 
         <div class="classroom-grid courses-grid">
@@ -456,21 +520,46 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                               </div>
                             </div>
 
-                            <?php if ($can_view): ?>
-                              <button type="button" class="btn-reaction btn-play-lesson" style="padding: 4px 10px; font-size: 0.78rem; font-weight: 700; color: var(--c-fire-primary);" onclick="playLessonModal('<?= htmlspecialchars(addslashes($les['title'])) ?>', '<?= htmlspecialchars($les['video_url']) ?>', '<?= htmlspecialchars(addslashes($les['description'])) ?>')">
-                                ▶️ Ver Clase
-                              </button>
-                            <?php else: ?>
-                              <button type="button" class="btn-reaction" style="padding: 4px 10px; font-size: 0.78rem; color: #64748b; background: #f1f5f9;" onclick="openLoginModal('Esta lección es exclusiva para miembros Pro. Iniciá sesión o suscribite para acceder.')">
-                                🔒 Desbloquear
-                              </button>
-                            <?php endif; ?>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                              <?php if ($can_view): ?>
+                                <button type="button" class="btn-reaction btn-play-lesson" style="padding: 4px 10px; font-size: 0.78rem; font-weight: 700; color: var(--c-fire-primary);" onclick="playLessonModal('<?= htmlspecialchars(addslashes($les['title'])) ?>', '<?= htmlspecialchars($les['video_url']) ?>', '<?= htmlspecialchars(addslashes($les['description'])) ?>')">
+                                  ▶️ Ver Clase
+                                </button>
+                              <?php else: ?>
+                                <button type="button" class="btn-reaction" style="padding: 4px 10px; font-size: 0.78rem; color: #64748b; background: #f1f5f9;" onclick="openLoginModal('Esta lección es exclusiva para miembros Pro. Iniciá sesión o suscribite para acceder.')">
+                                  🔒 Desbloquear
+                                </button>
+                              <?php endif; ?>
+
+                              <?php if ($is_admin): ?>
+                                <button type="button" class="admin-btn-action admin-btn-edit" style="padding: 3px 7px; font-size: 0.75rem;" title="Editar clase / video" onclick="openAdminLessonModal(<?= (int)$les['id'] ?>, <?= (int)$course['id'] ?>, '<?= htmlspecialchars(addslashes($les['title'])) ?>', '<?= htmlspecialchars(addslashes($les['video_url'])) ?>', '<?= htmlspecialchars(addslashes($les['duration'])) ?>', '<?= htmlspecialchars(addslashes($les['description'])) ?>', <?= !empty($les['is_free']) ? 1 : 0 ?>)">
+                                  ✏️
+                                </button>
+                                <button type="button" class="admin-btn-action admin-btn-del" style="padding: 3px 7px; font-size: 0.75rem;" title="Eliminar lección" onclick="deleteAdminLesson(<?= (int)$les['id'] ?>)">
+                                  🗑️
+                                </button>
+                              <?php endif; ?>
+                            </div>
                           </div>
                         <?php endforeach; ?>
                       </div>
                     </div>
                   <?php endforeach; ?>
                 </div>
+
+                <?php if ($is_admin): ?>
+                  <div style="display: flex; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--c-border);">
+                    <button type="button" class="admin-btn-action admin-btn-edit" style="flex: 1; text-align: center;" onclick="openAdminCourseModal(<?= (int)$course['id'] ?>, '<?= htmlspecialchars(addslashes($course['title'])) ?>', '<?= htmlspecialchars(addslashes($course['slug'])) ?>', '<?= htmlspecialchars(addslashes($course['description'])) ?>', '<?= htmlspecialchars(addslashes($course['duration'])) ?>', '<?= htmlspecialchars(addslashes($course['thumbnail'])) ?>', <?= (int)$course['level_required'] ?>)">
+                      ✏️ Editar Curso
+                    </button>
+                    <button type="button" class="admin-btn-action" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0;" onclick="openAdminLessonModal(0, <?= (int)$course['id'] ?>)">
+                      ➕ Cargar Clase
+                    </button>
+                    <button type="button" class="admin-btn-action admin-btn-del" onclick="deleteAdminCourse(<?= (int)$course['id'] ?>)">
+                      🗑️
+                    </button>
+                  </div>
+                <?php endif; ?>
 
               </div>
             </div>
@@ -480,9 +569,16 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
       <!-- TAB 3: CALENDARIO / MEETS -->
       <section id="tab-calendar" class="campus-tab-pane" style="display: none;">
-        <div style="margin-bottom: 24px;">
-          <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-bottom: 6px;">📅 Calendario de Sesiones en Vivo</h2>
-          <p style="color: var(--c-text-muted); font-size: 0.95rem;">Auditorías 1 a 1, Hot Seats y sesiones grupales en directo con Fede Nowback.</p>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+          <div>
+            <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-bottom: 6px;">📅 Calendario de Sesiones en Vivo</h2>
+            <p style="color: var(--c-text-muted); font-size: 0.95rem;">Auditorías 1 a 1, Hot Seats y sesiones grupales en directo con Fede Nowback.</p>
+          </div>
+          <?php if ($is_admin): ?>
+            <button type="button" class="admin-btn-add" onclick="openAdminMeetModal(0)">
+              📅 + Programar Nuevo Meet / Zoom
+            </button>
+          <?php endif; ?>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
@@ -516,6 +612,16 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                 <a href="<?= htmlspecialchars($meet['google_cal_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-reaction" style="justify-content: center; text-decoration: none;">
                   📅 Guardar en Calendario
                 </a>
+                <?php if ($is_admin): ?>
+                  <div style="display: flex; gap: 6px; margin-top: 4px;">
+                    <button type="button" class="admin-btn-action admin-btn-edit" style="flex: 1; text-align: center;" onclick="openAdminMeetModal(<?= (int)$meet['id'] ?>, '<?= htmlspecialchars(addslashes($meet['title'])) ?>', '<?= htmlspecialchars(addslashes($meet['description'])) ?>', '<?= htmlspecialchars(addslashes($meet['date'])) ?>', '<?= htmlspecialchars(addslashes($meet['time'])) ?>', '<?= htmlspecialchars(addslashes($meet['platform'])) ?>', '<?= htmlspecialchars(addslashes($meet['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($meet['google_cal_url'])) ?>')">
+                      ✏️ Editar
+                    </button>
+                    <button type="button" class="admin-btn-action admin-btn-del" onclick="deleteAdminMeet(<?= (int)$meet['id'] ?>)">
+                      🗑️
+                    </button>
+                  </div>
+                <?php endif; ?>
               </div>
             </div>
           <?php endforeach; ?>
@@ -538,13 +644,20 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
           <div class="chat-main-area">
             <div id="chatMessagesScroll" class="chat-messages-scroll">
               <?php foreach ($data['chat_messages'] as $msg): ?>
-                <div class="chat-bubble-row">
+                <div class="chat-bubble-row" id="chat-msg-<?= htmlspecialchars($msg['id']) ?>">
                   <img src="<?= htmlspecialchars($msg['avatar']) ?>" alt="<?= htmlspecialchars($msg['author']) ?>" class="comment-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
-                  <div class="chat-bubble-content <?= !empty($msg['is_host']) ? 'host-msg' : '' ?>">
-                    <div style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 2px;">
-                      <?= htmlspecialchars($msg['author']) ?> • <?= htmlspecialchars($msg['time']) ?>
-                      <?php if (!empty($msg['is_host'])): ?>
-                        <span style="font-size: 0.68rem; background: var(--c-fire-primary); color: #fff; padding: 1px 4px; border-radius: 3px;">HOST</span>
+                  <div class="chat-bubble-content <?= !empty($msg['is_host']) ? 'host-msg' : '' ?>" style="position: relative;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                      <div style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-muted);">
+                        <?= htmlspecialchars($msg['author']) ?> • <?= htmlspecialchars($msg['time']) ?>
+                        <?php if (!empty($msg['is_host'])): ?>
+                          <span style="font-size: 0.68rem; background: var(--c-fire-primary); color: #fff; padding: 1px 4px; border-radius: 3px;">HOST</span>
+                        <?php endif; ?>
+                      </div>
+                      <?php if ($is_admin): ?>
+                        <button type="button" onclick="deleteChatMessage('<?= htmlspecialchars($msg['id']) ?>')" title="Eliminar mensaje" style="background: none; border: none; font-size: 0.75rem; cursor: pointer; opacity: 0.6; padding: 0 4px;">
+                          🗑️
+                        </button>
                       <?php endif; ?>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--c-text-main);"><?= htmlspecialchars($msg['content']) ?></div>
@@ -671,7 +784,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <div style="background: var(--c-bg-subtle); border-radius: var(--c-radius); padding: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
               <div>
                 <div style="font-weight: 800; font-size: 0.95rem;">¿Tenés dudas o necesitás soporte?</div>
-                <div style="font-size: 0.82rem; color: var(--c-text-muted);">Escribí directo a Fede por WhatsApp (+54 9 11 3820-5570)</div>
+                <div style="font-size: 0.82rem; color: var(--c-text-muted);">Escribí directo a Fede por WhatsApp</div>
               </div>
               <a href="https://wa.me/5491138205570?text=Hola%20Fede,%20tengo%20una%20consulta%20sobre%20el%20Campus%20Fede%20Nowback" target="_blank" rel="noopener noreferrer" class="btn-post-submit" style="text-decoration: none;">
                 💬 WhatsApp Directo
@@ -711,27 +824,137 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                 <div class="admin-stat-lbl">🎓 Cursos Creados</div>
               </div>
               <div class="admin-stat-item">
-                <div class="admin-stat-val" id="adminStatPlans"><?= count($data['plans']) ?></div>
+                <div class="admin-stat-val" id="adminStatPlans"><?= count($data['plans'] ?? []) ?></div>
                 <div class="admin-stat-lbl">💳 Planes Activos</div>
               </div>
-              <div class="admin-stat-item">
-                <div class="admin-stat-val" id="adminStatMeets"><?= count($data['meets']) ?></div>
-                <div class="admin-stat-lbl">📅 Meets Programados</div>
-              </div>
             </div>
-          </div>
 
           <!-- Subtabs de Navegación del Admin -->
           <div class="admin-subtabs-nav">
-            <button type="button" class="admin-subtab-btn active" data-admin-subtab="users">👥 Gestión de Usuarios</button>
-            <button type="button" class="admin-subtab-btn" data-admin-subtab="courses">🎓 Cursos & Lecciones</button>
+            <button type="button" class="admin-subtab-btn active" data-admin-subtab="courses">🎓 Cursos & Videos / Clases</button>
+            <button type="button" class="admin-subtab-btn" data-admin-subtab="meets">📅 Meets & Zooms en Vivo</button>
+            <button type="button" class="admin-subtab-btn" data-admin-subtab="moderation">💬 Moderación de Muro & Posts</button>
+            <button type="button" class="admin-subtab-btn" data-admin-subtab="users">👥 Gestión de Usuarios</button>
             <button type="button" class="admin-subtab-btn" data-admin-subtab="plans">💳 Planes & Precios</button>
-            <button type="button" class="admin-subtab-btn" data-admin-subtab="meets">📅 Calendario & Meets</button>
             <button type="button" class="admin-subtab-btn" data-admin-subtab="settings">⚙️ Configuración & Fuegos</button>
           </div>
 
-          <!-- SUBTAB 1: USUARIOS (ABM) -->
-          <div id="admin-subtab-users" class="admin-subtab-content">
+          <!-- SUBTAB 1: CURSOS Y LECCIONES / VIDEOS (ABM) -->
+          <div id="admin-subtab-courses" class="admin-subtab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Cursos & Contenidos de la Academia</h3>
+                <p style="font-size: 0.82rem; color: var(--c-text-muted);">Cargá videos de YouTube (se embeben automáticamente), Vimeo o MP4 con títulos y recursos.</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="admin-btn-add" onclick="openAdminCourseModal(0)">➕ Nuevo Curso</button>
+                <button type="button" class="admin-btn-action" style="background: #0f172a; color: #fff; font-weight: 700; padding: 10px 16px;" onclick="openAdminLessonModal(0)">🎬 + Cargar Clase / Video</button>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <?php foreach ($data['courses'] as $c_item): ?>
+                <div class="campus-card" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 16px;">
+                    <img src="<?= htmlspecialchars($c_item['thumbnail']) ?>" alt="" style="width: 90px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid var(--c-border);">
+                    <div>
+                      <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 4px;"><?= htmlspecialchars($c_item['title']) ?></h4>
+                      <div style="font-size: 0.8rem; color: var(--c-text-muted);">
+                        Slug: <code>/<?= htmlspecialchars($c_item['slug']) ?></code> • <?= (int)$c_item['total_lessons'] ?> Lecciones • Duración: <?= htmlspecialchars($c_item['duration']) ?>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="admin-btn-action" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0;" onclick="openAdminLessonModal(0, <?= (int)$c_item['id'] ?>)">➕ Cargar Clase</button>
+                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminCourseModal(<?= (int)$c_item['id'] ?>, '<?= htmlspecialchars(addslashes($c_item['title'])) ?>', '<?= htmlspecialchars(addslashes($c_item['slug'])) ?>', '<?= htmlspecialchars(addslashes($c_item['description'])) ?>', '<?= htmlspecialchars(addslashes($c_item['duration'])) ?>', '<?= htmlspecialchars(addslashes($c_item['thumbnail'])) ?>', <?= (int)$c_item['level_required'] ?>)">✏️ Editar</button>
+                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminCourse(<?= (int)$c_item['id'] ?>)">🗑️ Borrar</button>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+
+          <!-- SUBTAB 2: CALENDARIO Y MEETS (ABM) -->
+          <div id="admin-subtab-meets" class="admin-subtab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Sesiones en Vivo & Zoom Meets</h3>
+                <p style="font-size: 0.82rem; color: var(--c-text-muted);">Configurá las próximas sesiones de Hot Seats y mentorías con enlaces directos.</p>
+              </div>
+              <button type="button" class="admin-btn-add" onclick="openAdminMeetModal(0)">📅 + Programar Nuevo Meet / Zoom</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <?php foreach ($data['meets'] as $m_row): ?>
+                <div class="campus-card" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                  <div>
+                    <span style="font-size: 0.72rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($m_row['platform']) ?></span>
+                    <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin: 4px 0;"><?= htmlspecialchars($m_row['title']) ?></h4>
+                    <div style="font-size: 0.82rem; color: var(--c-text-main); font-weight: 700;">🗓️ <?= htmlspecialchars($m_row['date']) ?> • ⏰ <?= htmlspecialchars($m_row['time']) ?></div>
+                    <?php if (!empty($m_row['zoom_url'])): ?>
+                      <div style="font-size: 0.78rem; color: #0284c7; margin-top: 2px;">🔗 Link: <?= htmlspecialchars(substr($m_row['zoom_url'], 0, 45)) ?>...</div>
+                    <?php endif; ?>
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminMeetModal(<?= (int)$m_row['id'] ?>, '<?= htmlspecialchars(addslashes($m_row['title'])) ?>', '<?= htmlspecialchars(addslashes($m_row['description'])) ?>', '<?= htmlspecialchars(addslashes($m_row['date'])) ?>', '<?= htmlspecialchars(addslashes($m_row['time'])) ?>', '<?= htmlspecialchars(addslashes($m_row['platform'])) ?>', '<?= htmlspecialchars(addslashes($m_row['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($m_row['google_cal_url'])) ?>')">✏️ Editar Zoom</button>
+                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminMeet(<?= (int)$m_row['id'] ?>)">🗑️ Borrar</button>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+
+          <!-- SUBTAB 3: MODERACIÓN DE MURO & MENSAJES -->
+          <div id="admin-subtab-moderation" class="admin-subtab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <div>
+                <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">💬 Moderación de Publicaciones & Debates</h3>
+                <p style="font-size: 0.82rem; color: var(--c-text-muted);">Revisá y eliminá cualquier publicación o mensaje indebido con 1 solo clic.</p>
+              </div>
+            </div>
+
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Publicación</th>
+                  <th>Autor</th>
+                  <th>Categoría</th>
+                  <th>Fecha</th>
+                  <th>Respuestas</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="adminPostsTableBody">
+                <?php foreach ($data['posts'] as $p_row): ?>
+                  <tr id="admin-post-row-<?= htmlspecialchars($p_row['id']) ?>">
+                    <td>
+                      <strong><?= htmlspecialchars($p_row['title']) ?></strong>
+                      <div style="font-size: 0.78rem; color: var(--c-text-muted); max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        <?= htmlspecialchars(strip_tags($p_row['content'])) ?>
+                      </div>
+                    </td>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        <img src="<?= htmlspecialchars($p_row['author']['avatar']) ?>" alt="" style="width: 24px; height: 24px; border-radius: 50%;">
+                        <span><?= htmlspecialchars($p_row['author']['name']) ?></span>
+                      </div>
+                    </td>
+                    <td><span style="font-size: 0.75rem; background: var(--c-bg-subtle); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($p_row['category']) ?></span></td>
+                    <td><small style="color: var(--c-text-muted);"><?= htmlspecialchars($p_row['created_at']) ?></small></td>
+                    <td>💬 <?= count($p_row['comments'] ?? []) ?></td>
+                    <td>
+                      <button class="admin-btn-action admin-btn-del" onclick="deletePost('<?= htmlspecialchars($p_row['id']) ?>')">
+                        🗑️ Borrar Post
+                      </button>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- SUBTAB 4: USUARIOS (ABM) -->
+          <div id="admin-subtab-users" class="admin-subtab-content" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
               <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Directorio de Usuarios</h3>
               <button type="button" class="admin-btn-add" onclick="openAdminUserModal(0)">➕ Nuevo Usuario / Alumno</button>
@@ -775,38 +998,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             </table>
           </div>
 
-          <!-- SUBTAB 2: CURSOS Y LECCIONES (ABM) -->
-          <div id="admin-subtab-courses" class="admin-subtab-content" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Cursos & Contenidos de la Academia</h3>
-              <div style="display: flex; gap: 8px;">
-                <button type="button" class="admin-btn-add" onclick="openAdminCourseModal(0)">➕ Nuevo Curso</button>
-                <button type="button" class="btn-reaction" onclick="openAdminLessonModal(0)">➕ Nueva Lección</button>
-              </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 16px;">
-              <?php foreach ($data['courses'] as $c_item): ?>
-                <div class="campus-card" style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <img src="<?= htmlspecialchars($c_item['thumbnail']) ?>" alt="" style="width: 80px; height: 50px; border-radius: 8px; object-fit: cover;">
-                    <div>
-                      <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 4px;"><?= htmlspecialchars($c_item['title']) ?></h4>
-                      <div style="font-size: 0.8rem; color: var(--c-text-muted);">
-                        Slug: <code>/<?= htmlspecialchars($c_item['slug']) ?></code> • <?= (int)$c_item['total_lessons'] ?> Lecciones • Duración: <?= htmlspecialchars($c_item['duration']) ?>
-                      </div>
-                    </div>
-                  </div>
-                  <div style="display: flex; gap: 8px;">
-                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminCourseModal(<?= (int)$c_item['id'] ?>, '<?= htmlspecialchars(addslashes($c_item['title'])) ?>', '<?= htmlspecialchars(addslashes($c_item['slug'])) ?>', '<?= htmlspecialchars(addslashes($c_item['description'])) ?>', '<?= htmlspecialchars(addslashes($c_item['duration'])) ?>', '<?= htmlspecialchars(addslashes($c_item['thumbnail'])) ?>', <?= (int)$c_item['level_required'] ?>)">✏️ Editar</button>
-                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminCourse(<?= (int)$c_item['id'] ?>)">🗑️ Borrar</button>
-                  </div>
-                </div>
-              <?php endforeach; ?>
-            </div>
-          </div>
-
-          <!-- SUBTAB 3: PLANES Y PRECIOS (ABM) -->
+          <!-- SUBTAB 5: PLANES Y PRECIOS (ABM) -->
           <div id="admin-subtab-plans" class="admin-subtab-content" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
               <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Planes de Membresía & Precios</h3>
@@ -823,7 +1015,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                     </div>
                     <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.15rem; margin-bottom: 6px;"><?= htmlspecialchars($p_item['name']) ?></h4>
                     <div style="font-size: 1.3rem; font-weight: 900; color: var(--c-fire-primary); margin-bottom: 8px;">
-                      $<?= number_format($p_item['price_ars'], 0, ',', '.') ?> ARS <span style="font-size: 0.85rem; color: var(--c-text-muted); font-weight: 600;">($<?= $p_item['price_usd'] ?> USD)</span>
+                      U$D <?= (int)$p_item['price_usd'] ?> <span style="font-size: 0.85rem; color: var(--c-text-muted); font-weight: 600;">($<?= number_format($p_item['price_ars'], 0, ',', '.') ?> ARS)</span>
                     </div>
                     <p style="font-size: 0.85rem; color: var(--c-text-sub); margin-bottom: 12px;"><?= htmlspecialchars($p_item['description']) ?></p>
                   </div>
@@ -836,31 +1028,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             </div>
           </div>
 
-          <!-- SUBTAB 4: CALENDARIO Y MEETS (ABM) -->
-          <div id="admin-subtab-meets" class="admin-subtab-content" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Sesiones en Vivo & Meets</h3>
-              <button type="button" class="admin-btn-add" onclick="openAdminMeetModal(0)">➕ Programar Nuevo Meet</button>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 14px;">
-              <?php foreach ($data['meets'] as $m_row): ?>
-                <div class="campus-card" style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
-                  <div>
-                    <span style="font-size: 0.72rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($m_row['platform']) ?></span>
-                    <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin: 4px 0;"><?= htmlspecialchars($m_row['title']) ?></h4>
-                    <div style="font-size: 0.82rem; color: var(--c-text-main); font-weight: 700;">🗓️ <?= htmlspecialchars($m_row['date']) ?> • ⏰ <?= htmlspecialchars($m_row['time']) ?></div>
-                  </div>
-                  <div style="display: flex; gap: 8px;">
-                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminMeetModal(<?= (int)$m_row['id'] ?>, '<?= htmlspecialchars(addslashes($m_row['title'])) ?>', '<?= htmlspecialchars(addslashes($m_row['description'])) ?>', '<?= htmlspecialchars(addslashes($m_row['date'])) ?>', '<?= htmlspecialchars(addslashes($m_row['time'])) ?>', '<?= htmlspecialchars(addslashes($m_row['platform'])) ?>', '<?= htmlspecialchars(addslashes($m_row['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($m_row['google_cal_url'])) ?>')">✏️ Editar</button>
-                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminMeet(<?= (int)$m_row['id'] ?>)">🗑️ Borrar</button>
-                  </div>
-                </div>
-              <?php endforeach; ?>
-            </div>
-          </div>
-
-          <!-- SUBTAB 5: CONFIGURACIÓN & GAMIFICACIÓN -->
+          <!-- SUBTAB 6: CONFIGURACIÓN & GAMIFICACIÓN -->
           <div id="admin-subtab-settings" class="admin-subtab-content" style="display: none;">
             <div class="campus-card" style="max-width: 650px;">
               <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Configuración de la Plataforma</h3>
