@@ -48,7 +48,7 @@ function fede_get_default_user(): array {
         'email' => '',
         'name' => 'Invitado',
         'handle' => '@invitado',
-        'avatar' => fede_clean_avatar('/assets/img/fede_avatar_mini.png'),
+        'avatar' => '/assets/img/fede_avatar_mini.png',
         'role' => 'guest', // 'admin', 'member', or 'guest'
         'is_logged_in' => false,
         'points' => 0,
@@ -57,19 +57,6 @@ function fede_get_default_user(): array {
         'completed_lessons' => [],
         'joined_date' => date('F Y')
     ];
-}
-
-// CSRF Token Generation & Validation
-if (!isset($_SESSION['fede_csrf_token'])) {
-    $_SESSION['fede_csrf_token'] = bin2hex(random_bytes(24));
-}
-
-function fede_csrf_token() {
-    return $_SESSION['fede_csrf_token'];
-}
-
-function fede_verify_csrf($token) {
-    return isset($_SESSION['fede_csrf_token']) && hash_equals($_SESSION['fede_csrf_token'], $token ?? '');
 }
 
 /**
