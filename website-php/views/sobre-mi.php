@@ -6,9 +6,9 @@
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/seo_helper.php';
 
- = 'sobre-mi';
+$current_slug = 'sobre-mi';
 
- = [
+$page_seo = [
     'title' => 'Sobre Mí | Fede Nowback - Historia, Trayectoria y Metodología',
     'description' => 'Conocé la historia de Fede Nowback: de creador de contenido a mentor de negocios digitales y speaker. Aprendé cómo ayudó a cientos de profesionales a destacar.',
     'keywords' => 'fede nowback historia, quien es fede nowback, mentor marca personal argentina, creador de contenido, bio fede nowback',
@@ -16,6 +16,7 @@ require_once __DIR__ . '/../includes/seo_helper.php';
     'og_image' => SITE_URL . '/assets/img/fede_nowback_street.jpg'
 ];
 ?>
+<!DOCTYPE html>
 <html lang="es-AR">
 <head>
   <?php render_seo_head($page_seo); ?>
@@ -55,6 +56,7 @@ require_once __DIR__ . '/../includes/seo_helper.php';
   </div>
 </section>
 
+<!-- Updated manifesto -->
 <section style="padding: 80px 20px; background: #0c0d12; border-top: 1px solid #1e2029;">
   <div class="fede-container" style="max-width: 900px; margin: 0 auto;">
     <div style="text-align: center; margin-bottom: 50px;">
@@ -65,7 +67,7 @@ require_once __DIR__ . '/../includes/seo_helper.php';
     <div style="display: flex; flex-direction: column; gap: 24px;">
       <div class="fede-card">
         <h3 style="color: #f97316; font-size: 1.3rem; margin-bottom: 8px;">1. La viralidad vacía no paga las cuentas</h3>
-        <p style="color: #a1a1aa; font-size: 0.95rem; line-height: 1.6;">Tener 1 millón de vistas no sirve si nadie te compra. Nos enfocamos en contenido con intención de compra y clientes de alto valor.</p>
+        <p style="color: #a1a1aa; font-size: 0.95rem; line-height: 1.6;">Tener un millón de vistas no sirve si nadie te compra. Nos enfocamos en contenido con intención de compra y clientes de alto valor.</p>
       </div>
 
       <div class="fede-card">

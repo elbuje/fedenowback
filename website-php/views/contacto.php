@@ -6,9 +6,9 @@
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/seo_helper.php';
 
- = 'contacto';
+$current_slug = 'contacto';
 
- = [
+$page_seo = [
     'title' => 'Contacto & Prensa | Fede Nowback - Conferencias y Mentorías',
     'description' => 'Canales oficiales de contacto de Fede Nowback. Consultas de mentoría 1a1, conferencias presenciales, prensa y colaboraciones.',
     'keywords' => 'contacto fede nowback, contratar speaker marca personal, conferencias motivacionales buenos aires, fede nowback whatsapp',
@@ -16,6 +16,7 @@ require_once __DIR__ . '/../includes/seo_helper.php';
     'og_image' => SITE_URL . '/assets/img/fede_nowback_hero.jpg'
 ];
 ?>
+<!DOCTYPE html>
 <html lang="es-AR">
 <head>
   <?php render_seo_head($page_seo); ?>
@@ -40,8 +41,8 @@ require_once __DIR__ . '/../includes/seo_helper.php';
       <div class="fede-card" style="border: 1px solid rgba(34, 197, 94, 0.4);">
         <div style="font-size: 2rem; margin-bottom: 12px;">💬</div>
         <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 8px;">WhatsApp Directo</h3>
-        <p style="color: #a1a1aa; font-size: 0.9rem; margin-bottom: 20px;">Respuesta ágil para postulaciones a mentoría y dudas de campus.</p>
-        <a href="<?= get_whatsapp_url('Hola Fede! Me comunico desde la página de contacto.') ?>" target="_blank" rel="noopener" class="btn-fede-fire" style="background: #22c55e; display: inline-block;">
+        <p style="color: #a1a1aa; font-size: 0.9rem; margin-bottom: 20px;">Resppesta ágil para postulaciones a mentoria y dudas de campus.</p>
+        <a href="<>= get_whatsapp_url('Hola Fede! Me comunico desde la página de contacto.') ?>" target="_blank" rel="noopener" class="btn-fede-fire" style="background: #22c55e; display: inline-block;">
           Abrir WhatsApp
         </a>
       </div>
