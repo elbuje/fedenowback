@@ -432,9 +432,9 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
                       <div style="font-size: 0.95rem; font-weight: 900; color: var(--c-fire-primary);">
-                        U$D <?= (int)$plan['price_usd'] ?> <span style="font-size: 0.75rem; color: var(--c-text-muted); font-weight: normal;">(<?= htmlspecialchars($plan['period']) ?>)</span>
+                        Consultar
                       </div>
-                      <a href="<?= htmlspecialchars($plan['checkout_url'] ?: ('https://wa.me/5491138205570?text=' . urlencode('Hola Fede! Quiero consultar sobre el plan ' . $plan['name'] . ' (U$D ' . $plan['price_usd'] . ')'))) ?>" target="_blank" rel="noopener" class="btn-reaction" style="padding: 4px 10px; font-size: 0.76rem; font-weight: 700; color: #15803d; background: #dcfce7; text-decoration: none; border-color: #86efac;">
+                      <a href="<?= htmlspecialchars($plan['checkout_url'] ?: ('https://wa.me/5491138205570?text=' . urlencode('Hola Fede! Quiero consultar sobre el plan ' . $plan['name']))) ?>" target="_blank" rel="noopener" class="btn-reaction" style="padding: 4px 10px; font-size: 0.76rem; font-weight: 700; color: #15803d; background: #dcfce7; text-decoration: none; border-color: #86efac;">
                         💬 Consultar
                       </a>
                     </div>
