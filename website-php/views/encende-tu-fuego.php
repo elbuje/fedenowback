@@ -766,7 +766,7 @@ function get_evento_wa($msg = '') {
 
       <a href="<?= get_evento_wa() ?>" target="_blank" rel="noopener noreferrer" class="btn-wa-header">
         <span>💬</span>
-        <span>Reservar Lugar (+54 9 11 3820 5570)</span>
+        <span>Reservar Lugar</span>
       </a>
     </div>
   </header>
@@ -1155,7 +1155,7 @@ function get_evento_wa($msg = '') {
   <!-- Floating Sticky WhatsApp Button -->
   <a href="<?= get_evento_wa() ?>" target="_blank" rel="noopener noreferrer" class="wa-float" aria-label="WhatsApp Fede Nowback">
     <span style="font-size: 1.3rem;">💬</span>
-    <span>Reservar (+54 9 11 3820 5570)</span>
+    <span>Reservar Lugar</span>
   </a>
 
   <!-- Script Contador Regresivo en Tiempo Real -->
