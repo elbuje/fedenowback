@@ -97,27 +97,8 @@ function get_fede_wa($msg = '') {
 </head>
 <body>
 
-  <!-- Header de Navegación del Sitio Completo -->
-  <header class="fede-header">
-    <div class="fede-container fede-header-flex">
-      <a href="/" class="fede-brand">
-        <span class="fede-brand-badge">NOWBACK</span>
-        <span class="fede-brand-name">FEDE NOWBACK</span>
-      </a>
-
-      <nav aria-label="Navegación principal">
-        <ul class="fede-nav-links">
-          <li><a href="#metodo">Metodología</a></li>
-          <li><a href="#sobre-fede">Mi Recorrido</a></li>
-          <li><a href="#youtube-videos" style="color: #ff5555; font-weight: 700;">▶️ Clases YouTube</a></li>
-          <li><a href="/mentorias">Mentoría 1a1</a></li>
-          <li><a href="/encende-tu-fuego" style="color: var(--fede-fire-yellow); font-weight: 700;">🔥 Evento 12/09</a></li>
-          <li><a href="/comunidad" style="color: var(--fede-fire-orange); font-weight: 700;">⚡ Campus Pro</a></li>
-          <li><a href="/sobre-mi">Sobre Fede</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <!-- Header de Navegación Global -->
+  <?php require __DIR__ . '/layout/header.php'; ?>
 
   <!-- Hero Section -->
   <section class="fede-hero">
@@ -583,12 +564,14 @@ function get_fede_wa($msg = '') {
         </div>
 
         <div class="fede-footer-col">
-          <h4>Páginas & Eventos</h4>
+          <h4>Páginas & Contenido</h4>
           <ul class="fede-footer-links">
-            <li><a href="/">🏠 Inicio Fede Nowback</a></li>
-            <li><a href="/encende-tu-fuego">🔥 Evento "Encendé tu Fuego"</a></li>
-            <li><a href="#youtube-videos">▶️ Clases en YouTube</a></li>
+            <li><a href="/">🏠 Inicio</a></li>
+            <li><a href="/fede-nowback-especialista-filmmaker">🎬 Mi Recorrido & Trayectoria</a></li>
+            <li><a href="/metodologia-marca-personal">⚡ Metodología de 4 Fases</a></li>
+            <li><a href="/clases-gratuitas-marca-personal">▶️ Clases en YouTube</a></li>
             <li><a href="/mentorias">🎯 Mentorías 1 a 1</a></li>
+            <li><a href="/encende-tu-fuego">🔥 Evento "Encendé tu Fuego"</a></li>
             <li><a href="/comunidad">⚡ Campus & Comunidad Nowback</a></li>
           </ul>
         </div>

@@ -15,7 +15,7 @@
           <span style="font-size: 1.25rem; font-weight: 800; color: #fff;">FEDE NOWBACK</span>
         </div>
         <p style="font-size: 0.95rem; line-height: 1.6; color: #71717a;">
-          Estratega de Marca Personal, Creador de Contenido y Mentor de Negocios Digitales. Buenos Aires, Argentina para todo el mundo hispanohablante.
+          Estratega de Marca Personal, Ex-Filmmaker y Mentor de Negocios Digitales. Buenos Aires, Argentina para todo el mundo hispanohablante.
         </p>
         <div style="display: flex; gap: 12px; margin-top: 16px;">
           <a href="<?= SITE_INSTAGRAM ?>" target="_blank" rel="noopener" style="color: #f97316; font-size: 1.1rem; text-decoration: none;">Instagram</a>
@@ -24,15 +24,17 @@
         </div>
       </div>
 
-      <!-- Links Col -->
+      <!-- Links Col (URLs SEO Optimizadas) -->
       <div>
-        <h4 style="color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 16px;">Navegación</h4>
+        <h4 style="color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 16px;">Navegación & Contenido</h4>
         <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 0.95rem;">
           <li><a href="/" style="color: #a1a1aa; text-decoration: none;">Inicio</a></li>
+          <li><a href="/fede-nowback-especialista-filmmaker" style="color: #a1a1aa; text-decoration: none;">Mi Recorrido & Historia</a></li>
+          <li><a href="/metodologia-marca-personal" style="color: #a1a1aa; text-decoration: none;">Metodología de 4 Fases</a></li>
+          <li><a href="/clases-gratuitas-marca-personal" style="color: #ff5555; text-decoration: none;">▶️ Clases en YouTube</a></li>
           <li><a href="/mentorias" style="color: #a1a1aa; text-decoration: none;">Mentoría 1 a 1</a></li>
           <li><a href="/encende-tu-fuego" style="color: #eab308; text-decoration: none;">🔥 Evento Encendé Tu Fuego</a></li>
-          <li><a href="/comunidad" style="color: #f97316; text-decoration: none;">⚡ Campus Pro & Skool</a></li>
-          <li><a href="/sobre-mi" style="color: #a1a1aa; text-decoration: none;">Sobre Mí / Bio</a></li>
+          <li><a href="/comunidad" style="color: #f97316; text-decoration: none;">⚡ Campus Pro</a></li>
           <li><a href="/contacto" style="color: #a1a1aa; text-decoration: none;">Contacto & Prensa</a></li>
         </ul>
       </div>
@@ -48,7 +50,7 @@
     </div>
 
     <div style="border-top: 1px solid #1e2029; padding-top: 24px; text-align: center; font-size: 0.85rem; color: #52525b;">
-      <p style="margin: 0;">&copy; <?= date('Y') ?> Fede Nowback. Todos los derechos reservados. Marca Personal & Negocios Digitales.</p>
+      <p style="margin: 0;">&copy; <?= date('Y') ?> Fede Nowback. Todos los derechos reservados. Marca Personal, Producción & Negocios Digitales.</p>
     </div>
   </div>
 </footer>

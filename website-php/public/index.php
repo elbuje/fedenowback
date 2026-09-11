@@ -11,17 +11,25 @@ $path = trim($request_uri, "/");
 
 // Router table (Friendly URLs)
 $routes = [
-    ""                  => __DIR__ . "/../views/index.php",
-    "mentorias"         => __DIR__ . "/../views/mentorias.php",
-    "mentoria"          => __DIR__ . "/../views/mentorias.php",
-    "encende-tu-fuego"  => __DIR__ . "/../views/encende-tu-fuego.php",
-    "evento"            => __DIR__ . "/../views/encende-tu-fuego.php",
-    "comunidad"         => __DIR__ . "/../views/comunidad.php",
-    "campus"            => __DIR__ . "/../views/comunidad.php",
-    "skool"             => __DIR__ . "/../views/comunidad.php",
-    "sobre-mi"          => __DIR__ . "/../views/sobre-mi.php",
-    "bio"               => __DIR__ . "/../views/sobre-mi.php",
-    "contacto"          => __DIR__ . "/../views/contacto.php",
+    ""                                    => __DIR__ . "/../views/index.php",
+    "fede-nowback-especialista-filmmaker" => __DIR__ . "/../views/fede-nowback-especialista-filmmaker.php",
+    "sobre-fede"                          => __DIR__ . "/../views/fede-nowback-especialista-filmmaker.php",
+    "sobre-mi"                            => __DIR__ . "/../views/fede-nowback-especialista-filmmaker.php",
+    "bio"                                 => __DIR__ . "/../views/fede-nowback-especialista-filmmaker.php",
+    "metodologia-marca-personal"          => __DIR__ . "/../views/metodologia.php",
+    "metodologia"                         => __DIR__ . "/../views/metodologia.php",
+    "metodo"                              => __DIR__ . "/../views/metodologia.php",
+    "clases-gratuitas-marca-personal"     => __DIR__ . "/../views/clases-youtube.php",
+    "clases-youtube"                      => __DIR__ . "/../views/clases-youtube.php",
+    "clases"                              => __DIR__ . "/../views/clases-youtube.php",
+    "mentorias"                           => __DIR__ . "/../views/mentorias.php",
+    "mentoria"                            => __DIR__ . "/../views/mentorias.php",
+    "encende-tu-fuego"                    => __DIR__ . "/../views/encende-tu-fuego.php",
+    "evento"                              => __DIR__ . "/../views/encende-tu-fuego.php",
+    "comunidad"                           => __DIR__ . "/../views/comunidad.php",
+    "campus"                              => __DIR__ . "/../views/comunidad.php",
+    "skool"                               => __DIR__ . "/../views/comunidad.php",
+    "contacto"                            => __DIR__ . "/../views/contacto.php",
 ];
 
 // API Endpoint Direct Routing
@@ -52,7 +60,7 @@ if (file_exists(__DIR__ . "/" . $path) && is_file(__DIR__ . "/" . $path) && !pre
     exit;
 }
 
-// Sitemap XML dinámico con todas las landings
+// Sitemap XML dinámico con todas las landings indexables
 if ($path === "sitemap.xml") {
     header("Content-Type: application/xml; charset=utf-8");
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -65,10 +73,28 @@ if ($path === "sitemap.xml") {
     <priority>1.0</priority>
   </url>
   <url>
+    <loc><?= SITE_URL ?>/fede-nowback-especialista-filmmaker</loc>
+    <lastmod><?= date("Y-m-d") ?></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc><?= SITE_URL ?>/metodologia-marca-personal</loc>
+    <lastmod><?= date("Y-m-d") ?></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc><?= SITE_URL ?>/mentorias</loc>
     <lastmod><?= date("Y-m-d") ?></lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
+  </url>
+  <url>
+    <loc><?= SITE_URL ?>/clases-gratuitas-marca-personal</loc>
+    <lastmod><?= date("Y-m-d") ?></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc><?= SITE_URL ?>/encende-tu-fuego</loc>
@@ -81,12 +107,6 @@ if ($path === "sitemap.xml") {
     <lastmod><?= date("Y-m-d") ?></lastmod>
     <changefreq>daily</changefreq>
     <priority>0.90</priority>
-  </url>
-  <url>
-    <loc><?= SITE_URL ?>/sobre-mi</loc>
-    <lastmod><?= date("Y-m-d") ?></lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.80</priority>
   </url>
   <url>
     <loc><?= SITE_URL ?>/contacto</loc>
