@@ -622,10 +622,11 @@ body {
 /* Category Filter Pills */
 .campus-filter-pills {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
-  overflow-x: auto;
-  padding-bottom: 4px;
+  overflow-x: visible;
+  padding-bottom: 0;
 }
 
 .filter-pill {
@@ -673,10 +674,24 @@ body {
   background: linear-gradient(180deg, rgba(255, 85, 0, 0.02) 0%, #ffffff 100%);
 }
 
-.post-header {
-  display: flex;
-  justify-content: space-between;
+.post-pinned-tag {
+  display: inline-flex;
   align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--c-fire-primary);
+  background: var(--c-fire-light);
+  padding: 4px 10px;
+  border-radius: var(--c-radius-full);
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 85, 0, 0.2);
+}
+
+.post-header, .post-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 14px;
 }
 
@@ -686,11 +701,15 @@ body {
   gap: 12px;
 }
 
-.post-author-img {
+.post-author-img, .post-author-avatar, .creator-avatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+  border: 2px solid rgba(255, 85, 0, 0.25);
+  background-color: var(--c-bg-subtle);
 }
 
 .post-author-name {
@@ -709,6 +728,30 @@ body {
   font-weight: 600;
 }
 
+.post-date-line {
+  font-size: 0.78rem;
+  color: var(--c-text-muted);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.badge-role {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--c-radius-full);
+  background: var(--c-bg-subtle);
+  color: var(--c-text-sub);
+  border: 1px solid var(--c-border);
+}
+
+.badge-role.host {
+  background: linear-gradient(135deg, #ff5500, #ff8800);
+  color: #fff;
+  border: none;
+  font-weight: 800;
+}
+
 .post-tag {
   font-size: 0.75rem;
   padding: 4px 10px;
@@ -720,7 +763,7 @@ body {
   letter-spacing: 0.03em;
 }
 
-.post-title {
+.post-title, .post-card-title {
   font-family: var(--c-font-head);
   font-weight: 800;
   font-size: 1.15rem;
@@ -729,7 +772,7 @@ body {
   line-height: 1.35;
 }
 
-.post-content {
+.post-content, .post-card-body {
   font-size: 0.94rem;
   color: var(--c-text-sub);
   line-height: 1.65;
@@ -738,10 +781,10 @@ body {
 }
 
 /* Post Footer & Reactions */
-.post-footer {
+.post-footer, .post-actions-bar {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   padding-top: 14px;
   border-top: 1px solid var(--c-border);
 }
@@ -767,13 +810,13 @@ body {
   color: var(--c-fire-primary);
 }
 
-.btn-reaction.reacted {
+.btn-reaction.reacted, .btn-reaction.liked {
   background: var(--c-fire-light);
   border-color: var(--c-fire-primary);
   color: var(--c-fire-primary);
 }
 
-.btn-comments-toggle {
+.btn-comments-toggle, .btn-toggle-comments {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -785,26 +828,31 @@ body {
   cursor: pointer;
 }
 
-.btn-comments-toggle:hover {
+.btn-comments-toggle:hover, .btn-toggle-comments:hover {
   color: var(--c-text-main);
 }
 
 /* Comments Section */
-.comments-thread {
+.post-comments-container {
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px dashed var(--c-border);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
-.comment-item {
+.comments-thread, .comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.comment-item, .comment-bubble {
   display: flex;
   gap: 10px;
   background: var(--c-bg-subtle);
-  padding: 12px 14px;
+  padding: 10px 14px;
   border-radius: var(--c-radius);
+  align-items: flex-start;
 }
 
 .comment-avatar {
@@ -812,13 +860,15 @@ body {
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
+  display: block;
 }
 
 .comment-body {
   flex: 1;
 }
 
-.comment-author-name {
+.comment-author-name, .comment-author-title {
   font-weight: 700;
   font-size: 0.85rem;
   color: var(--c-text-main);
@@ -830,7 +880,7 @@ body {
   color: var(--c-text-sub);
 }
 
-.comment-input-row {
+.comment-input-row, .form-add-comment {
   display: flex;
   gap: 10px;
   margin-top: 8px;

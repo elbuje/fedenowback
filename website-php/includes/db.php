@@ -545,6 +545,21 @@ function fede_db_init_schema() {
             SET `content` = REPLACE(REPLACE(`content`, 'Atrevido', 'Pro'), 'atrevido', 'creador')
             WHERE `content` LIKE '%Atrevid%';
         ");
+        $pdo->exec("
+            UPDATE `fede_users`
+            SET `avatar` = '/assets/img/fede_avatar_mini.png'
+            WHERE `avatar` LIKE '%fedenowback/fede_nowback%' 
+               OR `avatar` LIKE '%/assets/img/fedenowback/%'
+               OR `avatar` IS NULL 
+               OR `avatar` = '';
+        ");
+        $pdo->exec("
+            UPDATE `fede_courses`
+            SET `thumbnail` = '/assets/img/evento_encende_tu_fuego.jpg'
+            WHERE `thumbnail` LIKE '%fedenowback/evento_encende%'
+               OR `thumbnail` LIKE '%/assets/img/fedenowback/%'
+               OR `thumbnail` LIKE '%fede_nowback_hero.jpg%';
+        ");
     } catch (Exception $e) {
         error_log('Fede DB legacy cleanup warning: ' . $e->getMessage());
     }

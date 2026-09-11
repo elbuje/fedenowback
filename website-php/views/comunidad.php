@@ -57,7 +57,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 
   <!-- CSS Custom Campus Fede Nowback Pro -->
-  <link rel="stylesheet" href="/assets/css/campus.css?v=4.0">
+  <link rel="stylesheet" href="/assets/css/campus.css?v=6.0">
 </head>
 <body>
 
@@ -85,7 +85,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
           <?php if ($is_logged_in): ?>
             <!-- Trigger del Avatar Dropdown -->
             <div id="campusAvatarTrigger" class="campus-avatar-trigger" title="Menú de tu cuenta (<?= htmlspecialchars($user['name']) ?>)">
-              <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($user['name']) ?>" class="campus-user-avatar">
+              <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($user['name']) ?>" class="campus-user-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
               <span class="campus-avatar-role-dot">
                 <?= $user['role'] === 'admin' ? '👑 Admin' : '👤 ' . htmlspecialchars(explode(' ', $user['name'])[0]) ?> ▾
               </span>
@@ -94,7 +94,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <!-- Menú Flotante del Avatar del Alumno / Admin -->
             <div id="campusAvatarDropdown" class="campus-avatar-dropdown">
               <div class="dropdown-user-header">
-                <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="dropdown-avatar-lg">
+                <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="dropdown-avatar-lg" onerror="this.src='/assets/img/fede_avatar_mini.png'">
                 <div class="dropdown-user-info">
                   <div class="dropdown-user-name"><?= htmlspecialchars($user['name']) ?></div>
                   <div class="dropdown-user-handle"><?= htmlspecialchars($user['handle']) ?></div>
@@ -219,8 +219,8 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <!-- Post Creator Box -->
               <div class="campus-creator-card">
                 <form id="formCreatePost">
-                  <div class="creator-top-row">
-                    <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="creator-avatar">
+                  <div class="post-creator-header">
+                    <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="creator-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
                     <div class="creator-inputs">
                       <input type="text" id="postTitleInput" class="creator-title-input" placeholder="Título de tu aporte, pregunta o victoria..." required>
                       <textarea id="postBodyInput" class="creator-body-input" placeholder="Escribí acá tu mensaje. Compartí contexto, aprendizajes o dudas para que la comunidad y Fede te respondan..." required></textarea>
@@ -269,7 +269,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                   <?php endif; ?>
 
                   <div class="post-header-row">
-                    <img src="<?= htmlspecialchars($post['author']['avatar']) ?>" alt="<?= htmlspecialchars($post['author']['name']) ?>" class="post-author-avatar">
+                    <img src="<?= htmlspecialchars($post['author']['avatar']) ?>" alt="<?= htmlspecialchars($post['author']['name']) ?>" class="post-author-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
                     <div>
                       <div style="display: flex; align-items: center; gap: 8px;">
                         <span class="post-author-name"><?= htmlspecialchars($post['author']['name']) ?></span>
@@ -302,7 +302,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                     <div class="comments-list">
                       <?php foreach ($post['comments'] as $comm): ?>
                         <div class="comment-bubble">
-                          <img src="<?= htmlspecialchars($comm['author']['avatar']) ?>" alt="Avatar" class="comment-avatar">
+                          <img src="<?= htmlspecialchars($comm['author']['avatar']) ?>" alt="Avatar" class="comment-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
                           <div class="comment-body">
                             <div class="comment-author-title">
                               <?= htmlspecialchars($comm['author']['name']) ?> • <span style="color: var(--c-text-light); font-weight: 400;"><?= htmlspecialchars($comm['created_at']) ?></span>
@@ -539,7 +539,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <div id="chatMessagesScroll" class="chat-messages-scroll">
               <?php foreach ($data['chat_messages'] as $msg): ?>
                 <div class="chat-bubble-row">
-                  <img src="<?= htmlspecialchars($msg['avatar']) ?>" alt="<?= htmlspecialchars($msg['author']) ?>" class="comment-avatar">
+                  <img src="<?= htmlspecialchars($msg['avatar']) ?>" alt="<?= htmlspecialchars($msg['author']) ?>" class="comment-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
                   <div class="chat-bubble-content <?= !empty($msg['is_host']) ? 'host-msg' : '' ?>">
                     <div style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 2px;">
                       <?= htmlspecialchars($msg['author']) ?> • <?= htmlspecialchars($msg['time']) ?>
@@ -636,7 +636,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
           <?php foreach ($data['members'] as $mem): ?>
             <div class="campus-card" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-              <img src="<?= htmlspecialchars($mem['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($mem['name']) ?>" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--c-border);">
+              <img src="<?= htmlspecialchars($mem['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($mem['name']) ?>" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--c-border);" onerror="this.src='/assets/img/fede_avatar_mini.png'">
               <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 2px;"><?= htmlspecialchars($mem['name']) ?></h4>
               <div style="font-size: 0.78rem; color: var(--c-text-muted); margin-bottom: 8px;"><?= htmlspecialchars($mem['handle']) ?></div>
               
@@ -1173,6 +1173,6 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   </main>
 
   <!-- JS Controller con soporte completo de ABM y Avatar Dropdown -->
-  <script src="/assets/js/campus.js?v=4.0"></script>
+  <script src="/assets/js/campus.js?v=6.0"></script>
 </body>
 </html>

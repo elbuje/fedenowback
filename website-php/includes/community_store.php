@@ -19,12 +19,36 @@ define('FEDE_ADMIN_PASSWORD_HASH', '$2y$10$JTe0nSMklYpYmJ9WWfu9D..9pa2As0cr7A8dw
 
 // Initialize Session User if not present (Default to Guest / Unauthenticated)
 if (!isset($_SESSION['fede_user'])) {
-    $_SESSION['fede_user'] = [
+    $_SESSION['fede_user'] = fede_get_default_user();
+} else {
+    $_SESSION['fede_user']['avatar'] = fede_clean_avatar($_SESSION['fede_user']['avatar'] ?? null);
+}
+
+// CSRF Token Generation & Validation
+if (!isset($_SESSION['fede_csrf_token'])) {
+    $_SESSION['fede_csrf_token'] = bin2hex(random_bytes(24));
+}
+
+function fede_csrf_token() {
+    return $_SESSION['fede_csrf_token'];
+}
+
+function fede_verify_csrf($token) {
+    return isset($_SESSION['fede_csrf_token']) && hash_equals($_SESSION['fede_csrf_token'], $token ?? '');
+}
+
+function fede_clean_avatar(?string $avatar, string $default = '/assets/img/fede_avatar_mini.png'): string {
+    if (empty($avatar)) return $default;
+    return str_replace('/assets/img/fedenowback/', '/assets/img/', $avatar);
+}
+
+function fede_get_default_user(): array {
+    return [
         'id' => null,
         'email' => '',
         'name' => 'Invitado',
         'handle' => '@invitado',
-        'avatar' => '/assets/img/fede_avatar_mini.png',
+        'avatar' => fede_clean_avatar('/assets/img/fede_avatar_mini.png'),
         'role' => 'guest', // 'admin', 'member', or 'guest'
         'is_logged_in' => false,
         'points' => 0,
@@ -527,7 +551,7 @@ function fede_load_community_data() {
                             'id' => 'comm_' . $dc['id'],
                             'author' => [
                                 'name' => $dc['author_name'],
-                                'avatar' => $dc['author_avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+                                'avatar' => fede_clean_avatar($dc['author_avatar'], 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'),
                                 'level_name' => $dc['author_level_name']
                             ],
                             'content' => $dc['content'],
@@ -544,7 +568,7 @@ function fede_load_community_data() {
                             'id' => (string)$dp['user_id'],
                             'name' => $dp['author_name'],
                             'handle' => $dp['author_handle'],
-                            'avatar' => $dp['author_avatar'] ?: '/assets/img/fede_nowback_fuego.jpg',
+                            'avatar' => fede_clean_avatar($dp['author_avatar'], '/assets/img/fede_nowback_fuego.jpg'),
                             'is_host' => ($dp['author_role'] === 'admin'),
                             'level_name' => ($dp['author_role'] === 'admin' ? '👑 MENTOR & HOST' : ('Nivel ' . $dp['author_level'] . ' • ' . $dp['author_level_name'])),
                             'badge' => ($dp['author_role'] === 'admin' ? '👑 HOST' : ('⚡ Rango ' . $dp['author_level']))
@@ -675,7 +699,7 @@ function fede_load_community_data() {
                         'name' => $du['name'],
                         'handle' => $du['handle'],
                         'email' => $du['email'],
-                        'avatar' => $du['avatar'] ?: '/assets/img/fede_avatar_mini.png',
+                        'avatar' => fede_clean_avatar($du['avatar'], '/assets/img/fede_avatar_mini.png'),
                         'role' => $du['role'],
                         'points' => (int)$du['points'],
                         'level' => (int)$du['level'],
@@ -707,7 +731,7 @@ function fede_load_community_data() {
                     $chat_list[] = [
                         'id' => (string)$dc['id'],
                         'author' => $dc['author_name'],
-                        'avatar' => $dc['author_avatar'] ?: '/assets/img/fede_avatar_mini.png',
+                        'avatar' => fede_clean_avatar($dc['author_avatar'], '/assets/img/fede_avatar_mini.png'),
                         'is_host' => ($dc['author_role'] === 'admin'),
                         'content' => $dc['content'],
                         'time' => date('H:i', strtotime($dc['created_at']))
