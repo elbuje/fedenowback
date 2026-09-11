@@ -4,6 +4,7 @@
 **Rama activa:** `main` / `dev`  
 **Deploy en Producción:** ✅ Activo (`18d09b7`)  
 **Servidor Dev:** ✅ Activo en `:8015`  
+**LLM Wiki 3 Capas:** ✅ 100% Estandarizada e Indexada en Grafo 3D  
 
 ---
 
@@ -23,11 +24,13 @@
 - [x] Repositorio Git inicializado y sincronizado en `elbuje/fedenowback`.
 - [x] Sitio creado y desplegado en Ploi (`errante` - Site ID `406351`).
 - [x] Configuración de auto-inicio en `start-dev-servers.sh` y registro en `PORT_REGISTRY.md`.
+- [x] Estandarización total de LLM Wiki bajo arquitectura de 3 capas con frontmatter YAML y guías operativas.
+- [x] Diagnóstico completo de Certbot / SSL y validación de resolución DNS global.
 
 ---
 
 ## ⏳ Backlog / Próximas Tareas
-- [ ] Emisión de certificado SSL Let's Encrypt en Ploi (tras asentarse la propagación DNS en resolvers globales).
+- [ ] Emisión de certificado SSL Let's Encrypt en Ploi (ventana de rate limit finaliza a las `01:25:46 UTC`).
 - [ ] Alta en Google Search Console y envío de `https://fedenowback.com.ar/sitemap.xml`.
 - [ ] Integración de Google Analytics / Pixel de Meta.
 - [ ] Limpieza de vistas residuales de fedenowback en el repositorio `estudio-pericias`.
