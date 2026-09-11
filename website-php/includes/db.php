@@ -199,7 +199,45 @@ function fede_db_init_schema() {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
 
-    // 12. Seed Default Admin User if not exists
+    // 12. Plans & Pricing Table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS `fede_plans` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `slug` VARCHAR(100) NOT NULL UNIQUE,
+            `name` VARCHAR(150) NOT NULL,
+            `badge` VARCHAR(60) DEFAULT 'Recomendado',
+            `price_ars` INT NOT NULL DEFAULT 0,
+            `price_usd` INT NOT NULL DEFAULT 0,
+            `period` VARCHAR(50) NOT NULL DEFAULT 'mensual',
+            `description` TEXT,
+            `features_json` TEXT,
+            `checkout_url` TEXT,
+            `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+            `order_num` INT NOT NULL DEFAULT 0,
+            `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+
+    // 13. System Settings Table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS `fede_settings` (
+            `setting_key` VARCHAR(100) PRIMARY KEY,
+            `setting_value` TEXT NOT NULL,
+            `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+
+    // Seed default settings if not exists
+    $stmt_set = $pdo->prepare("SELECT COUNT(*) FROM `fede_settings` WHERE `setting_key` = ?");
+    $stmt_set->execute(['enable_gamification']);
+    if ($stmt_set->fetchColumn() == 0) {
+        $ins_set = $pdo->prepare("INSERT INTO `fede_settings` (`setting_key`, `setting_value`) VALUES (?, ?)");
+        $ins_set->execute(['enable_gamification', '0']); // Inactivo por defecto para no complicar al admin
+        $ins_set->execute(['community_name', 'Campus Fede Nowback Pro']);
+        $ins_set->execute(['admin_whatsapp', '5491138205570']);
+    }
+
+    // 14. Seed Default Admin User if not exists
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM `fede_users` WHERE `email` = ?");
     $stmt->execute(['mfmujic@gmail.com']);
     if ($stmt->fetchColumn() == 0) {
@@ -252,6 +290,198 @@ function fede_db_init_schema() {
         foreach ($cats as $c) {
             $insert_cat->execute($c);
         }
+    }
+
+    // Seed Plans if empty
+    $stmt = $pdo->query("SELECT COUNT(*) FROM `fede_plans`");
+    if ($stmt->fetchColumn() == 0) {
+        $ins_plan = $pdo->prepare("
+            INSERT INTO `fede_plans` (`slug`, `name`, `badge`, `price_ars`, `price_usd`, `period`, `description`, `features_json`, `checkout_url`, `is_active`, `order_num`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
+        ");
+        $ins_plan->execute([
+            'mensual-pro',
+            'Campus Nowback Pro (Mensual)',
+            'Acceso Básico',
+            35000,
+            29,
+            'mensual',
+            'Acceso completo a la comunidad, muro de debates y academia nivel 1 y 2.',
+            json_encode([
+                'Acceso al Muro de Debates y Victorias',
+                'Cursos Nivel 1 y Nivel 2 de la Academia',
+                'Chat grupal de la comunidad',
+                '1 Meet grupal mensual'
+            ]),
+            'https://wa.me/5491138205570?text=Quiero+sumarme+al+Campus+Pro+Mensual',
+            1
+        ]);
+        $ins_plan->execute([
+            'trimestral-pro',
+            'Plan Trimestral + Hot Seats',
+            '🔥 Más Elegido',
+            95000,
+            79,
+            'trimestral',
+            'Acompañamiento intensivo de 90 días con Hot Seats semanales y todas las masterclasses.',
+            json_encode([
+                'Todo lo del Plan Mensual',
+                'Acceso a todos los niveles de la Academia',
+                'Hot Seats semanales en vivo con Fede (Zoom)',
+                'Auditoría express de tu perfil de Instagram',
+                'Descuento del 15% en Workshops presenciales'
+            ]),
+            'https://wa.me/5491138205570?text=Quiero+sumarme+al+Plan+Trimestral+Hot+Seats',
+            2
+        ]);
+        $ins_plan->execute([
+            'mentoria-vip',
+            'Programa Mentoría 1 a 1 VIP',
+            '👑 Exclusivo',
+            540000,
+            450,
+            'único',
+            'Mentoring uno a uno personalizado con Fede Nowback. Cupos muy limitados.',
+            json_encode([
+                '4 Sesiones 1 a 1 de 60 min con Fede',
+                'Acceso Vitalicio al Campus Nowback Pro',
+                'Revisión directa de guiones y ofertas por WhatsApp privado',
+                'Diseño de funnel y estrategia de monetización personalizada'
+            ]),
+            'https://wa.me/5491138205570?text=Quiero+postularme+a+la+Mentoria+1a1+VIP',
+            3
+        ]);
+    }
+
+    // Seed Courses & Lessons if empty
+    $stmt = $pdo->query("SELECT COUNT(*) FROM `fede_courses`");
+    if ($stmt->fetchColumn() == 0) {
+        $ins_course = $pdo->prepare("
+            INSERT INTO `fede_courses` (`slug`, `title`, `description`, `thumbnail`, `level_required`, `level_name`, `duration`, `total_lessons`, `order_num`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $ins_mod = $pdo->prepare("INSERT INTO `fede_modules` (`course_id`, `title`, `order_num`) VALUES (?, ?, ?)");
+        $ins_les = $pdo->prepare("
+            INSERT INTO `fede_lessons` (`module_id`, `title`, `duration`, `video_url`, `description`, `action_items`, `resources`, `order_num`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        // Curso 1
+        $ins_course->execute([
+            'metodo-nowback',
+            'Método Nowback: Marca Personal Imparable',
+            'El sistema paso a paso para posicionar tu autoridad, definir tu nicho de alto valor y generar prospectos constantes.',
+            '/assets/img/fede_nowback_hero.jpg?v=2',
+            1,
+            'Iniciado (Nivel 1)',
+            '4h 30m',
+            3,
+            1
+        ]);
+        $c1_id = $pdo->lastInsertId();
+
+        $ins_mod->execute([$c1_id, 'Módulo 1: Fundamentos de Autoridad & Nicho Imparable', 1]);
+        $m1_id = $pdo->lastInsertId();
+
+        $ins_les->execute([
+            $m1_id,
+            '1.1 La Regla de Oro: Por qué la viralidad sin oferta es una trampa',
+            '18:45',
+            'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            'Aprende a diferenciar el alcance vacío de los seguidores que realmente se convierten en clientes de pago.',
+            json_encode(['Definir propuesta de valor en 1 frase.', 'Completar mapa de dolores del cliente.']),
+            json_encode([['name' => 'Guía de Posicionamiento (PDF)', 'url' => '#']]),
+            1
+        ]);
+        $ins_les->execute([
+            $m1_id,
+            '1.2 Anatomía del Perfil de Instagram Magnético',
+            '24:10',
+            'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            'Optimiza tu bio, foto, enlaces y destacados para convertir visitas en prospectos calificados.',
+            json_encode(['Optimizar foto de perfil.', 'Configurar biografía con CTA claro.']),
+            json_encode([['name' => 'Checklist de Optimización (PDF)', 'url' => '#']]),
+            2
+        ]);
+        $ins_les->execute([
+            $m1_id,
+            '1.3 Cómo estructurar tu oferta irresistible de Alto Valor',
+            '32:00',
+            'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            'Estructura tu producto o servicio para cobrar lo que vale tu transformación.',
+            json_encode(['Definir entregables claros.', 'Fijar precio base.']),
+            json_encode([['name' => 'Calculadora de Precios High-Ticket', 'url' => '#']]),
+            3
+        ]);
+
+        // Curso 2
+        $ins_course->execute([
+            'mentalidad-de-fuego',
+            'Mentalidad de Fuego: 7 Reglas para Dejar de Postergar',
+            'Reprogramá tu disciplina diaria, destruí el miedo a la cámara y convertite en una máquina de ejecución.',
+            '/assets/img/fede_nowback_fuego.jpg',
+            2,
+            'Accionador (Nivel 2)',
+            '3h 15m',
+            1,
+            2
+        ]);
+        $c2_id = $pdo->lastInsertId();
+
+        $ins_mod->execute([$c2_id, 'Módulo 1: La Psicología de la Acción Inmediata', 1]);
+        $m2_id = $pdo->lastInsertId();
+
+        $ins_les->execute([
+            $m2_id,
+            '1.1 Destruyendo la trampa del perfeccionismo paralizante',
+            '20:10',
+            'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            'Cómo romper el bloqueo mental al prender la cámara y publicar todos los días.',
+            json_encode(['Aplicar la regla de los 5 segundos para arrancar a grabar.']),
+            json_encode([['name' => 'Manual de Acción Inmediata (PDF)', 'url' => '#']]),
+            1
+        ]);
+
+        // Curso 3
+        $ins_course->execute([
+            'ventas-dms-whatsapp',
+            'Venta por DMs & WhatsApp: De Seguidor a Cliente',
+            'Guiones exactos para iniciar conversaciones naturales por mensajes privados y cerrar llamadas de venta.',
+            '/assets/img/evento_encende_tu_fuego.jpg',
+            3,
+            'Creador Constante (Nivel 3)',
+            '2h 45m',
+            1,
+            3
+        ]);
+        $c3_id = $pdo->lastInsertId();
+
+        $ins_mod->execute([$c3_id, 'Módulo 1: Flujo de Conversación de Alta Conversión', 1]);
+        $m3_id = $pdo->lastInsertId();
+
+        $ins_les->execute([
+            $m3_id,
+            '1.1 Cómo responder a las historias para abrir conversaciones de venta',
+            '25:00',
+            'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            'Scripts prácticos de apertura y caldeo por mensaje directo.',
+            json_encode(['Enviar 10 mensajes de prospección utilizando el script.']),
+            json_encode([['name' => 'Scripts de Venta por DM (PDF)', 'url' => '#']]),
+            1
+        ]);
+
+        // Curso 4
+        $ins_course->execute([
+            'masterclasses-vip',
+            'Masterclasses Grabadas & Sesiones VIP con Fede',
+            'Archivo exclusivo de todas las mentorías grupales, análisis de casos de éxito y sesiones de Hot Seat en vivo.',
+            '/assets/img/fede_nowback_mentor.jpg?v=2',
+            4,
+            'Creador Imparable (Nivel 4)',
+            '18h 00m',
+            0,
+            4
+        ]);
     }
 
     // Seed Initial Pinned Post

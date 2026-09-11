@@ -1,32 +1,220 @@
 /**
  * CAMPUS FEDE NOWBACK PRO — Interactive Client Controller
- * Lightweight Vanilla JS Controller with AJAX Sync
+ * Lightweight Vanilla JS Controller with AJAX Sync & Full Admin ABM
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  const API_ENDPOINT = '/fedenowback/comunidad_api.php';
-  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+const API_ENDPOINT = '/comunidad_api.php';
+let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
-  // Tab Navigation
+// Global Tab Switcher
+function switchTab(tabId) {
   const navItems = document.querySelectorAll('.campus-nav-item');
   const tabPanes = document.querySelectorAll('.campus-tab-pane');
 
-  function switchTab(tabId) {
-    navItems.forEach(item => {
-      item.classList.toggle('active', item.dataset.tab === tabId);
-    });
-    tabPanes.forEach(pane => {
-      pane.style.display = (pane.id === `tab-${tabId}`) ? 'block' : 'none';
-    });
-    // Update URL hash without scroll
-    history.replaceState(null, null, `#${tabId}`);
-  }
+  navItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.tab === tabId);
+  });
+  tabPanes.forEach(pane => {
+    pane.style.display = (pane.id === `tab-${tabId}`) ? 'block' : 'none';
+  });
+  // Update URL hash without scroll
+  history.replaceState(null, null, `#${tabId}`);
+}
 
+// Global Avatar Dropdown Helpers
+function toggleAvatarDropdown(e) {
+  if (e) e.stopPropagation();
+  const dropdown = document.getElementById('campusAvatarDropdown');
+  if (dropdown) {
+    dropdown.classList.toggle('active');
+  }
+}
+
+function closeAvatarDropdown() {
+  const dropdown = document.getElementById('campusAvatarDropdown');
+  if (dropdown) {
+    dropdown.classList.remove('active');
+  }
+}
+
+// Modal Helpers
+function openAdminModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) modal.style.display = 'block';
+}
+
+function closeAdminModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) modal.style.display = 'none';
+}
+
+// Lesson Player Modal
+function playLessonModal(title, videoUrl, desc) {
+  document.getElementById('playerLessonTitle').textContent = title || 'Clase de la Academia';
+  document.getElementById('playerLessonIframe').src = videoUrl || '';
+  document.getElementById('playerLessonDesc').textContent = desc || '';
+  openAdminModal('modalLessonPlayer');
+}
+
+function closeLessonPlayerModal() {
+  document.getElementById('playerLessonIframe').src = '';
+  closeAdminModal('modalLessonPlayer');
+}
+
+// Admin ABM Modal Openers
+function openAdminUserModal(id, name = '', email = '', role = 'member', points = 10) {
+  document.getElementById('modalUserTitle').textContent = (id > 0) ? 'Editar Usuario' : 'Nuevo Usuario';
+  document.getElementById('adminUserIdInput').value = id || 0;
+  document.getElementById('adminUserNameInput').value = name || '';
+  document.getElementById('adminUserEmailInput').value = email || '';
+  document.getElementById('adminUserPasswordInput').value = '';
+  document.getElementById('adminUserRoleInput').value = role || 'member';
+  document.getElementById('adminUserPointsInput').value = points || 10;
+  openAdminModal('modalAdminUser');
+}
+
+function openAdminCourseModal(id, title = '', slug = '', desc = '', duration = '3h 00m', thumb = '/assets/img/fede_nowback_hero.jpg', level = 1) {
+  document.getElementById('modalCourseTitle').textContent = (id > 0) ? 'Editar Curso' : 'Nuevo Curso';
+  document.getElementById('adminCourseIdInput').value = id || 0;
+  document.getElementById('adminCourseTitleInput').value = title || '';
+  document.getElementById('adminCourseSlugInput').value = slug || '';
+  document.getElementById('adminCourseDescInput').value = desc || '';
+  document.getElementById('adminCourseDurationInput').value = duration || '3h 00m';
+  document.getElementById('adminCourseThumbnailInput').value = thumb || '/assets/img/fede_nowback_hero.jpg';
+  openAdminModal('modalAdminCourse');
+}
+
+function openAdminLessonModal(id, courseId = 0, title = '', videoUrl = '', duration = '15:00', desc = '') {
+  document.getElementById('modalLessonTitle').textContent = (id > 0) ? 'Editar Lección' : 'Nueva Lección';
+  document.getElementById('adminLessonIdInput').value = id || 0;
+  if (courseId > 0) {
+    document.getElementById('adminLessonCourseSelect').value = courseId;
+  }
+  document.getElementById('adminLessonTitleInput').value = title || '';
+  document.getElementById('adminLessonVideoInput').value = videoUrl || '';
+  document.getElementById('adminLessonDurationInput').value = duration || '15:00';
+  document.getElementById('adminLessonDescInput').value = desc || '';
+  openAdminModal('modalAdminLesson');
+}
+
+function openAdminPlanModal(id, name = '', slug = '', badge = 'Recomendado', ars = 35000, usd = 29, period = 'mensual', desc = '', checkout = '') {
+  document.getElementById('modalPlanTitle').textContent = (id > 0) ? 'Editar Plan' : 'Nuevo Plan';
+  document.getElementById('adminPlanIdInput').value = id || 0;
+  document.getElementById('adminPlanNameInput').value = name || '';
+  document.getElementById('adminPlanBadgeInput').value = badge || 'Recomendado';
+  document.getElementById('adminPlanPriceArsInput').value = ars || 0;
+  document.getElementById('adminPlanPriceUsdInput').value = usd || 0;
+  document.getElementById('adminPlanPeriodInput').value = period || 'mensual';
+  document.getElementById('adminPlanDescInput').value = desc || '';
+  document.getElementById('adminPlanCheckoutInput').value = checkout || '';
+  openAdminModal('modalAdminPlan');
+}
+
+function openAdminMeetModal(id, title = '', desc = '', date = '', time = '', platform = 'Zoom Pro', zoom = '', cal = '') {
+  document.getElementById('modalMeetTitle').textContent = (id > 0) ? 'Editar Meet' : 'Programar Meet en Vivo';
+  document.getElementById('adminMeetIdInput').value = id || 0;
+  document.getElementById('adminMeetTitleInput').value = title || '';
+  document.getElementById('adminMeetDescInput').value = desc || '';
+  document.getElementById('adminMeetDateInput').value = date || '';
+  document.getElementById('adminMeetTimeInput').value = time || '';
+  document.getElementById('adminMeetPlatformInput').value = platform || 'Zoom Pro';
+  document.getElementById('adminMeetZoomInput').value = zoom || '';
+  document.getElementById('adminMeetCalInput').value = cal || '';
+  openAdminModal('modalAdminMeet');
+}
+
+// Delete Helpers
+async function deleteAdminUser(id) {
+  if (!confirm('¿Estás seguro de eliminar este usuario?')) return;
+  try {
+    const res = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+      body: JSON.stringify({ action: 'admin_delete_user', user_id: id, csrf_token: csrfToken })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('Usuario eliminado correctamente');
+      window.location.reload();
+    } else {
+      alert(data.error || 'Error al eliminar usuario');
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function deleteAdminCourse(id) {
+  if (!confirm('¿Estás seguro de eliminar este curso y sus lecciones?')) return;
+  try {
+    const res = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+      body: JSON.stringify({ action: 'admin_delete_course', course_id: id, csrf_token: csrfToken })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('Curso eliminado');
+      window.location.reload();
+    } else {
+      alert(data.error || 'Error al eliminar');
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function deleteAdminPlan(id) {
+  if (!confirm('¿Estás seguro de eliminar este plan?')) return;
+  try {
+    const res = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+      body: JSON.stringify({ action: 'admin_delete_plan', plan_id: id, csrf_token: csrfToken })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('Plan eliminado');
+      window.location.reload();
+    } else {
+      alert(data.error || 'Error al eliminar');
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function deleteAdminMeet(id) {
+  if (!confirm('¿Estás seguro de eliminar este Meet?')) return;
+  try {
+    const res = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+      body: JSON.stringify({ action: 'admin_delete_meet', meet_id: id, csrf_token: csrfToken })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('Sesión eliminada');
+      window.location.reload();
+    } else {
+      alert(data.error || 'Error al eliminar');
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // 1. Tab Navigation
+  const navItems = document.querySelectorAll('.campus-nav-item');
   navItems.forEach(item => {
     item.addEventListener('click', (e) => {
-      e.preventDefault();
       const targetTab = item.dataset.tab;
-      if (targetTab) switchTab(targetTab);
+      if (targetTab) {
+        e.preventDefault();
+        switchTab(targetTab);
+      }
     });
   });
 
@@ -38,11 +226,28 @@ document.addEventListener('DOMContentLoaded', () => {
     switchTab('community');
   }
 
-  // Role Switcher Modal / Trigger
-  const roleBtn = document.getElementById('btnRoleSwitch');
-  if (roleBtn) {
-    roleBtn.addEventListener('click', async () => {
-      const currentRole = roleBtn.dataset.currentRole;
+  // 2. Avatar Dropdown Toggle
+  const avatarTrigger = document.getElementById('campusAvatarTrigger');
+  if (avatarTrigger) {
+    avatarTrigger.addEventListener('click', toggleAvatarDropdown);
+  }
+
+  // Close dropdown on click outside
+  document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('campusAvatarDropdown');
+    const trigger = document.getElementById('campusAvatarTrigger');
+    if (dropdown && dropdown.classList.contains('active')) {
+      if (!dropdown.contains(e.target) && !trigger?.contains(e.target)) {
+        closeAvatarDropdown();
+      }
+    }
+  });
+
+  // 3. Dropdown Role Switcher
+  const btnRoleSwitch = document.getElementById('btnDropdownRoleSwitch');
+  if (btnRoleSwitch) {
+    btnRoleSwitch.addEventListener('click', async () => {
+      const currentRole = btnRoleSwitch.dataset.currentRole;
       const targetRole = currentRole === 'admin' ? 'member' : 'admin';
       
       try {
@@ -61,7 +266,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Category Filter Pills in Community Feed
+  // 4. Dropdown Logout
+  const btnLogout = document.getElementById('btnDropdownLogout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+      try {
+        await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify({ action: 'auth_logout', csrf_token: csrfToken })
+        });
+        window.location.reload();
+      } catch (err) {
+        console.error('Error logging out:', err);
+      }
+    });
+  }
+
+  // 5. Admin Subtabs Switching
+  const adminSubtabBtns = document.querySelectorAll('.admin-subtab-btn');
+  const adminSubtabContents = document.querySelectorAll('.admin-subtab-content');
+
+  adminSubtabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      adminSubtabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const targetSubtab = btn.dataset.adminSubtab;
+
+      adminSubtabContents.forEach(content => {
+        content.style.display = (content.id === `admin-subtab-${targetSubtab}`) ? 'block' : 'none';
+      });
+    });
+  });
+
+  // 6. Category Filter Pills in Community Feed
   const filterPills = document.querySelectorAll('.filter-pill');
   const postCards = document.querySelectorAll('.post-card');
 
@@ -81,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Create Post Submission
+  // 7. Create Post Submission
   const postForm = document.getElementById('formCreatePost');
   if (postForm) {
     postForm.addEventListener('submit', async (e) => {
@@ -115,28 +353,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
 
         if (data.success) {
-          // Reset Form
           titleInput.value = '';
           bodyInput.value = '';
-          submitBtn.disabled = false;
-          submitBtn.textContent = '🔥 Publicar en el Muro';
           window.location.reload();
         } else {
-          alert(data.error || 'Ocurrió un error al publicar.');
-          submitBtn.disabled = false;
-          submitBtn.textContent = '🔥 Publicar en el Muro';
+          alert(data.error || 'Error al publicar');
         }
       } catch (err) {
-        console.error(err);
+        console.error('Error creating post:', err);
+      } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = '🔥 Publicar en el Muro';
+        submitBtn.textContent = 'Publicar en el Muro';
       }
     });
   }
 
-  // Like / Fire Reactions
+  // 8. Like Post & Toggle Comments
   document.addEventListener('click', async (e) => {
-    const likeBtn = e.target.closest('.btn-reaction');
+    // Like button
+    const likeBtn = e.target.closest('.btn-like');
     if (likeBtn) {
       const postId = likeBtn.dataset.postId;
       try {
@@ -147,161 +382,125 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await res.json();
         if (data.success) {
-          likeBtn.classList.toggle('reacted', data.liked);
-          const counterSpan = likeBtn.querySelector('.reaction-count');
-          if (counterSpan) counterSpan.textContent = data.likes;
-
-          // Update header points pill
-          const pointsPill = document.getElementById('userPointsDisplay');
-          if (pointsPill && data.user) {
-            pointsPill.textContent = `🔥 ${data.user.points} Fuego`;
-          }
+          likeBtn.classList.toggle('liked', data.liked);
+          const countSpan = likeBtn.querySelector('.like-count');
+          if (countSpan) countSpan.textContent = data.likes;
         }
       } catch (err) {
-        console.error(err);
+        console.error('Error liking post:', err);
       }
+      return;
+    }
+
+    // Toggle comments
+    const toggleCommentsBtn = e.target.closest('.btn-toggle-comments');
+    if (toggleCommentsBtn) {
+      const postId = toggleCommentsBtn.dataset.postId;
+      const commentsContainer = document.getElementById(`comments-${postId}`);
+      if (commentsContainer) {
+        const isVisible = commentsContainer.style.display === 'block';
+        commentsContainer.style.display = isVisible ? 'none' : 'block';
+      }
+      return;
     }
   });
 
-  // Comments Toggle & Submission
-  document.addEventListener('click', (e) => {
-    const toggleBtn = e.target.closest('.btn-comments-toggle');
-    if (toggleBtn) {
-      const postId = toggleBtn.dataset.postId;
-      const thread = document.getElementById(`comments-${postId}`);
-      if (thread) {
-        thread.style.display = (thread.style.display === 'none' || thread.style.display === '') ? 'flex' : 'none';
-      }
-    }
-  });
-
+  // 9. Add Comment to Post
   document.addEventListener('submit', async (e) => {
     const commentForm = e.target.closest('.form-add-comment');
     if (commentForm) {
       e.preventDefault();
       const postId = commentForm.dataset.postId;
       const input = commentForm.querySelector('.comment-input');
-      const text = input.value.trim();
-      if (!text) return;
+      const content = input.value.trim();
+
+      if (!content) return;
 
       try {
         const res = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-          body: JSON.stringify({ action: 'add_comment', post_id: postId, content: text, csrf_token: csrfToken })
+          body: JSON.stringify({ action: 'add_comment', post_id: postId, content: content, csrf_token: csrfToken })
         });
         const data = await res.json();
         if (data.success) {
           input.value = '';
-          const thread = document.getElementById(`comments-list-${postId}`);
-          if (thread) {
-            const newCommentHtml = `
-              <div class="comment-item">
-                <img src="${data.comment.author.avatar}" alt="${data.comment.author.name}" class="comment-avatar">
-                <div class="comment-body">
-                  <div class="comment-author-name">${data.comment.author.name}</div>
-                  <div class="comment-text">${data.comment.content}</div>
-                </div>
-              </div>
-            `;
-            thread.insertAdjacentHTML('beforeend', newCommentHtml);
-          }
+          window.location.reload();
         }
       } catch (err) {
-        console.error(err);
+        console.error('Error adding comment:', err);
       }
     }
   });
 
-  // Classroom Course Selection & Lesson Player
-  const courseCards = document.querySelectorAll('.course-card');
-  const coursesCatalogView = document.getElementById('coursesCatalogView');
-  const coursePlayerView = document.getElementById('coursePlayerView');
-  const btnBackToCatalog = document.getElementById('btnBackToCourses');
-
-  courseCards.forEach(card => {
-    card.addEventListener('click', () => {
-      const courseId = card.dataset.courseId;
-      if (coursesCatalogView && coursePlayerView) {
-        coursesCatalogView.style.display = 'none';
-        coursePlayerView.style.display = 'block';
-      }
-    });
-  });
-
-  if (btnBackToCatalog) {
-    btnBackToCatalog.addEventListener('click', () => {
-      if (coursesCatalogView && coursePlayerView) {
-        coursePlayerView.style.display = 'none';
-        coursesCatalogView.style.display = 'block';
-      }
-    });
-  }
-
-  // Lesson Complete Toggle
-  const btnCompleteLesson = document.getElementById('btnToggleCompleteLesson');
-  if (btnCompleteLesson) {
-    btnCompleteLesson.addEventListener('click', async () => {
-      const lessonId = btnCompleteLesson.dataset.lessonId;
-      try {
-        const res = await fetch(API_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-          body: JSON.stringify({ action: 'complete_lesson', lesson_id: lessonId, csrf_token: csrfToken })
-        });
-        const data = await res.json();
-        if (data.success) {
-          btnCompleteLesson.classList.toggle('completed', data.completed);
-          btnCompleteLesson.innerHTML = data.completed ? '✅ Clase Completada (+20 Fuego)' : '⭕ Marcar como Completada';
-
-          // Update header points
-          const pointsPill = document.getElementById('userPointsDisplay');
-          if (pointsPill && data.user) {
-            pointsPill.textContent = `🔥 ${data.user.points} Fuego`;
-          }
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    });
-  }
-
-  // Chat Messenger
+  // 10. Send Chat Message
   const chatForm = document.getElementById('formSendChat');
-  const chatScroll = document.getElementById('chatMessagesScroll');
-  if (chatForm && chatScroll) {
-    chatScroll.scrollTop = chatScroll.scrollHeight;
-
+  if (chatForm) {
     chatForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const chatInput = document.getElementById('chatTextInput');
-      const text = chatInput.value.trim();
-      if (!text) return;
+      const input = document.getElementById('chatTextInput');
+      const message = input.value.trim();
+      if (!message) return;
 
       try {
         const res = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-          body: JSON.stringify({ action: 'send_chat', content: text, csrf_token: csrfToken })
+          body: JSON.stringify({ action: 'send_chat', message: message, csrf_token: csrfToken })
         });
         const data = await res.json();
         if (data.success) {
-          chatInput.value = '';
-          const msgHtml = `
-            <div class="chat-bubble-row">
-              <img src="${data.message.avatar}" alt="${data.message.author}" class="comment-avatar">
-              <div class="chat-bubble-content ${data.message.is_host ? 'host-msg' : ''}">
-                <div style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 2px;">
-                  ${data.message.author} • ${data.message.time}
-                </div>
-                <div style="font-size: 0.9rem; color: var(--c-text-main);">
-                  ${data.message.content}
-                </div>
+          input.value = '';
+          const scrollBox = document.getElementById('chatMessagesScroll');
+          const newBubble = document.createElement('div');
+          newBubble.className = 'chat-bubble-row';
+          newBubble.innerHTML = `
+            <img src="${data.message_item.avatar}" alt="" class="comment-avatar">
+            <div class="chat-bubble-content ${data.message_item.is_host ? 'host-msg' : ''}">
+              <div style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-muted); margin-bottom: 2px;">
+                ${data.message_item.author} • ${data.message_item.time}
               </div>
+              <div style="font-size: 0.9rem; color: var(--c-text-main);">${data.message_item.content}</div>
             </div>
           `;
-          chatScroll.insertAdjacentHTML('beforeend', msgHtml);
-          chatScroll.scrollTop = chatScroll.scrollHeight;
+          scrollBox.appendChild(newBubble);
+          scrollBox.scrollTop = scrollBox.scrollHeight;
+        }
+      } catch (err) {
+        console.error('Error sending chat:', err);
+      }
+    });
+  }
+
+  // 11. Admin Form Submissions (ABM)
+  
+  // User Form
+  const formAdminUser = document.getElementById('formAdminUser');
+  if (formAdminUser) {
+    formAdminUser.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        action: 'admin_save_user',
+        user_id: document.getElementById('adminUserIdInput').value,
+        name: document.getElementById('adminUserNameInput').value.trim(),
+        email: document.getElementById('adminUserEmailInput').value.trim(),
+        password: document.getElementById('adminUserPasswordInput').value,
+        role: document.getElementById('adminUserRoleInput').value,
+        points: document.getElementById('adminUserPointsInput').value,
+        csrf_token: csrfToken
+      };
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Usuario guardado exitosamente');
+          window.location.reload();
+        } else {
+          alert(data.error || 'Error al guardar usuario');
         }
       } catch (err) {
         console.error(err);
@@ -309,37 +508,180 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Schedule Meet Form (Admin Only)
-  const formCreateMeet = document.getElementById('formCreateMeet');
-  if (formCreateMeet) {
-    formCreateMeet.addEventListener('submit', async (e) => {
+  // Course Form
+  const formAdminCourse = document.getElementById('formAdminCourse');
+  if (formAdminCourse) {
+    formAdminCourse.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const title = document.getElementById('meetTitleInput').value.trim();
-      const dateStr = document.getElementById('meetDateInput').value.trim();
-      const timeStr = document.getElementById('meetTimeInput').value.trim();
-      const zoomUrl = document.getElementById('meetZoomInput').value.trim();
+      const payload = {
+        action: 'admin_save_course',
+        course_id: document.getElementById('adminCourseIdInput').value,
+        title: document.getElementById('adminCourseTitleInput').value.trim(),
+        slug: document.getElementById('adminCourseSlugInput').value.trim(),
+        duration: document.getElementById('adminCourseDurationInput').value.trim(),
+        thumbnail: document.getElementById('adminCourseThumbnailInput').value.trim(),
+        description: document.getElementById('adminCourseDescInput').value.trim(),
+        csrf_token: csrfToken
+      };
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Curso guardado');
+          window.location.reload();
+        } else {
+          alert(data.error || 'Error al guardar curso');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
 
-      if (!title || !dateStr) return;
+  // Lesson Form
+  const formAdminLesson = document.getElementById('formAdminLesson');
+  if (formAdminLesson) {
+    formAdminLesson.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        action: 'admin_save_lesson',
+        lesson_id: document.getElementById('adminLessonIdInput').value,
+        course_id: document.getElementById('adminLessonCourseSelect').value,
+        title: document.getElementById('adminLessonTitleInput').value.trim(),
+        video_url: document.getElementById('adminLessonVideoInput').value.trim(),
+        duration: document.getElementById('adminLessonDurationInput').value.trim(),
+        description: document.getElementById('adminLessonDescInput').value.trim(),
+        csrf_token: csrfToken
+      };
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Lección guardada');
+          window.location.reload();
+        } else {
+          alert(data.error || 'Error al guardar');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
+
+  // Plan Form
+  const formAdminPlan = document.getElementById('formAdminPlan');
+  if (formAdminPlan) {
+    formAdminPlan.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        action: 'admin_save_plan',
+        plan_id: document.getElementById('adminPlanIdInput').value,
+        name: document.getElementById('adminPlanNameInput').value.trim(),
+        badge: document.getElementById('adminPlanBadgeInput').value.trim(),
+        price_ars: document.getElementById('adminPlanPriceArsInput').value,
+        price_usd: document.getElementById('adminPlanPriceUsdInput').value,
+        period: document.getElementById('adminPlanPeriodInput').value,
+        description: document.getElementById('adminPlanDescInput').value.trim(),
+        checkout_url: document.getElementById('adminPlanCheckoutInput').value.trim(),
+        csrf_token: csrfToken
+      };
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Plan guardado exitosamente');
+          window.location.reload();
+        } else {
+          alert(data.error || 'Error al guardar plan');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
+
+  // Meet Form
+  const formAdminMeet = document.getElementById('formAdminMeet');
+  if (formAdminMeet) {
+    formAdminMeet.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        action: 'admin_save_meet',
+        meet_id: document.getElementById('adminMeetIdInput').value,
+        title: document.getElementById('adminMeetTitleInput').value.trim(),
+        date: document.getElementById('adminMeetDateInput').value.trim(),
+        time: document.getElementById('adminMeetTimeInput').value.trim(),
+        platform: document.getElementById('adminMeetPlatformInput').value.trim(),
+        zoom_url: document.getElementById('adminMeetZoomInput').value.trim(),
+        google_cal_url: document.getElementById('adminMeetCalInput').value.trim(),
+        description: document.getElementById('adminMeetDescInput').value.trim(),
+        csrf_token: csrfToken
+      };
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Sesión en vivo guardada');
+          window.location.reload();
+        } else {
+          alert(data.error || 'Error al guardar');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
+
+  // Settings Form (Gamificación Toggle & WhatsApp)
+  const formAdminSettings = document.getElementById('formAdminSettings');
+  if (formAdminSettings) {
+    formAdminSettings.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const isGamification = document.getElementById('settingGamificationInput').checked;
+      const commName = document.getElementById('settingCommunityName').value.trim();
+      const waNumber = document.getElementById('settingWhatsapp').value.trim();
+      const feedback = document.getElementById('settingsFeedbackMsg');
 
       try {
         const res = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
           body: JSON.stringify({
-            action: 'create_meet',
-            title: title,
-            date: dateStr,
-            time: timeStr,
-            zoom_url: zoomUrl,
+            action: 'admin_update_settings',
+            enable_gamification: isGamification,
+            community_name: commName,
+            admin_whatsapp: waNumber,
             csrf_token: csrfToken
           })
         });
         const data = await res.json();
         if (data.success) {
-          alert('¡Meet programado con éxito!');
-          window.location.reload();
+          feedback.style.display = 'block';
+          feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+          feedback.style.color = '#10b981';
+          feedback.textContent = '✅ ' + data.message;
+          setTimeout(() => window.location.reload(), 1000);
         } else {
-          alert(data.error || 'Error al programar meet.');
+          feedback.style.display = 'block';
+          feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+          feedback.style.color = '#ef4444';
+          feedback.textContent = '❌ ' + (data.error || 'Error al guardar');
         }
       } catch (err) {
         console.error(err);
@@ -347,10 +689,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Login Form Submission
-  const formLogin = document.getElementById('formCampusLogin');
-  if (formLogin) {
-    formLogin.addEventListener('submit', async (e) => {
+  // 12. Campus Login Submission
+  const loginForm = document.getElementById('formCampusLogin');
+  if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('loginEmailInput').value.trim();
       const password = document.getElementById('loginPasswordInput').value;
@@ -361,7 +703,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Verificando...';
-      feedback.style.display = 'none';
 
       try {
         const res = await fetch(API_ENDPOINT, {
@@ -378,25 +719,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (data.success) {
           feedback.style.display = 'block';
-          feedback.style.background = '#dcfce7';
-          feedback.style.color = '#15803d';
-          feedback.textContent = data.message || 'Ingreso exitoso.';
-          setTimeout(() => {
-            window.location.reload();
-          }, 600);
+          feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+          feedback.style.color = '#10b981';
+          feedback.textContent = '✅ ' + data.message;
+          setTimeout(() => window.location.reload(), 800);
         } else {
           feedback.style.display = 'block';
-          feedback.style.background = '#fee2e2';
-          feedback.style.color = '#b91c1c';
-          feedback.textContent = data.error || 'Error al ingresar.';
+          feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+          feedback.style.color = '#ef4444';
+          feedback.textContent = '❌ ' + (data.error || 'Error al iniciar sesión');
           submitBtn.disabled = false;
           submitBtn.textContent = '🚀 Ingresar al Campus';
         }
       } catch (err) {
-        console.error(err);
+        console.error('Error logging in:', err);
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+        feedback.style.color = '#ef4444';
+        feedback.textContent = '❌ Error de conexión al servidor.';
         submitBtn.disabled = false;
         submitBtn.textContent = '🚀 Ingresar al Campus';
       }
     });
   }
+
 });

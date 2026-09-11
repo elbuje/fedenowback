@@ -24,10 +24,17 @@ $routes = [
     "contacto"          => __DIR__ . "/../views/contacto.php",
 ];
 
+// API Endpoint Direct Routing
+if ($path === "comunidad_api.php" || $path === "comunidad_api" || $path === "api/comunidad") {
+    require __DIR__ . "/comunidad_api.php";
+    exit;
+}
+
 // Static file serving fallback
 if (file_exists(__DIR__ . "/" . $path) && is_file(__DIR__ . "/" . $path) && !preg_match("/\.php$/i", $path)) {
     $ext = pathinfo($path, PATHINFO_EXTENSION);
     $mimes = [
+        "ico"  => "image/x-icon",
         "jpg"  => "image/jpeg",
         "jpeg" => "image/jpeg",
         "png"  => "image/png",

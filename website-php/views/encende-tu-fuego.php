@@ -29,6 +29,11 @@ function get_evento_wa($msg = '') {
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="<?= htmlspecialchars($canonical_url) ?>">
 
+  <!-- Favicons Oficiales Fede Nowback -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png">
+
   <!-- Open Graph / WhatsApp Preview -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">

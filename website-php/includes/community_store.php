@@ -561,33 +561,136 @@ function fede_load_community_data() {
             }
 
             // 3. Fetch Meets from MySQL
-            $db_meets = $pdo->query("SELECT * FROM `fede_meets` ORDER BY `id` DESC LIMIT 10")->fetchAll();
+            $db_meets = $pdo->query("SELECT * FROM `fede_meets` ORDER BY `id` DESC LIMIT 15")->fetchAll();
             if (!empty($db_meets)) {
-                $data['meets'] = $db_meets;
+                $parsed_meets = [];
+                foreach ($db_meets as $dm) {
+                    $parsed_meets[] = [
+                        'id' => (string)$dm['id'],
+                        'title' => $dm['title'],
+                        'description' => $dm['description'],
+                        'date' => $dm['meet_date'],
+                        'time' => $dm['meet_time'],
+                        'platform' => $dm['platform'] ?: 'Zoom Pro',
+                        'zoom_url' => $dm['zoom_url'],
+                        'google_cal_url' => $dm['google_cal_url'],
+                        'attendees' => 38
+                    ];
+                }
+                $data['meets'] = $parsed_meets;
             }
 
-            // 4. Fetch Leaderboard from MySQL
-            $db_users = $pdo->query("SELECT * FROM `fede_users` ORDER BY `points` DESC LIMIT 20")->fetchAll();
+            // 4. Fetch Courses & Lessons from MySQL
+            $db_courses = $pdo->query("SELECT * FROM `fede_courses` ORDER BY `order_num` ASC, `id` ASC")->fetchAll();
+            if (!empty($db_courses)) {
+                $parsed_courses = [];
+                foreach ($db_courses as $c) {
+                    $mods = $pdo->prepare("SELECT * FROM `fede_modules` WHERE `course_id` = ? ORDER BY `order_num` ASC");
+                    $mods->execute([$c['id']]);
+                    $db_mods = $mods->fetchAll();
+
+                    $parsed_mods = [];
+                    $total_lessons_calc = 0;
+                    foreach ($db_mods as $m) {
+                        $less = $pdo->prepare("SELECT * FROM `fede_lessons` WHERE `module_id` = ? ORDER BY `order_num` ASC");
+                        $less->execute([$m['id']]);
+                        $db_less = $less->fetchAll();
+
+                        $parsed_less = [];
+                        foreach ($db_less as $l) {
+                            $total_lessons_calc++;
+                            $parsed_less[] = [
+                                'id' => (string)$l['id'],
+                                'title' => $l['title'],
+                                'duration' => $l['duration'],
+                                'video_url' => $l['video_url'],
+                                'description' => $l['description'],
+                                'action_items' => json_decode($l['action_items'] ?? '[]', true) ?: [],
+                                'resources' => json_decode($l['resources'] ?? '[]', true) ?: []
+                            ];
+                        }
+                        $parsed_mods[] = [
+                            'module_id' => (string)$m['id'],
+                            'title' => $m['title'],
+                            'lessons' => $parsed_less
+                        ];
+                    }
+
+                    $parsed_courses[] = [
+                        'id' => (string)$c['id'],
+                        'title' => $c['title'],
+                        'slug' => $c['slug'],
+                        'level_required' => (int)$c['level_required'],
+                        'level_name' => $c['level_name'],
+                        'thumbnail' => $c['thumbnail'] ?: '/assets/img/fede_nowback_hero.jpg',
+                        'description' => $c['description'],
+                        'total_lessons' => $total_lessons_calc ?: (int)$c['total_lessons'],
+                        'duration' => $c['duration'],
+                        'modules' => $parsed_mods
+                    ];
+                }
+                $data['courses'] = $parsed_courses;
+            }
+
+            // 5. Fetch Plans & Pricing from MySQL
+            $db_plans = $pdo->query("SELECT * FROM `fede_plans` WHERE `is_active` = 1 ORDER BY `order_num` ASC, `id` ASC")->fetchAll();
+            if (!empty($db_plans)) {
+                $parsed_plans = [];
+                foreach ($db_plans as $dp) {
+                    $parsed_plans[] = [
+                        'id' => (string)$dp['id'],
+                        'slug' => $dp['slug'],
+                        'name' => $dp['name'],
+                        'badge' => $dp['badge'],
+                        'price_ars' => (int)$dp['price_ars'],
+                        'price_usd' => (int)$dp['price_usd'],
+                        'period' => $dp['period'],
+                        'description' => $dp['description'],
+                        'features' => json_decode($dp['features_json'] ?? '[]', true) ?: [],
+                        'checkout_url' => $dp['checkout_url'],
+                        'is_active' => (bool)$dp['is_active']
+                    ];
+                }
+                $data['plans'] = $parsed_plans;
+            }
+
+            // 6. Fetch Settings from MySQL
+            $db_settings = $pdo->query("SELECT * FROM `fede_settings`")->fetchAll(PDO::FETCH_KEY_PAIR);
+            $data['settings'] = $db_settings ?: [
+                'enable_gamification' => '0',
+                'community_name' => 'Campus Fede Nowback Pro',
+                'admin_whatsapp' => '5491138205570'
+            ];
+
+            // 7. Fetch Members & Leaderboard from MySQL
+            $db_users = $pdo->query("SELECT * FROM `fede_users` ORDER BY `points` DESC LIMIT 50")->fetchAll();
             if (!empty($db_users)) {
                 $leaderboard = [];
+                $members = [];
                 $rank = 1;
                 foreach ($db_users as $du) {
-                    $leaderboard[] = [
-                        'rank' => $rank++,
+                    $u_item = [
+                        'id' => (string)$du['id'],
                         'name' => $du['name'],
-                        'avatar' => $du['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+                        'handle' => $du['handle'],
+                        'email' => $du['email'],
+                        'avatar' => $du['avatar'] ?: '/assets/img/fede_avatar_mini.png',
+                        'role' => $du['role'],
                         'points' => (int)$du['points'],
                         'level' => (int)$du['level'],
                         'level_name' => $du['level_name'],
                         'badge' => ($du['role'] === 'admin' ? '👑 HOST' : '⚡ Rango ' . $du['level']),
-                        'perk' => ($du['role'] === 'admin' ? 'Fundador & Host' : 'Desbloqueó Mentorías'),
+                        'bio' => $du['bio'],
                         'is_current_user' => (isset($_SESSION['fede_user']['email']) && $_SESSION['fede_user']['email'] === $du['email'])
                     ];
+                    $members[] = $u_item;
+                    $leaderboard[] = array_merge($u_item, ['rank' => $rank++]);
                 }
+                $data['members'] = $members;
                 $data['leaderboard'] = $leaderboard;
             }
 
-            // 5. Fetch Chat Messages from MySQL
+            // 8. Fetch Chat Messages from MySQL
             $db_chat = $pdo->query("
                 SELECT cm.*, u.name as author_name, u.avatar as author_avatar, u.role as author_role
                 FROM `fede_chat_messages` cm
@@ -603,7 +706,7 @@ function fede_load_community_data() {
                     $chat_list[] = [
                         'id' => (string)$dc['id'],
                         'author' => $dc['author_name'],
-                        'avatar' => $dc['author_avatar'] ?: '/assets/img/fede_nowback_fuego.jpg',
+                        'avatar' => $dc['author_avatar'] ?: '/assets/img/fede_avatar_mini.png',
                         'is_host' => ($dc['author_role'] === 'admin'),
                         'content' => $dc['content'],
                         'time' => date('H:i', strtotime($dc['created_at']))
@@ -621,8 +724,31 @@ function fede_load_community_data() {
 }
 
 /**
- * Save Community Data to Session (Backup)
+ * Get Setting Value
  */
-function fede_save_community_data($data) {
-    $_SESSION['fede_community_state'] = $data;
+function fede_get_setting($key, $default = '') {
+    $pdo = fede_db();
+    if ($pdo) {
+        $stmt = $pdo->prepare("SELECT `setting_value` FROM `fede_settings` WHERE `setting_key` = ?");
+        $stmt->execute([$key]);
+        $val = $stmt->fetchColumn();
+        if ($val !== false) return $val;
+    }
+    return $default;
+}
+
+/**
+ * Set Setting Value
+ */
+function fede_set_setting($key, $value) {
+    $pdo = fede_db();
+    if ($pdo) {
+        $stmt = $pdo->prepare("
+            INSERT INTO `fede_settings` (`setting_key`, `setting_value`)
+            VALUES (?, ?)
+            ON DUPLICATE KEY UPDATE `setting_value` = VALUES(`setting_value`)
+        ");
+        return $stmt->execute([$key, (string)$value]);
+    }
+    return false;
 }

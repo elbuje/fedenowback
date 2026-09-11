@@ -29,6 +29,11 @@ function get_fede_wa($msg = '') {
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="<?= htmlspecialchars($canonical_url) ?>">
 
+  <!-- Favicons Oficiales Fede Nowback -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png">
+
   <!-- Open Graph / WhatsApp Preview -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">
@@ -88,7 +93,7 @@ function get_fede_wa($msg = '') {
   }
   </script>
 
-  <link rel="stylesheet" href="/assets/css/styles.css?v=3.0">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3.2">
 </head>
 <body>
 
@@ -104,20 +109,13 @@ function get_fede_wa($msg = '') {
         <ul class="fede-nav-links">
           <li><a href="#metodo">Metodología</a></li>
           <li><a href="#sobre-fede">Mi Recorrido</a></li>
-          <li><a href="#youtube-videos" style="color: #ff4d4d; font-weight: 800;">▶️ Clases YouTube</a></li>
+          <li><a href="#youtube-videos" style="color: #ff5555; font-weight: 700;">▶️ Clases YouTube</a></li>
           <li><a href="/mentorias">Mentoría 1a1</a></li>
-          <li><a href="/comunidad" style="color: var(--fede-fire-orange); font-weight: 800;">⚡ Campus Pro</a></li>
-          <li><a href="/encende-tu-fuego" style="color: var(--fede-fire-yellow); font-weight: 800;">🔥 Evento 12/09</a></li>
+          <li><a href="/encende-tu-fuego" style="color: var(--fede-fire-yellow); font-weight: 700;">🔥 Evento 12/09</a></li>
+          <li><a href="/comunidad" style="color: var(--fede-fire-orange); font-weight: 700;">⚡ Campus Pro</a></li>
           <li><a href="/sobre-mi">Sobre Fede</a></li>
-          <li><a href="/contacto">Contacto</a></li>
-          <li><a href="#faq">FAQ</a></li>
         </ul>
       </nav>
-
-      <a href="<?= get_fede_wa() ?>" target="_blank" rel="noopener noreferrer" class="btn-fede-wa">
-        <span>💬</span>
-        <span>WhatsApp</span>
-      </a>
     </div>
   </header>
 

@@ -16,17 +16,14 @@ $current_slug = $current_slug ?? '';
     <nav aria-label="Navegación principal">
       <ul class="fede-nav-links">
         <li><a href="/" class="<?= empty($current_slug) ? 'active' : '' ?>">Inicio</a></li>
+        <li><a href="/#metodo">Metodología</a></li>
+        <li><a href="/#sobre-fede">Mi Recorrido</a></li>
+        <li><a href="/#youtube-videos" style="color: #ff5555; font-weight: 700;">▶️ Clases YouTube</a></li>
         <li><a href="/mentorias" class="<?= $current_slug === 'mentorias' ? 'active' : '' ?>">Mentoría 1a1</a></li>
         <li><a href="/encende-tu-fuego" class="<?= $current_slug === 'evento' ? 'active' : '' ?>" style="color: var(--fede-fire-yellow, #eab308); font-weight: 700;">🔥 Evento 12/09</a></li>
         <li><a href="/comunidad" class="<?= $current_slug === 'comunidad' ? 'active' : '' ?>" style="color: var(--fede-fire-orange, #f97316); font-weight: 700;">⚡ Campus Pro</a></li>
         <li><a href="/sobre-mi" class="<?= $current_slug === 'sobre-mi' ? 'active' : '' ?>">Sobre Fede</a></li>
-        <li><a href="/contacto" class="<?= $current_slug === 'contacto' ? 'active' : '' ?>">Contacto</a></li>
       </ul>
     </nav>
-
-    <a href="<?= get_whatsapp_url('Hola Fede! Vengo desde tu sitio web oficial.') ?>" target="_blank" rel="noopener noreferrer" class="btn-fede-wa">
-      <span>💬</span>
-      <span>WhatsApp</span>
-    </a>
   </div>
 </header>

@@ -23,6 +23,11 @@ function render_seo_head($page_data = []) {
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="<?= htmlspecialchars($canonical) ?>">
 
+  <!-- Favicons Oficiales Fede Nowback -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png">
+
   <!-- Geo-Targeting & Local SEO (Argentina / LATAM) -->
   <meta name="geo.region" content="AR-C">
   <meta name="geo.placename" content="Buenos Aires, Argentina">

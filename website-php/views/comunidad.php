@@ -1,7 +1,7 @@
 <?php
 /**
  * CAMPUS FEDE NOWBACK PRO — Vista Principal de Comunidad & Academia
- * Fede Nowback | Plataforma Propia en Modo Día
+ * Fede Nowback | Plataforma Propia con Gestión MySQL y Panel Admin ABM
  */
 
 require_once __DIR__ . '/../includes/config.php';
@@ -9,8 +9,11 @@ require_once __DIR__ . '/../includes/community_store.php';
 
 $user = &$_SESSION['fede_user'];
 $data = fede_load_community_data();
+$settings = $data['settings'] ?? [];
+$gamification_enabled = !empty($settings['enable_gamification']) && $settings['enable_gamification'] === '1';
+
 $page_title = "Campus Fede Nowback Pro | Comunidad Oficial & Academia — Fede Nowback";
-$page_desc = "Campus privado de alto rendimiento para creadores y emprendedores. Cursos de marca personal, mentorías grupales en vivo, debates y ranking.";
+$page_desc = "Campus privado de alto rendimiento para creadores y emprendedores. Cursos de marca personal, mentorías grupales en vivo, debates y networking.";
 ?>
 <!DOCTYPE html>
 <html lang="es-AR">
@@ -21,6 +24,12 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   <title><?= htmlspecialchars($page_title) ?></title>
   <meta name="description" content="<?= htmlspecialchars($page_desc) ?>">
   <meta name="robots" content="noindex, nofollow">
+
+  <!-- Favicons Oficiales Fede Nowback -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png">
+
   <!-- Open Graph / WhatsApp Preview -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">
@@ -33,7 +42,6 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="682">
   <meta property="og:image:height" content="1024">
-  <meta property="og:image:alt" content="Campus Fede Nowback Pro">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
@@ -41,28 +49,26 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   <meta name="twitter:description" content="<?= htmlspecialchars($page_desc) ?>">
   <meta name="twitter:image" content="https://fedenowback.com.ar/assets/img/fede_nowback_hero.jpg?v=3">
 
-  <!-- Google Fonts: Montserrat (Titulares con pegada) + Inter -->
+  <!-- Google Fonts: Montserrat + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 
   <!-- CSS Custom Campus Fede Nowback Pro -->
-  <link rel="stylesheet" href="/assets/css/campus.css?v=2.1">
+  <link rel="stylesheet" href="/assets/css/campus.css?v=3.5">
 </head>
 <body>
 
-  <!-- Top Sticky Header -->
+  <!-- Top Sticky Header (Branding unificado con el sitio web) -->
   <header class="campus-header">
     <div class="campus-container">
       <div class="campus-header-wrap">
         
         <!-- Brand Area -->
         <a href="/comunidad" class="campus-brand-area">
-          <div class="campus-logo-badge">🔥</div>
-          <div class="campus-brand-titles">
-            <span class="campus-brand-main">CAMPUS NOWBACK <span style="font-size: 0.72rem; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px; font-weight: 800;">PRO</span></span>
-            <span class="campus-brand-sub">Por Fede Nowback • <?= count($data['members']) + 338 ?> Miembros</span>
-          </div>
+          <span class="campus-brand-badge">NOWBACK</span>
+          <span class="campus-brand-name">FEDE NOWBACK</span>
+          <span class="campus-tag-pro">CAMPUS PRO</span>
         </a>
 
         <!-- Search Bar -->
@@ -71,32 +77,92 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
           <input type="text" class="campus-search-input" placeholder="Buscar debates, clases, miembros...">
         </div>
 
-        <!-- Right User & Role Actions -->
+        <!-- Right User Avatar Dropdown & Login Trigger -->
         <div class="campus-header-actions">
           
-          <!-- 1-Click Role Switcher -->
-          <button id="btnRoleSwitch" class="campus-role-switcher" data-current-role="<?= htmlspecialchars($user['role']) ?>" title="Alternar entre Administrador y Alumno">
-            <span>⚡ <strong><?= $user['role'] === 'admin' ? '👑 Admin' : '👤 Alumno' ?></strong></span>
-          </button>
+          <?php if (!empty($user['is_logged_in']) && $user['role'] !== 'guest'): ?>
+            <!-- Trigger del Avatar Dropdown -->
+            <div id="campusAvatarTrigger" class="campus-avatar-trigger" title="Menú de tu cuenta (<?= htmlspecialchars($user['name']) ?>)">
+              <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($user['name']) ?>" class="campus-user-avatar">
+              <span class="campus-avatar-role-dot">
+                <?= $user['role'] === 'admin' ? '👑 Admin' : '👤 ' . htmlspecialchars(explode(' ', $user['name'])[0]) ?> ▾
+              </span>
+            </div>
 
-          <!-- Login Modal Trigger -->
-          <button id="btnOpenLoginModal" class="btn-reaction" style="font-size: 0.78rem; font-weight: 700; background: #fff; padding: 5px 10px;" onclick="document.getElementById('modalLogin').style.display='block';">
-            🔐 <?= !empty($user['is_logged_in']) && $user['role'] === 'admin' ? 'Admin' : 'Ingresar' ?>
-          </button>
+            <!-- Menú Flotante del Avatar del Alumno / Admin -->
+            <div id="campusAvatarDropdown" class="campus-avatar-dropdown">
+              <div class="dropdown-user-header">
+                <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="dropdown-avatar-lg">
+                <div class="dropdown-user-info">
+                  <div class="dropdown-user-name"><?= htmlspecialchars($user['name']) ?></div>
+                  <div class="dropdown-user-handle"><?= htmlspecialchars($user['handle']) ?></div>
+                  <span class="dropdown-role-badge <?= $user['role'] === 'admin' ? 'admin' : 'member' ?>">
+                    <?= $user['role'] === 'admin' ? '👑 Administrador' : '👤 Alumno Pro' ?>
+                  </span>
+                </div>
+              </div>
 
-          <!-- Points / Fuego Display -->
-          <div id="userPointsDisplay" class="campus-points-pill">
-            🔥 <?= $user['points'] ?> <span class="points-word">Fuego</span>
-          </div>
+              <?php if ($gamification_enabled): ?>
+                <!-- Fuego / Nivel del Alumno (si está habilitada la gamificación) -->
+                <div class="dropdown-fuego-card">
+                  <div class="dropdown-fuego-row">
+                    <span>🔥 Fuego Acumulado:</span>
+                    <span style="color: var(--c-fire-primary); font-size: 0.95rem;"><?= (int)$user['points'] ?> pts</span>
+                  </div>
+                  <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px;">
+                    Rango actual: <strong><?= htmlspecialchars($user['level_name'] ?? 'Creador') ?></strong>
+                  </div>
+                </div>
+              <?php endif; ?>
 
-          <!-- User Avatar -->
-          <img src="<?= htmlspecialchars($user['avatar']) ?>" alt="<?= htmlspecialchars($user['name']) ?>" class="campus-user-avatar" title="<?= htmlspecialchars($user['name']) ?> (<?= htmlspecialchars($user['level_name']) ?>)">
+              <ul class="dropdown-menu-links">
+                <?php if ($user['role'] === 'admin'): ?>
+                  <li>
+                    <a href="#admin" class="dropdown-admin-highlight" onclick="switchTab('admin'); closeAvatarDropdown();">
+                      <span>👑</span> <span>Panel de Administración (ABM)</span>
+                    </a>
+                  </li>
+                <?php endif; ?>
+                <li>
+                  <a href="#classroom" onclick="switchTab('classroom'); closeAvatarDropdown();">
+                    <span>🎓</span> <span>Mi Academia & Cursos</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#calendar" onclick="switchTab('calendar'); closeAvatarDropdown();">
+                    <span>📅</span> <span>Meets en Vivo (Zoom)</span>
+                  </a>
+                </li>
+                <li>
+                  <button type="button" id="btnDropdownRoleSwitch" data-current-role="<?= htmlspecialchars($user['role']) ?>">
+                    <span>⚡</span> <span>Alternar a <?= $user['role'] === 'admin' ? 'Vista Alumno' : 'Vista Admin' ?></span>
+                  </button>
+                </li>
+                <li>
+                  <a href="/" target="_blank">
+                    <span>🌐</span> <span>Ir al Sitio Web Oficial ↗</span>
+                  </a>
+                </li>
+              </ul>
 
-          <!-- High Visibility Website Button -->
-          <a href="/" class="campus-btn-website" title="Ir al Sitio Web Oficial de Fede Nowback">
-            <span>🌐</span>
-            <span>Sitio Web ↗</span>
-          </a>
+              <div class="dropdown-divider"></div>
+
+              <ul class="dropdown-menu-links" style="margin-bottom: 0;">
+                <li>
+                  <button type="button" id="btnDropdownLogout" style="color: #f87171;">
+                    <span>🚪</span> <span>Cerrar Sesión</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+          <?php else: ?>
+            <!-- Botón de Ingreso cuando es Invitado -->
+            <button id="btnOpenLoginModal" class="btn-post-submit" style="padding: 6px 14px; font-size: 0.85rem;" onclick="document.getElementById('modalLogin').style.display='block';">
+              🔐 Ingresar al Campus
+            </button>
+          <?php endif; ?>
+
         </div>
 
       </div>
@@ -111,9 +177,17 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
         <li><a class="campus-nav-item" data-tab="classroom">🎓 Academia</a></li>
         <li><a class="campus-nav-item" data-tab="calendar">📅 Meets en Vivo</a></li>
         <li><a class="campus-nav-item" data-tab="chat">💬 Chat</a></li>
-        <li><a class="campus-nav-item" data-tab="leaderboard">🏆 Ranking</a></li>
+        <?php if ($gamification_enabled): ?>
+          <li><a class="campus-nav-item" data-tab="leaderboard">🏆 Ranking</a></li>
+        <?php endif; ?>
         <li><a class="campus-nav-item" data-tab="members">👥 Miembros</a></li>
         <li><a class="campus-nav-item" data-tab="about">ℹ️ Acerca</a></li>
+
+        <?php if (!empty($user['is_logged_in']) && $user['role'] === 'admin'): ?>
+          <!-- PESTAÑA VISIBLE EXCLUSIVAMENTE PARA ADMINISTRADORES -->
+          <li><a class="campus-nav-item admin-badge-highlight" data-tab="admin">👑 Panel Admin (ABM)</a></li>
+        <?php endif; ?>
+
         <li style="margin-left: auto;"><a href="/" class="campus-nav-item" style="color: #0284c7; font-weight: 800; border: 1px solid rgba(2, 132, 199, 0.3); background: rgba(2, 132, 199, 0.08); border-radius: var(--c-radius-full); padding: 6px 14px; font-size: 0.85rem;">🌐 Ir al Sitio Web ↗</a></li>
       </ul>
     </div>
@@ -143,94 +217,86 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <div class="campus-creator-card">
               <form id="formCreatePost">
                 <div class="creator-top-row">
-                  <img src="<?= htmlspecialchars($user['avatar']) ?>" alt="Avatar" class="creator-avatar">
+                  <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="creator-avatar">
                   <div class="creator-inputs">
                     <input type="text" id="postTitleInput" class="creator-title-input" placeholder="Título de tu aporte, pregunta o victoria..." required>
                     <textarea id="postBodyInput" class="creator-body-input" placeholder="Escribí acá tu mensaje. Compartí contexto, aprendizajes o dudas para que la comunidad y Fede te respondan..." required></textarea>
                   </div>
                 </div>
-                <div class="creator-bottom-row">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <label for="postCategorySelect" style="font-size: 0.8rem; font-weight: 700; color: var(--c-text-muted);">Canal:</label>
-                    <select id="postCategorySelect" class="creator-category-select">
-                      <option value="general">💬 Debate General</option>
-                      <option value="victorias">🏆 Victorias & Facturación</option>
-                      <option value="feedback">🎯 Feedback de Contenido</option>
-                      <option value="preguntas">💡 Preguntas al Mentor</option>
-                      <option value="recursos">📂 Plantillas & Recursos</option>
-                      <?php if ($user['role'] === 'admin'): ?>
-                        <option value="comunicados">📢 Comunicados de Fede (Solo Host)</option>
-                      <?php endif; ?>
-                    </select>
-                  </div>
-                  <button type="submit" class="btn-post-submit">🔥 Publicar en el Muro</button>
+
+                <div class="creator-bottom-bar">
+                  <select id="postCategorySelect" class="creator-category-select">
+                    <?php foreach ($data['categories'] as $cat): ?>
+                      <?php if ($cat['id'] === 'todos') continue; ?>
+                      <?php if (!empty($cat['admin_only']) && $user['role'] !== 'admin') continue; ?>
+                      <option value="<?= htmlspecialchars($cat['id']) ?>">
+                        <?= $cat['icon'] ?> <?= htmlspecialchars($cat['name']) ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+
+                  <button type="submit" class="btn-post-submit">Publicar en el Muro</button>
                 </div>
               </form>
             </div>
 
-            <!-- Posts Stream Feed -->
-            <div id="postsFeedContainer">
+            <!-- Posts Stream Container -->
+            <div id="postsStreamContainer">
               <?php foreach ($data['posts'] as $post): ?>
-                <article class="post-card <?= !empty($post['pinned']) ? 'pinned' : '' ?>" data-category="<?= htmlspecialchars($post['category']) ?>">
+                <article class="campus-card post-card" data-category="<?= htmlspecialchars($post['category']) ?>" id="post-<?= htmlspecialchars($post['id']) ?>">
                   
-                  <!-- Post Header -->
-                  <div class="post-header">
-                    <div class="post-author">
-                      <img src="<?= htmlspecialchars($post['author']['avatar']) ?>" alt="<?= htmlspecialchars($post['author']['name']) ?>" class="post-author-img">
-                      <div>
-                        <div class="post-author-name">
-                          <?= htmlspecialchars($post['author']['name']) ?>
-                          <?php if (!empty($post['author']['is_host'])): ?>
-                            <span style="font-size: 0.72rem; background: var(--c-fire-gradient); color: #fff; padding: 2px 7px; border-radius: 4px; font-weight: 800;">👑 HOST</span>
-                          <?php else: ?>
-                            <span style="font-size: 0.72rem; background: var(--c-bg-subtle); color: var(--c-text-muted); padding: 2px 7px; border-radius: 4px; font-weight: 700;"><?= htmlspecialchars($post['author']['badge'] ?? 'Rango') ?></span>
-                          <?php endif; ?>
-                        </div>
-                        <div class="post-author-role"><?= htmlspecialchars($post['created_at']) ?> • en <span style="color: var(--c-fire-primary); font-weight: 700;">#<?= htmlspecialchars($post['category']) ?></span></div>
-                      </div>
-                    </div>
+                  <?php if (!empty($post['pinned'])): ?>
+                    <div class="post-pinned-tag">📌 COMUNICADO FIJADO POR FEDE</div>
+                  <?php endif; ?>
 
-                    <?php if (!empty($post['pinned'])): ?>
-                      <span class="post-tag" style="background: rgba(255, 85, 0, 0.1); color: var(--c-fire-primary);">📌 FIJADO</span>
-                    <?php endif; ?>
+                  <div class="post-header-row">
+                    <img src="<?= htmlspecialchars($post['author']['avatar']) ?>" alt="<?= htmlspecialchars($post['author']['name']) ?>" class="post-author-avatar">
+                    <div>
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="post-author-name"><?= htmlspecialchars($post['author']['name']) ?></span>
+                        <span class="badge-role <?= !empty($post['author']['is_host']) ? 'host' : '' ?>"><?= htmlspecialchars($post['author']['badge'] ?? 'Miembro') ?></span>
+                      </div>
+                      <div class="post-date-line"><?= htmlspecialchars($post['author']['handle']) ?> • <?= htmlspecialchars($post['created_at']) ?></div>
+                    </div>
                   </div>
 
-                  <!-- Post Body -->
-                  <h3 class="post-title"><?= htmlspecialchars($post['title']) ?></h3>
-                  <div class="post-content"><?= nl2br(htmlspecialchars($post['content'])) ?></div>
+                  <h3 class="post-card-title"><?= htmlspecialchars($post['title']) ?></h3>
+                  <div class="post-card-body"><?= nl2br(htmlspecialchars($post['content'])) ?></div>
 
-                  <!-- Post Footer & Actions -->
-                  <div class="post-footer">
+                  <div class="post-actions-bar">
                     <?php 
                       $is_liked = in_array($user['id'], $post['liked_by'] ?? []);
                     ?>
-                    <button class="btn-reaction <?= $is_liked ? 'reacted' : '' ?>" data-post-id="<?= htmlspecialchars($post['id']) ?>">
-                      <span>🔥 Fuego</span>
-                      <span class="reaction-count"><?= (int)$post['likes'] ?></span>
+                    <button class="btn-reaction btn-like <?= $is_liked ? 'liked' : '' ?>" data-post-id="<?= htmlspecialchars($post['id']) ?>">
+                      <span class="reaction-icon">🔥</span>
+                      <span class="like-count"><?= (int)$post['likes'] ?></span> Fuego
                     </button>
 
-                    <button class="btn-comments-toggle" data-post-id="<?= htmlspecialchars($post['id']) ?>">
-                      💬 <span><?= count($post['comments'] ?? []) ?> Comentarios</span>
+                    <button class="btn-reaction btn-toggle-comments" data-post-id="<?= htmlspecialchars($post['id']) ?>">
+                      <span class="reaction-icon">💬</span>
+                      <span><?= count($post['comments'] ?? []) ?> Respuestas</span>
                     </button>
                   </div>
 
-                  <!-- Comments Thread Drawer -->
-                  <div id="comments-<?= htmlspecialchars($post['id']) ?>" class="comments-thread" style="display: none;">
-                    <div id="comments-list-<?= htmlspecialchars($post['id']) ?>" style="display: flex; flex-direction: column; gap: 8px;">
+                  <!-- Comments Container -->
+                  <div class="post-comments-container" id="comments-<?= htmlspecialchars($post['id']) ?>">
+                    <div class="comments-list">
                       <?php foreach ($post['comments'] as $comm): ?>
-                        <div class="comment-item">
+                        <div class="comment-bubble">
                           <img src="<?= htmlspecialchars($comm['author']['avatar']) ?>" alt="Avatar" class="comment-avatar">
                           <div class="comment-body">
-                            <div class="comment-author-name"><?= htmlspecialchars($comm['author']['name']) ?> <span style="font-size: 0.72rem; color: var(--c-text-muted); font-weight: 500;">• <?= htmlspecialchars($comm['created_at']) ?></span></div>
+                            <div class="comment-author-title">
+                              <?= htmlspecialchars($comm['author']['name']) ?> • <span style="color: var(--c-text-light); font-weight: 400;"><?= htmlspecialchars($comm['created_at']) ?></span>
+                            </div>
                             <div class="comment-text"><?= nl2br(htmlspecialchars($comm['content'])) ?></div>
                           </div>
                         </div>
                       <?php endforeach; ?>
                     </div>
 
-                    <!-- Add Comment Input -->
-                    <form class="form-add-comment comment-input-row" data-post-id="<?= htmlspecialchars($post['id']) ?>">
-                      <input type="text" class="comment-input" placeholder="Escribir una respuesta..." required>
+                    <!-- Comment Input -->
+                    <form class="form-add-comment" data-post-id="<?= htmlspecialchars($post['id']) ?>">
+                      <input type="text" class="comment-input" placeholder="Escribí una respuesta a este debate..." required>
                       <button type="submit" class="btn-comment-send">Responder</button>
                     </form>
                   </div>
@@ -241,262 +307,174 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
           </div>
 
-          <!-- Columna Derecha: Widgets & Próximo Meet -->
-          <aside>
+          <!-- Columna Derecha: Próximo Meet, Membresía & Reglas -->
+          <div>
             
-            <!-- Widget Próximo Meet -->
-            <?php $next_meet = $data['meets'][0] ?? null; ?>
-            <?php if ($next_meet): ?>
-              <div class="sidebar-widget">
-                <div class="widget-title">🔥 Próxima Sesión en Vivo</div>
-                <div class="meet-next-card">
-                  <span class="meet-badge-live">🔴 EN DIRECTO ESTA SEMANA</span>
-                  <div class="meet-next-title"><?= htmlspecialchars($next_meet['title']) ?></div>
-                  <div class="meet-next-date">📅 <?= htmlspecialchars($next_meet['date']) ?><br>⏰ <?= htmlspecialchars($next_meet['time']) ?></div>
-                  <a href="<?= htmlspecialchars($next_meet['zoom_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn-join-meet">
-                    🚀 Unirse al Meet (Zoom)
+            <!-- Widget Próximo Meet en Vivo -->
+            <?php if (!empty($data['meets'][0])): $next_meet = $data['meets'][0]; ?>
+              <div class="campus-card" style="border: 2px solid rgba(255, 85, 0, 0.25); background: linear-gradient(180deg, rgba(255, 85, 0, 0.04) 0%, rgba(255, 255, 255, 1) 100%); margin-bottom: 20px;">
+                <div style="font-size: 0.75rem; font-weight: 800; color: var(--c-fire-primary); text-transform: uppercase; margin-bottom: 6px;">
+                  🔴 PRÓXIMA SESIÓN EN DIRECTO
+                </div>
+                <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 8px;">
+                  <?= htmlspecialchars($next_meet['title']) ?>
+                </h4>
+                <p style="font-size: 0.85rem; color: var(--c-text-sub); margin-bottom: 12px; line-height: 1.4;">
+                  <?= htmlspecialchars($next_meet['description']) ?>
+                </p>
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 14px;">
+                  🗓️ <?= htmlspecialchars($next_meet['date']) ?> • ⏰ <?= htmlspecialchars($next_meet['time']) ?>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a href="<?= htmlspecialchars($next_meet['zoom_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-post-submit" style="flex: 1; text-align: center; text-decoration: none; font-size: 0.85rem;">
+                    🚀 Entrar a <?= htmlspecialchars($next_meet['platform'] ?? 'Zoom') ?>
+                  </a>
+                  <a href="<?= htmlspecialchars($next_meet['google_cal_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-reaction" style="font-size: 0.82rem; text-decoration: none;">
+                    📅 Agendar
                   </a>
                 </div>
               </div>
             <?php endif; ?>
 
-            <!-- Mini Leaderboard Widget -->
-            <div class="sidebar-widget">
-              <div class="widget-title">🏆 Top Creadores de la Semana</div>
+            <!-- Planes & Precios Box -->
+            <div class="campus-card" style="margin-bottom: 20px;">
+              <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 10px;">
+                💳 Membresías & Planes
+              </h4>
+              <p style="font-size: 0.84rem; color: var(--c-text-sub); margin-bottom: 14px; line-height: 1.4;">
+                Elegí el plan que mejor se adapte a tu nivel de escalado:
+              </p>
               <div style="display: flex; flex-direction: column; gap: 10px;">
-                <?php foreach (array_slice($data['leaderboard'], 0, 4) as $item): ?>
-                  <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <span style="font-family: var(--c-font-head); font-weight: 900; font-size: 0.85rem; color: var(--c-fire-primary);">#<?= $item['rank'] ?></span>
-                      <img src="<?= htmlspecialchars($item['avatar']) ?>" alt="Avatar" style="width: 28px; height: 28px; border-radius: 50%;">
-                      <span style="font-size: 0.85rem; font-weight: 700; color: var(--c-text-main);"><?= htmlspecialchars($item['name']) ?></span>
+                <?php foreach ($data['plans'] as $plan): ?>
+                  <div style="padding: 10px 12px; border-radius: 8px; border: 1px solid var(--c-border); background: var(--c-bg-subtle);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                      <strong style="font-size: 0.88rem;"><?= htmlspecialchars($plan['name']) ?></strong>
+                      <span style="font-size: 0.72rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($plan['badge']) ?></span>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 800; color: var(--c-text-muted);">🔥 <?= $item['points'] ?></span>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: var(--c-fire-primary);">
+                      $<?= number_format($plan['price_ars'], 0, ',', '.') ?> ARS <span style="font-size: 0.75rem; color: var(--c-text-muted); font-weight: normal;">($<?= $plan['price_usd'] ?> USD)</span>
+                    </div>
                   </div>
                 <?php endforeach; ?>
               </div>
             </div>
 
-            <!-- Reglas Rápidas del Campus -->
-            <div class="sidebar-widget">
-              <div class="widget-title">📜 Reglas de la Comunidad</div>
-              <ul style="font-size: 0.84rem; color: var(--c-text-sub); list-style: none; display: flex; flex-direction: column; gap: 8px;">
-                <li>🔥 <strong>1. Cero ego:</strong> Todos empezamos desde cero. Ayudá y dejate ayudar.</li>
-                <li>🚀 <strong>2. Aporte de valor:</strong> Comparte aprendizajes reales y números transparentes.</li>
-                <li>🎯 <strong>3. Acción masiva:</strong> Cada clase vista debe tener una acción ejecutada.</li>
+            <!-- Reglas de Oro -->
+            <div class="campus-card">
+              <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 0.95rem; margin-bottom: 10px;">
+                ⚡ Reglas de Alto Rendimiento
+              </h4>
+              <ul style="font-size: 0.82rem; color: var(--c-text-sub); line-height: 1.6; margin-left: 16px;">
+                <li>Ejecutá antes de pedir perfección.</li>
+                <li>Publicá tus dudas y victorias con contexto.</li>
+                <li>Conectá y aportá valor a los demás miembros.</li>
               </ul>
             </div>
 
-          </aside>
+          </div>
 
         </div>
       </section>
 
-      <!-- TAB 2: CLASSROOM / ACADEMIA -->
+      <!-- TAB 2: ACADEMIA / CLASES -->
       <section id="tab-classroom" class="campus-tab-pane" style="display: none;">
-        
-        <!-- Vista Catálogo de Cursos -->
-        <div id="coursesCatalogView">
-          <div style="margin-bottom: 28px;">
-            <h2 style="font-family: var(--c-font-head); font-size: 1.6rem; font-weight: 900; margin-bottom: 6px;">🎓 Academia de Cursos & Masterclasses</h2>
-            <p style="color: var(--c-text-muted); font-size: 0.95rem;">Contenido estructurado paso a paso para dominar tu marca personal y tus ventas digitales.</p>
-          </div>
-
-          <div class="courses-grid">
-            <?php foreach ($data['courses'] as $course): ?>
-              <?php 
-                $is_unlocked = ($user['level'] >= $course['level_required']) || ($user['role'] === 'admin');
-              ?>
-              <div class="course-card" data-course-id="<?= htmlspecialchars($course['id']) ?>" style="cursor: pointer;">
-                <div class="course-thumb-box">
-                  <img src="<?= htmlspecialchars($course['thumbnail']) ?>" alt="<?= htmlspecialchars($course['title']) ?>" class="course-thumb-img">
-                  <span class="course-level-badge">
-                    <?= $is_unlocked ? '🔓 Desbloqueado' : '🔒 Requiere ' . htmlspecialchars($course['level_name']) ?>
-                  </span>
-                </div>
-                <div class="course-card-body">
-                  <h3 class="course-title"><?= htmlspecialchars($course['title']) ?></h3>
-                  <p class="course-desc"><?= htmlspecialchars($course['description']) ?></p>
-                  
-                  <div class="course-progress-bar">
-                    <div class="course-progress-fill" style="width: <?= $is_unlocked ? '45%' : '0%' ?>;"></div>
-                  </div>
-
-                  <div class="course-meta-row">
-                    <span>⏱️ <?= htmlspecialchars($course['duration']) ?></span>
-                    <span>📚 <?= (int)$course['total_lessons'] ?> Clases</span>
-                    <span style="color: var(--c-fire-primary); font-weight: 800;">Ver Curso →</span>
-                  </div>
-                </div>
-              </div>
-            <?php endforeach; ?>
-          </div>
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-bottom: 6px;">🎓 Academia Fede Nowback</h2>
+          <p style="color: var(--c-text-muted); font-size: 0.95rem;">Masterclasses, estructuras paso a paso y guiones probados para monetizar tu marca personal.</p>
         </div>
 
-        <!-- Vista Reproductor Interactivo de Clase -->
-        <div id="coursePlayerView" style="display: none;">
-          <div style="margin-bottom: 18px;">
-            <button id="btnBackToCourses" class="btn-reaction" style="font-size: 0.85rem;">
-              ← Volver al Catálogo de Cursos
-            </button>
-          </div>
-
-          <div class="lesson-player-container">
-            
-            <!-- Video & Detalles de Lección -->
-            <div>
-              <div class="video-frame-box">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Reproductor de Clase" allowfullscreen></iframe>
+        <div class="classroom-grid">
+          <?php foreach ($data['courses'] as $course): ?>
+            <div class="campus-card course-card">
+              <div class="course-thumb-wrap">
+                <img src="<?= htmlspecialchars($course['thumbnail']) ?>" alt="<?= htmlspecialchars($course['title']) ?>" class="course-thumb-img">
+                <div class="course-level-badge"><?= htmlspecialchars($course['level_name']) ?></div>
               </div>
 
-              <div class="lesson-details-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                  <h2 style="font-family: var(--c-font-head); font-size: 1.3rem; font-weight: 900;">
-                    1.1 La Regla de Oro: Por qué la viralidad sin oferta es una trampa
-                  </h2>
-                  <button id="btnToggleCompleteLesson" class="btn-complete-lesson" data-lesson-id="lesson_1_1">
-                    ⭕ Marcar como Completada (+20 Fuego)
-                  </button>
+              <div class="course-content-wrap">
+                <h3 class="course-title"><?= htmlspecialchars($course['title']) ?></h3>
+                <p class="course-desc"><?= htmlspecialchars($course['description']) ?></p>
+
+                <div class="course-meta-row">
+                  <span>⏱️ <?= htmlspecialchars($course['duration']) ?></span>
+                  <span>📚 <?= (int)$course['total_lessons'] ?> Lecciones</span>
                 </div>
 
-                <p style="color: var(--c-text-sub); line-height: 1.6; margin-bottom: 20px;">
-                  En esta lección fundamental desarmamos el mito de que necesitás miles de seguidores para facturar. Vas a aprender a definir tu propuesta de alto valor y crear un filtro que atraiga clientes calificados con capacidad de pago.
-                </p>
-
-                <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 0.95rem; margin-bottom: 10px;">📋 Plan de Acción de la Clase:</h4>
-                <ul style="font-size: 0.9rem; color: var(--c-text-sub); margin-left: 20px; line-height: 1.6; margin-bottom: 20px;">
-                  <li>Definir en 1 sola oración a quién ayudás y cuál es el resultado medible que prometés.</li>
-                  <li>Eliminar enlaces genéricos de tu biografía y colocar un llamado claro al DM o WhatsApp.</li>
-                </ul>
-
-                <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 0.95rem; margin-bottom: 10px;">📂 Recursos Descargables:</h4>
-                <div style="display: flex; gap: 10px;">
-                  <a href="#" class="btn-reaction" style="text-decoration: none;">📄 Guía de Nicho High-Ticket (PDF)</a>
-                  <a href="#" class="btn-reaction" style="text-decoration: none;">📊 Plantilla Notion de Posicionamiento</a>
+                <!-- Acordeón de Módulos y Lecciones -->
+                <div class="course-modules-list" style="margin-top: 16px;">
+                  <?php foreach ($course['modules'] as $mod): ?>
+                    <div class="module-group" style="margin-bottom: 12px; border: 1px solid var(--c-border); border-radius: 8px; overflow: hidden;">
+                      <div style="background: var(--c-bg-subtle); padding: 8px 12px; font-weight: 700; font-size: 0.84rem;">
+                        <?= htmlspecialchars($mod['title']) ?>
+                      </div>
+                      <div class="module-lessons">
+                        <?php foreach ($mod['lessons'] as $les): ?>
+                          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-top: 1px solid var(--c-border); font-size: 0.82rem;">
+                            <span>🎬 <?= htmlspecialchars($les['title']) ?> <small style="color: var(--c-text-muted);">(<?= htmlspecialchars($les['duration']) ?>)</small></span>
+                            <button type="button" class="btn-reaction btn-play-lesson" style="padding: 3px 8px; font-size: 0.75rem;" onclick="playLessonModal('<?= htmlspecialchars(addslashes($les['title'])) ?>', '<?= htmlspecialchars($les['video_url']) ?>', '<?= htmlspecialchars(addslashes($les['description'])) ?>')">
+                              ▶️ Ver Clase
+                            </button>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
                 </div>
+
               </div>
             </div>
-
-            <!-- Curriculum Lateral -->
-            <div class="curriculum-sidebar">
-              <h3 style="font-family: var(--c-font-head); font-size: 1.05rem; font-weight: 900; margin-bottom: 14px;">Módulos del Curso</h3>
-              
-              <div class="module-title-h4">Módulo 1: Fundamentos de Autoridad</div>
-              <div class="lesson-list-item active">
-                <span>▶️ 1.1 La Regla de Oro</span>
-                <span>18:45</span>
-              </div>
-              <div class="lesson-list-item">
-                <span>▶️ 1.2 Perfil de Instagram</span>
-                <span>24:10</span>
-              </div>
-              <div class="lesson-list-item">
-                <span>▶️ 1.3 Oferta Irresistible</span>
-                <span>32:00</span>
-              </div>
-
-              <div class="module-title-h4">Módulo 2: Fábrica de Contenidos</div>
-              <div class="lesson-list-item">
-                <span>▶️ 2.1 5 Ganchos Psicológicos</span>
-                <span>22:15</span>
-              </div>
-              <div class="lesson-list-item">
-                <span>▶️ 2.2 Guion de Reels en 3 partes</span>
-                <span>28:50</span>
-              </div>
-            </div>
-
-          </div>
+          <?php endforeach; ?>
         </div>
-
       </section>
 
       <!-- TAB 3: CALENDARIO / MEETS -->
       <section id="tab-calendar" class="campus-tab-pane" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <div>
-            <h2 style="font-family: var(--c-font-head); font-size: 1.6rem; font-weight: 900; margin-bottom: 6px;">📅 Sesiones en Vivo & Hot Seats con Fede</h2>
-            <p style="color: var(--c-text-muted); font-size: 0.95rem;">Mentorías grupales semanales, talleres prácticos de contenido y auditorías en tiempo real.</p>
-          </div>
-          <?php if ($user['role'] === 'admin'): ?>
-            <button class="btn-post-submit" onclick="document.getElementById('modalNewMeet').style.display='block';">
-              ➕ Programar Nuevo Meet (Host)
-            </button>
-          <?php endif; ?>
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-bottom: 6px;">📅 Calendario de Sesiones en Vivo</h2>
+          <p style="color: var(--c-text-muted); font-size: 0.95rem;">Auditorías 1 a 1, Hot Seats y sesiones grupales en directo con Fede Nowback.</p>
         </div>
 
-        <div class="meets-list">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
           <?php foreach ($data['meets'] as $meet): ?>
-            <div class="meet-card-full">
-              <div class="meet-date-block">
-                <div class="meet-month"><?= explode(' ', $meet['date'])[0] ?? 'SEP' ?></div>
-                <div class="meet-day"><?= preg_replace('/[^0-9]/', '', $meet['date']) ?: '18' ?></div>
-              </div>
-
-              <div class="meet-info">
-                <h3 class="meet-title-h3"><?= htmlspecialchars($meet['title']) ?></h3>
-                <div class="meet-desc"><?= htmlspecialchars($meet['description']) ?></div>
-                <div style="font-size: 0.85rem; color: var(--c-text-sub); font-weight: 600;">
-                  ⏰ <strong>Horario:</strong> <?= htmlspecialchars($meet['time']) ?> • 💻 <strong>Plataforma:</strong> <?= htmlspecialchars($meet['platform']) ?>
+            <div class="campus-card meet-card-full" style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+              <div>
+                <span style="font-size: 0.75rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 3px 8px; border-radius: 4px;">
+                  <?= htmlspecialchars($meet['platform'] ?? 'Zoom Pro') ?>
+                </span>
+                <h3 style="font-family: var(--c-font-head); font-size: 1.25rem; font-weight: 800; margin: 8px 0 6px;">
+                  <?= htmlspecialchars($meet['title']) ?>
+                </h3>
+                <p style="color: var(--c-text-sub); font-size: 0.9rem; margin-bottom: 10px;">
+                  <?= htmlspecialchars($meet['description']) ?>
+                </p>
+                <div style="font-weight: 700; font-size: 0.88rem; color: var(--c-text-main);">
+                  🗓️ <?= htmlspecialchars($meet['date']) ?> • ⏰ <?= htmlspecialchars($meet['time']) ?>
                 </div>
               </div>
 
-              <div class="meet-actions">
-                <a href="<?= htmlspecialchars($meet['zoom_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn-join-meet" style="padding: 10px 22px;">
-                  🚀 Entrar a la Sala
+              <div style="display: flex; flex-direction: column; gap: 8px; min-width: 180px;">
+                <a href="<?= htmlspecialchars($meet['zoom_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-post-submit" style="text-align: center; text-decoration: none;">
+                  🚀 Entrar a la Sesión
                 </a>
-                <a href="<?= htmlspecialchars($meet['google_cal_url'] ?? '#') ?>" target="_blank" rel="noopener noreferrer" class="btn-reaction" style="text-decoration: none; padding: 10px 18px;">
-                  📅 Google Cal
+                <a href="<?= htmlspecialchars($meet['google_cal_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-reaction" style="justify-content: center; text-decoration: none;">
+                  📅 Guardar en Calendario
                 </a>
               </div>
             </div>
           <?php endforeach; ?>
         </div>
-
-        <!-- Modal Admin Programar Meet -->
-        <?php if ($user['role'] === 'admin'): ?>
-          <div id="modalNewMeet" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; padding: 20px;">
-            <div style="max-width: 500px; margin: 60px auto; background: #fff; padding: 24px; border-radius: var(--c-radius-lg); box-shadow: var(--c-shadow-lg);">
-              <h3 style="font-family: var(--c-font-head); font-weight: 800; margin-bottom: 16px;">Programar Nueva Sesión en Vivo</h3>
-              <form id="formCreateMeet">
-                <div style="margin-bottom: 12px;">
-                  <label style="font-size: 0.82rem; font-weight: 700;">Título del Meet:</label>
-                  <input type="text" id="meetTitleInput" class="creator-title-input" placeholder="Ej: Taller de Reels de Cierre" required>
-                </div>
-                <div style="margin-bottom: 12px;">
-                  <label style="font-size: 0.82rem; font-weight: 700;">Fecha:</label>
-                  <input type="text" id="meetDateInput" class="creator-title-input" placeholder="Ej: Viernes 25 de Septiembre, 2026" required>
-                </div>
-                <div style="margin-bottom: 12px;">
-                  <label style="font-size: 0.82rem; font-weight: 700;">Horario:</label>
-                  <input type="text" id="meetTimeInput" class="creator-title-input" placeholder="Ej: 19:00 hs (Buenos Aires)">
-                </div>
-                <div style="margin-bottom: 16px;">
-                  <label style="font-size: 0.82rem; font-weight: 700;">Enlace Zoom / Meet:</label>
-                  <input type="url" id="meetZoomInput" class="creator-title-input" placeholder="https://zoom.us/j/12345678">
-                </div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                  <button type="button" class="btn-reaction" onclick="document.getElementById('modalNewMeet').style.display='none';">Cancelar</button>
-                  <button type="submit" class="btn-post-submit">Publicar Meet</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        <?php endif; ?>
-
       </section>
 
-      <!-- TAB 4: CHAT EN TIEMPO REAL -->
+      <!-- TAB 4: CHAT EN VIVO -->
       <section id="tab-chat" class="campus-tab-pane" style="display: none;">
-        <div class="chat-container-layout">
+        <div class="campus-card chat-container-layout">
           
-          <!-- Canales de Chat -->
-          <div class="chat-rooms-list">
-            <h4 style="font-family: var(--c-font-head); font-size: 0.82rem; text-transform: uppercase; color: var(--c-text-muted); margin-bottom: 12px;">Salas de Chat</h4>
-            <div class="chat-room-item active">💬 #sala-general</div>
-            <div class="chat-room-item">🏆 #victorias-y-cierres</div>
-            <div class="chat-room-item">🎯 #feedback-en-vivo</div>
-            <div class="chat-room-item">💡 #dudas-de-alumnos</div>
+          <!-- Canales del Chat -->
+          <div class="chat-sidebar">
+            <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 0.95rem; margin-bottom: 12px; color: var(--c-text-sub);">Salas de Chat</h4>
+            <div class="chat-channel-item active"># sala-general</div>
+            <div class="chat-channel-item"># consultas-fede</div>
+            <div class="chat-channel-item"># colaboraciones</div>
           </div>
 
           <!-- Mensajes y Entrada -->
@@ -528,62 +506,59 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
         </div>
       </section>
 
-      <!-- TAB 5: LEADERBOARD / GAMIFICACIÓN -->
-      <section id="tab-leaderboard" class="campus-tab-pane" style="display: none;">
-        <div style="max-width: 840px; margin: 0 auto;">
-          
-          <div style="text-align: center; margin-bottom: 32px;">
-            <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--c-fire-primary); letter-spacing: 0.05em;">SISTEMA DE GAMIFICACIÓN</span>
-            <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-top: 4px;">🏆 Ranking de Fuego & Niveles de Creadores</h2>
-            <p style="color: var(--c-text-muted); font-size: 0.95rem; max-width: 600px; margin: 8px auto 0;">
-              Ganá <strong>Fuego (Puntos)</strong> cada vez que publicás aportes, recibís likes de la comunidad y completás lecciones en la Academia para desbloquear mentorías VIP.
-            </p>
-          </div>
+      <?php if ($gamification_enabled): ?>
+        <!-- TAB 5: LEADERBOARD / GAMIFICACIÓN (Solo visible si el admin activó gamificación) -->
+        <section id="tab-leaderboard" class="campus-tab-pane" style="display: none;">
+          <div style="max-width: 840px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 32px;">
+              <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--c-fire-primary); letter-spacing: 0.05em;">SISTEMA DE GAMIFICACIÓN</span>
+              <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-top: 4px;">🏆 Ranking de Fuego & Niveles de Creadores</h2>
+              <p style="color: var(--c-text-muted); font-size: 0.95rem; max-width: 600px; margin: 8px auto 0;">
+                Ganá <strong>Fuego (Puntos)</strong> interactuando en la comunidad y completando lecciones para desbloquear rangos de honor.
+              </p>
+            </div>
 
-          <table class="leaderboard-table">
-            <thead>
-              <tr>
-                <th style="width: 70px;">Posición</th>
-                <th>Miembro</th>
-                <th>Rango / Nivel</th>
-                <th>Fuego Acumulado</th>
-                <th>Recompensa Desbloqueada</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($data['leaderboard'] as $row): ?>
-                <tr class="<?= !empty($row['is_current_user']) ? 'current-user-row' : '' ?>">
-                  <td>
-                    <div class="rank-badge rank-<?= $row['rank'] ?>">
-                      <?= $row['rank'] <= 3 ? ($row['rank'] === 1 ? '🥇' : ($row['rank'] === 2 ? '🥈' : '🥉')) : '#' . $row['rank'] ?>
-                    </div>
-                  </td>
-                  <td>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <img src="<?= htmlspecialchars($row['avatar']) ?>" alt="Avatar" style="width: 34px; height: 34px; border-radius: 50%;">
-                      <div>
-                        <div style="font-weight: 800; font-size: 0.92rem;"><?= htmlspecialchars($row['name']) ?></div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span style="font-size: 0.78rem; font-weight: 700; background: var(--c-bg-subtle); padding: 3px 8px; border-radius: 4px;">
-                      <?= htmlspecialchars($row['badge']) ?>
-                    </span>
-                  </td>
-                  <td>
-                    <strong style="font-family: var(--c-font-head); font-size: 1rem; color: var(--c-fire-primary);">🔥 <?= $row['points'] ?></strong>
-                  </td>
-                  <td style="font-size: 0.82rem; color: var(--c-text-muted);">
-                    <?= htmlspecialchars($row['perk'] ?? '-') ?>
-                  </td>
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Posición</th>
+                  <th>Miembro</th>
+                  <th>Rango / Nivel</th>
+                  <th>Fuego Acumulado</th>
                 </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                <?php foreach ($data['leaderboard'] as $row): ?>
+                  <tr class="<?= !empty($row['is_current_user']) ? 'current-user-row' : '' ?>">
+                    <td>
+                      <div class="rank-badge rank-<?= $row['rank'] ?>">
+                        <?= $row['rank'] <= 3 ? ($row['rank'] === 1 ? '🥇' : ($row['rank'] === 2 ? '🥈' : '🥉')) : '#' . $row['rank'] ?>
+                      </div>
+                    </td>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="<?= htmlspecialchars($row['avatar']) ?>" alt="Avatar" style="width: 34px; height: 34px; border-radius: 50%;">
+                        <div>
+                          <div style="font-weight: 800; font-size: 0.92rem;"><?= htmlspecialchars($row['name']) ?></div>
+                          <div style="font-size: 0.78rem; color: var(--c-text-muted);"><?= htmlspecialchars($row['email']) ?></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span style="font-size: 0.78rem; font-weight: 700; background: var(--c-bg-subtle); padding: 3px 8px; border-radius: 4px;">
+                        <?= htmlspecialchars($row['badge']) ?>
+                      </span>
+                    </td>
+                    <td>
+                      <strong style="font-family: var(--c-font-head); font-size: 1rem; color: var(--c-fire-primary);">🔥 <?= (int)$row['points'] ?></strong>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      <?php endif; ?>
 
       <!-- TAB 6: MIEMBROS -->
       <section id="tab-members" class="campus-tab-pane" style="display: none;">
@@ -595,21 +570,17 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
           <?php foreach ($data['members'] as $mem): ?>
             <div class="campus-card" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-              <img src="<?= htmlspecialchars($mem['avatar']) ?>" alt="<?= htmlspecialchars($mem['name']) ?>" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--c-border);">
+              <img src="<?= htmlspecialchars($mem['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($mem['name']) ?>" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--c-border);">
               <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 2px;"><?= htmlspecialchars($mem['name']) ?></h4>
               <div style="font-size: 0.78rem; color: var(--c-text-muted); margin-bottom: 8px;"><?= htmlspecialchars($mem['handle']) ?></div>
               
               <span style="font-size: 0.75rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 8px; border-radius: 4px; margin-bottom: 12px;">
-                <?= htmlspecialchars($mem['role_badge']) ?>
+                <?= $mem['role'] === 'admin' ? '👑 MENTOR & HOST' : '👤 Alumno Pro' ?>
               </span>
 
               <p style="font-size: 0.85rem; color: var(--c-text-sub); line-height: 1.4; margin-bottom: 16px; flex: 1;">
-                <?= htmlspecialchars($mem['bio']) ?>
+                <?= htmlspecialchars($mem['bio'] ?: 'Creador de contenido y emprendedor digital en el Campus Fede Nowback.') ?>
               </p>
-
-              <button class="btn-reaction" style="width: 100%; justify-content: center;" onclick="alert('Iniciando chat directo con <?= htmlspecialchars($mem['name']) ?>');">
-                💬 Enviar Mensaje
-              </button>
             </div>
           <?php endforeach; ?>
         </div>
@@ -631,22 +602,462 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <li><strong>Monetización Directa:</strong> Cierre de ventas por mensajes privados y WhatsApp sin depender de la viralidad.</li>
             </ul>
 
-            <div style="background: var(--c-bg-subtle); border-radius: var(--c-radius); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: var(--c-bg-subtle); border-radius: var(--c-radius); padding: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
               <div>
                 <div style="font-weight: 800; font-size: 0.95rem;">¿Tenés dudas o necesitás soporte?</div>
                 <div style="font-size: 0.82rem; color: var(--c-text-muted);">Escribí directo a Fede por WhatsApp (+54 9 11 3820-5570)</div>
               </div>
               <a href="https://wa.me/5491138205570?text=Hola%20Fede,%20tengo%20una%20consulta%20sobre%20el%20Campus%20Fede%20Nowback" target="_blank" rel="noopener noreferrer" class="btn-post-submit" style="text-decoration: none;">
-                💬 WhatsApp
+                💬 WhatsApp Directo
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Modal de Login y Credenciales -->
-      <div id="modalLogin" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(6px); z-index: 3000; padding: 20px;">
-        <div style="max-width: 440px; margin: 60px auto; background: #ffffff; padding: 28px; border-radius: var(--c-radius-lg); box-shadow: var(--c-shadow-lg); border: 1px solid var(--c-border);">
+      <?php if (!empty($user['is_logged_in']) && $user['role'] === 'admin'): ?>
+        <!-- ========================================================================= -->
+        <!-- 👑 TAB 8: PANEL DE ADMINISTRACIÓN COMPLETO (ABM) — SOLO PARA ADMINS -->
+        <!-- ========================================================================= -->
+        <section id="tab-admin" class="campus-tab-pane" style="display: none;">
+          
+          <!-- Header Banner del Admin -->
+          <div class="admin-header-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <span style="font-size: 0.78rem; font-weight: 800; color: #fbbf24; letter-spacing: 0.05em; text-transform: uppercase;">PANEL DE CONTROL CENTRAL</span>
+                <h2 style="font-family: var(--c-font-head); font-size: 1.8rem; font-weight: 900; margin-top: 4px;">👑 Gestión & ABM del Campus Nowback Pro</h2>
+                <p style="color: #94a3b8; font-size: 0.88rem; margin-top: 4px;">Administrá de forma autónoma usuarios, cursos, lecciones, planes, precios y el calendario en vivo.</p>
+              </div>
+              <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; color: #fef08a;">
+                🟢 Conexión MySQL Activa
+              </div>
+            </div>
+
+            <!-- Métricas Rápidas -->
+            <div class="admin-stats-grid">
+              <div class="admin-stat-item">
+                <div class="admin-stat-val" id="adminStatUsers"><?= count($data['members']) ?></div>
+                <div class="admin-stat-lbl">👥 Usuarios Totales</div>
+              </div>
+              <div class="admin-stat-item">
+                <div class="admin-stat-val" id="adminStatCourses"><?= count($data['courses']) ?></div>
+                <div class="admin-stat-lbl">🎓 Cursos Creados</div>
+              </div>
+              <div class="admin-stat-item">
+                <div class="admin-stat-val" id="adminStatPlans"><?= count($data['plans']) ?></div>
+                <div class="admin-stat-lbl">💳 Planes Activos</div>
+              </div>
+              <div class="admin-stat-item">
+                <div class="admin-stat-val" id="adminStatMeets"><?= count($data['meets']) ?></div>
+                <div class="admin-stat-lbl">📅 Meets Programados</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtabs de Navegación del Admin -->
+          <div class="admin-subtabs-nav">
+            <button type="button" class="admin-subtab-btn active" data-admin-subtab="users">👥 Gestión de Usuarios</button>
+            <button type="button" class="admin-subtab-btn" data-admin-subtab="courses">🎓 Cursos & Lecciones</button>
+            <button type="button" class="admin-subtab-btn" data-admin-subtab="plans">💳 Planes & Precios</button>
+            <button type="button" class="admin-subtab-btn" data-admin-subtab="meets">📅 Calendario & Meets</button>
+            <button type="button" class="admin-subtab-btn" data-admin-subtab="settings">⚙️ Configuración & Fuegos</button>
+          </div>
+
+          <!-- SUBTAB 1: USUARIOS (ABM) -->
+          <div id="admin-subtab-users" class="admin-subtab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Directorio de Usuarios</h3>
+              <button type="button" class="admin-btn-add" onclick="openAdminUserModal(0)">➕ Nuevo Usuario / Alumno</button>
+            </div>
+
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Fuego</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTableBody">
+                <?php foreach ($data['members'] as $u_row): ?>
+                  <tr id="admin-user-row-<?= htmlspecialchars($u_row['id']) ?>">
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="<?= htmlspecialchars($u_row['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="" style="width: 28px; height: 28px; border-radius: 50%;">
+                        <strong><?= htmlspecialchars($u_row['name']) ?></strong>
+                      </div>
+                    </td>
+                    <td><?= htmlspecialchars($u_row['email']) ?></td>
+                    <td>
+                      <span class="dropdown-role-badge <?= $u_row['role'] === 'admin' ? 'admin' : 'member' ?>">
+                        <?= $u_row['role'] === 'admin' ? '👑 Admin' : '👤 Alumno' ?>
+                      </span>
+                    </td>
+                    <td>🔥 <?= (int)$u_row['points'] ?></td>
+                    <td>
+                      <button class="admin-btn-action admin-btn-edit" onclick="openAdminUserModal(<?= (int)$u_row['id'] ?>, '<?= htmlspecialchars(addslashes($u_row['name'])) ?>', '<?= htmlspecialchars(addslashes($u_row['email'])) ?>', '<?= htmlspecialchars($u_row['role']) ?>', <?= (int)$u_row['points'] ?>)">✏️ Editar</button>
+                      <?php if ($u_row['email'] !== 'mfmujic@gmail.com'): ?>
+                        <button class="admin-btn-action admin-btn-del" onclick="deleteAdminUser(<?= (int)$u_row['id'] ?>)">🗑️ Borrar</button>
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- SUBTAB 2: CURSOS Y LECCIONES (ABM) -->
+          <div id="admin-subtab-courses" class="admin-subtab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Cursos & Contenidos de la Academia</h3>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="admin-btn-add" onclick="openAdminCourseModal(0)">➕ Nuevo Curso</button>
+                <button type="button" class="btn-reaction" onclick="openAdminLessonModal(0)">➕ Nueva Lección</button>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <?php foreach ($data['courses'] as $c_item): ?>
+                <div class="campus-card" style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+                  <div style="display: flex; align-items: center; gap: 16px;">
+                    <img src="<?= htmlspecialchars($c_item['thumbnail']) ?>" alt="" style="width: 80px; height: 50px; border-radius: 8px; object-fit: cover;">
+                    <div>
+                      <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 4px;"><?= htmlspecialchars($c_item['title']) ?></h4>
+                      <div style="font-size: 0.8rem; color: var(--c-text-muted);">
+                        Slug: <code>/<?= htmlspecialchars($c_item['slug']) ?></code> • <?= (int)$c_item['total_lessons'] ?> Lecciones • Duración: <?= htmlspecialchars($c_item['duration']) ?>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminCourseModal(<?= (int)$c_item['id'] ?>, '<?= htmlspecialchars(addslashes($c_item['title'])) ?>', '<?= htmlspecialchars(addslashes($c_item['slug'])) ?>', '<?= htmlspecialchars(addslashes($c_item['description'])) ?>', '<?= htmlspecialchars(addslashes($c_item['duration'])) ?>', '<?= htmlspecialchars(addslashes($c_item['thumbnail'])) ?>', <?= (int)$c_item['level_required'] ?>)">✏️ Editar</button>
+                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminCourse(<?= (int)$c_item['id'] ?>)">🗑️ Borrar</button>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+
+          <!-- SUBTAB 3: PLANES Y PRECIOS (ABM) -->
+          <div id="admin-subtab-plans" class="admin-subtab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Planes de Membresía & Precios</h3>
+              <button type="button" class="admin-btn-add" onclick="openAdminPlanModal(0)">➕ Nuevo Plan</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+              <?php foreach ($data['plans'] as $p_item): ?>
+                <div class="campus-card" style="border: 2px solid var(--c-border); display: flex; flex-direction: column; justify-content: space-between;">
+                  <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                      <span style="font-size: 0.75rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 3px 8px; border-radius: 4px;"><?= htmlspecialchars($p_item['badge']) ?></span>
+                      <small style="color: var(--c-text-muted);">ID: <?= htmlspecialchars($p_item['id']) ?></small>
+                    </div>
+                    <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.15rem; margin-bottom: 6px;"><?= htmlspecialchars($p_item['name']) ?></h4>
+                    <div style="font-size: 1.3rem; font-weight: 900; color: var(--c-fire-primary); margin-bottom: 8px;">
+                      $<?= number_format($p_item['price_ars'], 0, ',', '.') ?> ARS <span style="font-size: 0.85rem; color: var(--c-text-muted); font-weight: 600;">($<?= $p_item['price_usd'] ?> USD)</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--c-text-sub); margin-bottom: 12px;"><?= htmlspecialchars($p_item['description']) ?></p>
+                  </div>
+                  <div style="display: flex; gap: 8px; border-top: 1px solid var(--c-border); padding-top: 12px;">
+                    <button class="admin-btn-action admin-btn-edit" style="flex: 1; text-align: center;" onclick="openAdminPlanModal(<?= (int)$p_item['id'] ?>, '<?= htmlspecialchars(addslashes($p_item['name'])) ?>', '<?= htmlspecialchars(addslashes($p_item['slug'])) ?>', '<?= htmlspecialchars(addslashes($p_item['badge'])) ?>', <?= (int)$p_item['price_ars'] ?>, <?= (int)$p_item['price_usd'] ?>, '<?= htmlspecialchars(addslashes($p_item['period'])) ?>', '<?= htmlspecialchars(addslashes($p_item['description'])) ?>', '<?= htmlspecialchars(addslashes($p_item['checkout_url'])) ?>')">✏️ Editar Plan</button>
+                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminPlan(<?= (int)$p_item['id'] ?>)">🗑️</button>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+
+          <!-- SUBTAB 4: CALENDARIO Y MEETS (ABM) -->
+          <div id="admin-subtab-meets" class="admin-subtab-content" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Sesiones en Vivo & Meets</h3>
+              <button type="button" class="admin-btn-add" onclick="openAdminMeetModal(0)">➕ Programar Nuevo Meet</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <?php foreach ($data['meets'] as $m_row): ?>
+                <div class="campus-card" style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+                  <div>
+                    <span style="font-size: 0.72rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($m_row['platform']) ?></span>
+                    <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin: 4px 0;"><?= htmlspecialchars($m_row['title']) ?></h4>
+                    <div style="font-size: 0.82rem; color: var(--c-text-main); font-weight: 700;">🗓️ <?= htmlspecialchars($m_row['date']) ?> • ⏰ <?= htmlspecialchars($m_row['time']) ?></div>
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminMeetModal(<?= (int)$m_row['id'] ?>, '<?= htmlspecialchars(addslashes($m_row['title'])) ?>', '<?= htmlspecialchars(addslashes($m_row['description'])) ?>', '<?= htmlspecialchars(addslashes($m_row['date'])) ?>', '<?= htmlspecialchars(addslashes($m_row['time'])) ?>', '<?= htmlspecialchars(addslashes($m_row['platform'])) ?>', '<?= htmlspecialchars(addslashes($m_row['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($m_row['google_cal_url'])) ?>')">✏️ Editar</button>
+                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminMeet(<?= (int)$m_row['id'] ?>)">🗑️ Borrar</button>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+
+          <!-- SUBTAB 5: CONFIGURACIÓN & GAMIFICACIÓN -->
+          <div id="admin-subtab-settings" class="admin-subtab-content" style="display: none;">
+            <div class="campus-card" style="max-width: 650px;">
+              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Configuración de la Plataforma</h3>
+
+              <form id="formAdminSettings">
+                
+                <!-- Toggle Gamificación / Fuegos -->
+                <div style="background: var(--c-bg-subtle); padding: 18px; border-radius: var(--c-radius); margin-bottom: 20px; border: 1px solid var(--c-border);">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px;">
+                    <div>
+                      <strong style="font-size: 0.95rem; display: block; margin-bottom: 4px;">🎮 Sistema de Fuegos & Ranking (Gamificación)</strong>
+                      <p style="font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.5;">
+                        Si está <strong>desactivado</strong>, la plataforma no muestra puntos de fuego ni rankings, permitiendo una experiencia limpia y directa sin requerir tiempo de administración del mentor.
+                      </p>
+                    </div>
+                    <label class="admin-switch">
+                      <input type="checkbox" id="settingGamificationInput" <?= $gamification_enabled ? 'checked' : '' ?>>
+                      <span class="admin-slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="admin-form-group">
+                  <label for="settingCommunityName">Nombre de la Comunidad:</label>
+                  <input type="text" id="settingCommunityName" class="admin-form-input" value="<?= htmlspecialchars($settings['community_name'] ?? 'Campus Fede Nowback Pro') ?>" required>
+                </div>
+
+                <div class="admin-form-group">
+                  <label for="settingWhatsapp">Número WhatsApp de Soporte / Mentor (formato internacional sin +):</label>
+                  <input type="text" id="settingWhatsapp" class="admin-form-input" value="<?= htmlspecialchars($settings['admin_whatsapp'] ?? '5491138205570') ?>" required>
+                </div>
+
+                <div id="settingsFeedbackMsg" style="display: none; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 14px;"></div>
+
+                <button type="submit" class="admin-btn-add" style="width: 100%; justify-content: center; padding: 12px 0;">💾 Guardar Cambios de Configuración</button>
+              </form>
+            </div>
+          </div>
+
+        </section>
+      <?php endif; ?>
+
+      <!-- ========================================================================= -->
+      <!-- MODALES DE GESTIÓN Y REPRODUCTOR -->
+      <!-- ========================================================================= -->
+
+      <!-- 1. Modal Reproductor de Lecciones -->
+      <div id="modalLessonPlayer" class="admin-modal-overlay">
+        <div class="admin-modal-box" style="max-width: 720px; padding: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3 id="playerLessonTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.15rem;">Reproductor de Clase</h3>
+            <button type="button" onclick="closeLessonPlayerModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
+          </div>
+          <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; margin-bottom: 14px;">
+            <iframe id="playerLessonIframe" src="" style="position: absolute; top:0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
+          </div>
+          <p id="playerLessonDesc" style="font-size: 0.88rem; color: var(--c-text-sub); line-height: 1.5;"></p>
+        </div>
+      </div>
+
+      <!-- 2. Modal Admin: Usuario -->
+      <div id="modalAdminUser" class="admin-modal-overlay">
+        <div class="admin-modal-box">
+          <h3 id="modalUserTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Nuevo Usuario</h3>
+          <form id="formAdminUser">
+            <input type="hidden" id="adminUserIdInput" value="0">
+            <div class="admin-form-group">
+              <label for="adminUserNameInput">Nombre Completo:</label>
+              <input type="text" id="adminUserNameInput" class="admin-form-input" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminUserEmailInput">Email:</label>
+              <input type="email" id="adminUserEmailInput" class="admin-form-input" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminUserPasswordInput">Contraseña (dejar en blanco para no cambiar):</label>
+              <input type="password" id="adminUserPasswordInput" class="admin-form-input" placeholder="••••••••">
+            </div>
+            <div class="admin-form-group">
+              <label for="adminUserRoleInput">Rol:</label>
+              <select id="adminUserRoleInput" class="admin-form-select">
+                <option value="member">👤 Alumno (Member)</option>
+                <option value="admin">👑 Administrador (Admin)</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminUserPointsInput">Puntos de Fuego Iniciales:</label>
+              <input type="number" id="adminUserPointsInput" class="admin-form-input" value="10">
+            </div>
+            <div class="admin-modal-actions">
+              <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminUser')">Cancelar</button>
+              <button type="submit" class="admin-btn-add">Guardar Usuario</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 3. Modal Admin: Curso -->
+      <div id="modalAdminCourse" class="admin-modal-overlay">
+        <div class="admin-modal-box">
+          <h3 id="modalCourseTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Curso de la Academia</h3>
+          <form id="formAdminCourse">
+            <input type="hidden" id="adminCourseIdInput" value="0">
+            <div class="admin-form-group">
+              <label for="adminCourseTitleInput">Título del Curso:</label>
+              <input type="text" id="adminCourseTitleInput" class="admin-form-input" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminCourseSlugInput">Slug URL (ej: metodo-nowback):</label>
+              <input type="text" id="adminCourseSlugInput" class="admin-form-input">
+            </div>
+            <div class="admin-form-group">
+              <label for="adminCourseDurationInput">Duración (ej: 4h 30m):</label>
+              <input type="text" id="adminCourseDurationInput" class="admin-form-input" value="3h 00m">
+            </div>
+            <div class="admin-form-group">
+              <label for="adminCourseThumbnailInput">URL Imagen de Portada:</label>
+              <input type="text" id="adminCourseThumbnailInput" class="admin-form-input" value="/assets/img/fede_nowback_hero.jpg">
+            </div>
+            <div class="admin-form-group">
+              <label for="adminCourseDescInput">Descripción:</label>
+              <textarea id="adminCourseDescInput" class="admin-form-textarea" rows="3"></textarea>
+            </div>
+            <div class="admin-modal-actions">
+              <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminCourse')">Cancelar</button>
+              <button type="submit" class="admin-btn-add">Guardar Curso</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 4. Modal Admin: Lección -->
+      <div id="modalAdminLesson" class="admin-modal-overlay">
+        <div class="admin-modal-box">
+          <h3 id="modalLessonTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Lección de Clase</h3>
+          <form id="formAdminLesson">
+            <input type="hidden" id="adminLessonIdInput" value="0">
+            <div class="admin-form-group">
+              <label for="adminLessonCourseSelect">Curso al que pertenece:</label>
+              <select id="adminLessonCourseSelect" class="admin-form-select">
+                <?php foreach ($data['courses'] as $c_opt): ?>
+                  <option value="<?= htmlspecialchars($c_opt['id']) ?>"><?= htmlspecialchars($c_opt['title']) ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminLessonTitleInput">Título de la Lección:</label>
+              <input type="text" id="adminLessonTitleInput" class="admin-form-input" placeholder="Ej: 1.1 La Regla de Oro..." required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminLessonVideoInput">URL Video (YouTube / Vimeo Embed / MP4):</label>
+              <input type="text" id="adminLessonVideoInput" class="admin-form-input" placeholder="https://www.youtube.com/embed/..." required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminLessonDurationInput">Duración (ej: 18:45):</label>
+              <input type="text" id="adminLessonDurationInput" class="admin-form-input" value="15:00">
+            </div>
+            <div class="admin-form-group">
+              <label for="adminLessonDescInput">Descripción / Tareas:</label>
+              <textarea id="adminLessonDescInput" class="admin-form-textarea" rows="3"></textarea>
+            </div>
+            <div class="admin-modal-actions">
+              <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminLesson')">Cancelar</button>
+              <button type="submit" class="admin-btn-add">Guardar Lección</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 5. Modal Admin: Plan -->
+      <div id="modalAdminPlan" class="admin-modal-overlay">
+        <div class="admin-modal-box">
+          <h3 id="modalPlanTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Plan de Membresía</h3>
+          <form id="formAdminPlan">
+            <input type="hidden" id="adminPlanIdInput" value="0">
+            <div class="admin-form-group">
+              <label for="adminPlanNameInput">Nombre del Plan:</label>
+              <input type="text" id="adminPlanNameInput" class="admin-form-input" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminPlanBadgeInput">Etiqueta Badge (ej: 🔥 Más Popular):</label>
+              <input type="text" id="adminPlanBadgeInput" class="admin-form-input" value="Recomendado">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="admin-form-group">
+                <label for="adminPlanPriceArsInput">Precio ARS ($):</label>
+                <input type="number" id="adminPlanPriceArsInput" class="admin-form-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="adminPlanPriceUsdInput">Precio USD ($):</label>
+                <input type="number" id="adminPlanPriceUsdInput" class="admin-form-input" required>
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminPlanPeriodInput">Frecuencia / Periodicidad:</label>
+              <select id="adminPlanPeriodInput" class="admin-form-select">
+                <option value="mensual">Mensual</option>
+                <option value="trimestral">Trimestral</option>
+                <option value="anual">Anual</option>
+                <option value="único">Pago Único</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminPlanDescInput">Descripción Corta:</label>
+              <textarea id="adminPlanDescInput" class="admin-form-textarea" rows="2"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminPlanCheckoutInput">Link de Pago / WhatsApp Checkout:</label>
+              <input type="text" id="adminPlanCheckoutInput" class="admin-form-input" placeholder="https://wa.me/5491138205570?text=...">
+            </div>
+            <div class="admin-modal-actions">
+              <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminPlan')">Cancelar</button>
+              <button type="submit" class="admin-btn-add">Guardar Plan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 6. Modal Admin: Meet -->
+      <div id="modalAdminMeet" class="admin-modal-overlay">
+        <div class="admin-modal-box">
+          <h3 id="modalMeetTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Programar Meet en Vivo</h3>
+          <form id="formAdminMeet">
+            <input type="hidden" id="adminMeetIdInput" value="0">
+            <div class="admin-form-group">
+              <label for="adminMeetTitleInput">Título de la Sesión:</label>
+              <input type="text" id="adminMeetTitleInput" class="admin-form-input" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminMeetDateInput">Fecha (ej: Viernes 18 de Septiembre):</label>
+              <input type="text" id="adminMeetDateInput" class="admin-form-input" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminMeetTimeInput">Hora (ej: 19:00 hs Buenos Aires):</label>
+              <input type="text" id="adminMeetTimeInput" class="admin-form-input" required>
+            </div>
+            <div class="admin-form-group">
+              <label for="adminMeetPlatformInput">Plataforma:</label>
+              <input type="text" id="adminMeetPlatformInput" class="admin-form-input" value="Zoom Pro">
+            </div>
+            <div class="admin-form-group">
+              <label for="adminMeetZoomInput">Link de la Reunión:</label>
+              <input type="text" id="adminMeetZoomInput" class="admin-form-input" placeholder="https://zoom.us/j/...">
+            </div>
+            <div class="admin-form-group">
+              <label for="adminMeetCalInput">Link de Google Calendar:</label>
+              <input type="text" id="adminMeetCalInput" class="admin-form-input" placeholder="https://calendar.google.com/...">
+            </div>
+            <div class="admin-form-group">
+              <label for="adminMeetDescInput">Descripción de la Sesión:</label>
+              <textarea id="adminMeetDescInput" class="admin-form-textarea" rows="2"></textarea>
+            </div>
+            <div class="admin-modal-actions">
+              <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminMeet')">Cancelar</button>
+              <button type="submit" class="admin-btn-add">Guardar Meet</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 7. Modal de Login y Credenciales -->
+      <div id="modalLogin" class="admin-modal-overlay">
+        <div class="admin-modal-box" style="max-width: 440px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="font-size: 1.4rem;">🔥</span>
@@ -658,16 +1069,16 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
           <form id="formCampusLogin">
             <div style="margin-bottom: 14px;">
               <label for="loginEmailInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Email:</label>
-              <input type="email" id="loginEmailInput" class="creator-title-input" placeholder="tu@email.com" value="<?= htmlspecialchars($user['email'] ?? 'mfmujic@gmail.com') ?>" required>
+              <input type="email" id="loginEmailInput" class="admin-form-input" placeholder="tu@email.com" value="<?= htmlspecialchars($user['email'] ?? 'mfmujic@gmail.com') ?>" required>
             </div>
             <div style="margin-bottom: 16px;">
               <label for="loginPasswordInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Contraseña:</label>
-              <input type="password" id="loginPasswordInput" class="creator-title-input" placeholder="••••••••" value="marcelito" required>
+              <input type="password" id="loginPasswordInput" class="admin-form-input" placeholder="••••••••" value="marcelito" required>
             </div>
 
             <div id="loginFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
 
-            <button type="submit" id="btnLoginSubmit" class="btn-post-submit" style="width: 100%; text-align: center; padding: 11px 0; font-size: 0.95rem; margin-bottom: 12px;">
+            <button type="submit" id="btnLoginSubmit" class="admin-btn-add" style="width: 100%; justify-content: center; padding: 11px 0; font-size: 0.95rem; margin-bottom: 12px;">
               🚀 Ingresar al Campus
             </button>
 
@@ -688,7 +1099,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
     </div>
   </main>
 
-  <!-- JS Controller -->
-  <script src="/assets/js/campus.js?v=1.0"></script>
+  <!-- JS Controller con soporte completo de ABM y Avatar Dropdown -->
+  <script src="/assets/js/campus.js?v=3.5"></script>
 </body>
 </html>
