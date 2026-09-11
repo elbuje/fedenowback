@@ -17,21 +17,21 @@ fede_db_init_schema();
 define('FEDE_ADMIN_EMAIL', 'mfmujic@gmail.com');
 define('FEDE_ADMIN_PASSWORD_HASH', '$2y$10$JTe0nSMklYpYmJ9WWfu9D..9pa2As0cr7A8dwicItTjzo9yM5tMKC'); // 'marcelito'
 
-// Initialize Session User if not present
+// Initialize Session User if not present (Default to Guest / Unauthenticated)
 if (!isset($_SESSION['fede_user'])) {
     $_SESSION['fede_user'] = [
-        'id' => 'user_' . substr(md5(session_id()), 0, 8),
-        'email' => 'alumno@fedenowback.com',
-        'name' => 'Alumno Pro',
-        'handle' => '@creador_pro',
-        'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        'role' => 'member', // 'admin' or 'member'
-        'is_logged_in' => true,
-        'points' => 45,
-        'level' => 3,
-        'level_name' => 'Creador Constante',
-        'completed_lessons' => ['lesson_1_1', 'lesson_1_2', 'lesson_2_1'],
-        'joined_date' => 'Septiembre 2026'
+        'id' => null,
+        'email' => '',
+        'name' => 'Invitado',
+        'handle' => '@invitado',
+        'avatar' => '/assets/img/fede_avatar_mini.png',
+        'role' => 'guest', // 'admin', 'member', or 'guest'
+        'is_logged_in' => false,
+        'points' => 0,
+        'level' => 1,
+        'level_name' => 'Visitante',
+        'completed_lessons' => [],
+        'joined_date' => date('F Y')
     ];
 }
 
@@ -605,6 +605,7 @@ function fede_load_community_data() {
                                 'duration' => $l['duration'],
                                 'video_url' => $l['video_url'],
                                 'description' => $l['description'],
+                                'is_free' => !empty($l['is_free']),
                                 'action_items' => json_decode($l['action_items'] ?? '[]', true) ?: [],
                                 'resources' => json_decode($l['resources'] ?? '[]', true) ?: []
                             ];

@@ -8,6 +8,8 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/community_store.php';
 
 $user = &$_SESSION['fede_user'];
+$is_logged_in = !empty($user['is_logged_in']) && !empty($user['role']) && $user['role'] !== 'guest';
+$is_admin = $is_logged_in && ($user['role'] === 'admin');
 $data = fede_load_community_data();
 $settings = $data['settings'] ?? [];
 $gamification_enabled = !empty($settings['enable_gamification']) && $settings['enable_gamification'] === '1';
@@ -26,9 +28,9 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   <meta name="robots" content="noindex, nofollow">
 
   <!-- Favicons Oficiales Fede Nowback -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=6">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png?v=6">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png?v=6">
 
   <!-- Open Graph / WhatsApp Preview -->
   <meta property="og:type" content="website">
@@ -37,8 +39,8 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   <meta property="og:title" content="<?= htmlspecialchars($page_title) ?>">
   <meta property="og:description" content="<?= htmlspecialchars($page_desc) ?>">
   <meta property="og:url" content="https://fedenowback.com.ar/comunidad">
-  <meta property="og:image" content="https://fedenowback.com.ar/assets/img/fede_nowback_hero.jpg?v=3">
-  <meta property="og:image:secure_url" content="https://fedenowback.com.ar/assets/img/fede_nowback_hero.jpg?v=3">
+  <meta property="og:image" content="https://fedenowback.com.ar/assets/img/fede_nowback_hero.jpg?v=6">
+  <meta property="og:image:secure_url" content="https://fedenowback.com.ar/assets/img/fede_nowback_hero.jpg?v=6">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="682">
   <meta property="og:image:height" content="1024">
@@ -47,7 +49,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<?= htmlspecialchars($page_title) ?>">
   <meta name="twitter:description" content="<?= htmlspecialchars($page_desc) ?>">
-  <meta name="twitter:image" content="https://fedenowback.com.ar/assets/img/fede_nowback_hero.jpg?v=3">
+  <meta name="twitter:image" content="https://fedenowback.com.ar/assets/img/fede_nowback_hero.jpg?v=6">
 
   <!-- Google Fonts: Montserrat + Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,7 +57,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 
   <!-- CSS Custom Campus Fede Nowback Pro -->
-  <link rel="stylesheet" href="/assets/css/campus.css?v=3.5">
+  <link rel="stylesheet" href="/assets/css/campus.css?v=4.0">
 </head>
 <body>
 
@@ -80,7 +82,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
         <!-- Right User Avatar Dropdown & Login Trigger -->
         <div class="campus-header-actions">
           
-          <?php if (!empty($user['is_logged_in']) && $user['role'] !== 'guest'): ?>
+          <?php if ($is_logged_in): ?>
             <!-- Trigger del Avatar Dropdown -->
             <div id="campusAvatarTrigger" class="campus-avatar-trigger" title="Menú de tu cuenta (<?= htmlspecialchars($user['name']) ?>)">
               <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($user['name']) ?>" class="campus-user-avatar">
@@ -116,7 +118,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <?php endif; ?>
 
               <ul class="dropdown-menu-links">
-                <?php if ($user['role'] === 'admin'): ?>
+                <?php if ($is_admin): ?>
                   <li>
                     <a href="#admin" class="dropdown-admin-highlight" onclick="switchTab('admin'); closeAvatarDropdown();">
                       <span>👑</span> <span>Panel de Administración (ABM)</span>
@@ -158,8 +160,8 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
           <?php else: ?>
             <!-- Botón de Ingreso cuando es Invitado -->
-            <button id="btnOpenLoginModal" class="btn-post-submit" style="padding: 6px 14px; font-size: 0.85rem;" onclick="document.getElementById('modalLogin').style.display='block';">
-              🔐 Ingresar al Campus
+            <button id="btnOpenLoginModal" class="btn-post-submit" style="padding: 7px 16px; font-size: 0.88rem;" onclick="openLoginModal()">
+              🔑 Ingresar al Campus
             </button>
           <?php endif; ?>
 
@@ -169,7 +171,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
     </div>
   </header>
 
-  <!-- Navigation Tabs Bar -->
+  <!-- Navigation Tabs Bar (Wrap responsive sin scroll horizontal forzado) -->
   <nav class="campus-nav-bar">
     <div class="campus-container">
       <ul class="campus-nav-list">
@@ -183,12 +185,12 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
         <li><a class="campus-nav-item" data-tab="members">👥 Miembros</a></li>
         <li><a class="campus-nav-item" data-tab="about">ℹ️ Acerca</a></li>
 
-        <?php if (!empty($user['is_logged_in']) && $user['role'] === 'admin'): ?>
+        <?php if ($is_admin): ?>
           <!-- PESTAÑA VISIBLE EXCLUSIVAMENTE PARA ADMINISTRADORES -->
           <li><a class="campus-nav-item admin-badge-highlight" data-tab="admin">👑 Panel Admin (ABM)</a></li>
         <?php endif; ?>
 
-        <li style="margin-left: auto;"><a href="/" class="campus-nav-item" style="color: #0284c7; font-weight: 800; border: 1px solid rgba(2, 132, 199, 0.3); background: rgba(2, 132, 199, 0.08); border-radius: var(--c-radius-full); padding: 6px 14px; font-size: 0.85rem;">🌐 Ir al Sitio Web ↗</a></li>
+        <li><a href="/" class="campus-nav-item" style="color: #0284c7; font-weight: 700; border: 1px solid rgba(2, 132, 199, 0.25); background: rgba(2, 132, 199, 0.06); border-radius: 8px;">🌐 Ir al Sitio Web ↗</a></li>
       </ul>
     </div>
   </nav>
@@ -213,32 +215,49 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <?php endforeach; ?>
             </div>
 
-            <!-- Post Creator Box -->
-            <div class="campus-creator-card">
-              <form id="formCreatePost">
-                <div class="creator-top-row">
-                  <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="creator-avatar">
-                  <div class="creator-inputs">
-                    <input type="text" id="postTitleInput" class="creator-title-input" placeholder="Título de tu aporte, pregunta o victoria..." required>
-                    <textarea id="postBodyInput" class="creator-body-input" placeholder="Escribí acá tu mensaje. Compartí contexto, aprendizajes o dudas para que la comunidad y Fede te respondan..." required></textarea>
+            <?php if ($is_logged_in): ?>
+              <!-- Post Creator Box -->
+              <div class="campus-creator-card">
+                <form id="formCreatePost">
+                  <div class="creator-top-row">
+                    <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="creator-avatar">
+                    <div class="creator-inputs">
+                      <input type="text" id="postTitleInput" class="creator-title-input" placeholder="Título de tu aporte, pregunta o victoria..." required>
+                      <textarea id="postBodyInput" class="creator-body-input" placeholder="Escribí acá tu mensaje. Compartí contexto, aprendizajes o dudas para que la comunidad y Fede te respondan..." required></textarea>
+                    </div>
                   </div>
-                </div>
 
-                <div class="creator-bottom-bar">
-                  <select id="postCategorySelect" class="creator-category-select">
-                    <?php foreach ($data['categories'] as $cat): ?>
-                      <?php if ($cat['id'] === 'todos') continue; ?>
-                      <?php if (!empty($cat['admin_only']) && $user['role'] !== 'admin') continue; ?>
-                      <option value="<?= htmlspecialchars($cat['id']) ?>">
-                        <?= $cat['icon'] ?> <?= htmlspecialchars($cat['name']) ?>
-                      </option>
-                    <?php endforeach; ?>
-                  </select>
+                  <div class="creator-bottom-bar">
+                    <select id="postCategorySelect" class="creator-category-select">
+                      <?php foreach ($data['categories'] as $cat): ?>
+                        <?php if ($cat['id'] === 'todos') continue; ?>
+                        <?php if (!empty($cat['admin_only']) && !$is_admin) continue; ?>
+                        <option value="<?= htmlspecialchars($cat['id']) ?>">
+                          <?= $cat['icon'] ?> <?= htmlspecialchars($cat['name']) ?>
+                        </option>
+                      <?php endforeach; ?>
+                    </select>
 
-                  <button type="submit" class="btn-post-submit">Publicar en el Muro</button>
+                    <button type="submit" class="btn-post-submit">Publicar en el Muro</button>
+                  </div>
+                </form>
+              </div>
+            <?php else: ?>
+              <!-- Guest Welcome CTA Box -->
+              <div class="guest-cta-card">
+                <div class="guest-cta-icon">🔥</div>
+                <h3 class="guest-cta-title">Comunidad Privada de Creadores & Emprendedores</h3>
+                <p class="guest-cta-desc">Iniciá sesión para publicar tus avances, hacerle preguntas directas a Fede y debatir con la comunidad.</p>
+                <div class="guest-cta-actions">
+                  <button type="button" class="btn-post-submit" onclick="openLoginModal('Iniciá sesión para publicar en el muro.')">
+                    🔑 Ingresar al Campus
+                  </button>
+                  <button type="button" class="btn-reaction" onclick="document.getElementById('plansWidgetBox').scrollIntoView({behavior:'smooth'})">
+                    💳 Ver Membresías & Planes
+                  </button>
                 </div>
-              </form>
-            </div>
+              </div>
+            <?php endif; ?>
 
             <!-- Posts Stream Container -->
             <div id="postsStreamContainer">
@@ -265,7 +284,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
                   <div class="post-actions-bar">
                     <?php 
-                      $is_liked = in_array($user['id'], $post['liked_by'] ?? []);
+                      $is_liked = in_array($user['id'] ?? '', $post['liked_by'] ?? []);
                     ?>
                     <button class="btn-reaction btn-like <?= $is_liked ? 'liked' : '' ?>" data-post-id="<?= htmlspecialchars($post['id']) ?>">
                       <span class="reaction-icon">🔥</span>
@@ -294,11 +313,18 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                       <?php endforeach; ?>
                     </div>
 
-                    <!-- Comment Input -->
-                    <form class="form-add-comment" data-post-id="<?= htmlspecialchars($post['id']) ?>">
-                      <input type="text" class="comment-input" placeholder="Escribí una respuesta a este debate..." required>
-                      <button type="submit" class="btn-comment-send">Responder</button>
-                    </form>
+                    <?php if ($is_logged_in): ?>
+                      <!-- Comment Input -->
+                      <form class="form-add-comment" data-post-id="<?= htmlspecialchars($post['id']) ?>">
+                        <input type="text" class="comment-input" placeholder="Escribí una respuesta a este debate..." required>
+                        <button type="submit" class="btn-comment-send">Responder</button>
+                      </form>
+                    <?php else: ?>
+                      <div style="padding: 10px; background: var(--c-bg-subtle); border-radius: 8px; text-align: center; margin-top: 10px; border: 1px solid var(--c-border); font-size: 0.82rem; color: var(--c-text-muted);">
+                        🔒 <strong>Iniciá sesión</strong> para responder a este debate.
+                        <button type="button" onclick="openLoginModal('Iniciá sesión para responder a este debate.')" style="color: var(--c-fire-primary); font-weight: 700; background: none; border: none; cursor: pointer; text-decoration: underline; margin-left: 4px;">Ingresar</button>
+                      </div>
+                    <?php endif; ?>
                   </div>
 
                 </article>
@@ -326,9 +352,15 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                   🗓️ <?= htmlspecialchars($next_meet['date']) ?> • ⏰ <?= htmlspecialchars($next_meet['time']) ?>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <a href="<?= htmlspecialchars($next_meet['zoom_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-post-submit" style="flex: 1; text-align: center; text-decoration: none; font-size: 0.85rem;">
-                    🚀 Entrar a <?= htmlspecialchars($next_meet['platform'] ?? 'Zoom') ?>
-                  </a>
+                  <?php if ($is_logged_in): ?>
+                    <a href="<?= htmlspecialchars($next_meet['zoom_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-post-submit" style="flex: 1; text-align: center; text-decoration: none; font-size: 0.85rem;">
+                      🚀 Entrar a <?= htmlspecialchars($next_meet['platform'] ?? 'Zoom') ?>
+                    </a>
+                  <?php else: ?>
+                    <button type="button" class="btn-post-submit" style="flex: 1; text-align: center; font-size: 0.85rem;" onclick="openLoginModal('Las sesiones de Zoom son exclusivas para miembros activos.')">
+                      🔒 Acceso Alumnos
+                    </button>
+                  <?php endif; ?>
                   <a href="<?= htmlspecialchars($next_meet['google_cal_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-reaction" style="font-size: 0.82rem; text-decoration: none;">
                     📅 Agendar
                   </a>
@@ -337,7 +369,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <?php endif; ?>
 
             <!-- Planes & Precios Box -->
-            <div class="campus-card" style="margin-bottom: 20px;">
+            <div id="plansWidgetBox" class="campus-card" style="margin-bottom: 20px;">
               <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 10px;">
                 💳 Membresías & Planes
               </h4>
@@ -383,7 +415,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
           <p style="color: var(--c-text-muted); font-size: 0.95rem;">Masterclasses, estructuras paso a paso y guiones probados para monetizar tu marca personal.</p>
         </div>
 
-        <div class="classroom-grid">
+        <div class="classroom-grid courses-grid">
           <?php foreach ($data['courses'] as $course): ?>
             <div class="campus-card course-card">
               <div class="course-thumb-wrap">
@@ -408,12 +440,31 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                         <?= htmlspecialchars($mod['title']) ?>
                       </div>
                       <div class="module-lessons">
-                        <?php foreach ($mod['lessons'] as $les): ?>
-                          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-top: 1px solid var(--c-border); font-size: 0.82rem;">
-                            <span>🎬 <?= htmlspecialchars($les['title']) ?> <small style="color: var(--c-text-muted);">(<?= htmlspecialchars($les['duration']) ?>)</small></span>
-                            <button type="button" class="btn-reaction btn-play-lesson" style="padding: 3px 8px; font-size: 0.75rem;" onclick="playLessonModal('<?= htmlspecialchars(addslashes($les['title'])) ?>', '<?= htmlspecialchars($les['video_url']) ?>', '<?= htmlspecialchars(addslashes($les['description'])) ?>')">
-                              ▶️ Ver Clase
-                            </button>
+                        <?php foreach ($mod['lessons'] as $les): 
+                          $is_free = !empty($les['is_free']);
+                          $can_view = $is_logged_in || $is_free;
+                        ?>
+                          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid var(--c-border); font-size: 0.84rem;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <span><?= $can_view ? '🎬' : '🔒' ?></span>
+                              <div>
+                                <span style="font-weight: 600; color: var(--c-text-main);"><?= htmlspecialchars($les['title']) ?></span>
+                                <small style="color: var(--c-text-muted); margin-left: 4px;">(<?= htmlspecialchars($les['duration']) ?>)</small>
+                                <?php if ($is_free): ?>
+                                  <span style="font-size: 0.7rem; font-weight: 800; background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">GRATIS</span>
+                                <?php endif; ?>
+                              </div>
+                            </div>
+
+                            <?php if ($can_view): ?>
+                              <button type="button" class="btn-reaction btn-play-lesson" style="padding: 4px 10px; font-size: 0.78rem; font-weight: 700; color: var(--c-fire-primary);" onclick="playLessonModal('<?= htmlspecialchars(addslashes($les['title'])) ?>', '<?= htmlspecialchars($les['video_url']) ?>', '<?= htmlspecialchars(addslashes($les['description'])) ?>')">
+                                ▶️ Ver Clase
+                              </button>
+                            <?php else: ?>
+                              <button type="button" class="btn-reaction" style="padding: 4px 10px; font-size: 0.78rem; color: #64748b; background: #f1f5f9;" onclick="openLoginModal('Esta lección es exclusiva para miembros Pro. Iniciá sesión o suscribite para acceder.')">
+                                🔒 Desbloquear
+                              </button>
+                            <?php endif; ?>
                           </div>
                         <?php endforeach; ?>
                       </div>
@@ -453,9 +504,15 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 8px; min-width: 180px;">
-                <a href="<?= htmlspecialchars($meet['zoom_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-post-submit" style="text-align: center; text-decoration: none;">
-                  🚀 Entrar a la Sesión
-                </a>
+                <?php if ($is_logged_in): ?>
+                  <a href="<?= htmlspecialchars($meet['zoom_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-post-submit" style="text-align: center; text-decoration: none;">
+                    🚀 Entrar a la Sesión
+                  </a>
+                <?php else: ?>
+                  <button type="button" class="btn-post-submit" style="text-align: center;" onclick="openLoginModal('Las sesiones en directo son exclusivas para miembros activos.')">
+                    🔒 Acceso Alumnos
+                  </button>
+                <?php endif; ?>
                 <a href="<?= htmlspecialchars($meet['google_cal_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-reaction" style="justify-content: center; text-decoration: none;">
                   📅 Guardar en Calendario
                 </a>
@@ -496,11 +553,20 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <?php endforeach; ?>
             </div>
 
-            <!-- Chat Input Bar -->
-            <form id="formSendChat" class="chat-input-bar">
-              <input type="text" id="chatTextInput" class="chat-text-input" placeholder="Escribir un mensaje en #sala-general..." required>
-              <button type="submit" class="btn-post-submit">Enviar</button>
-            </form>
+            <?php if ($is_logged_in): ?>
+              <!-- Chat Input Bar -->
+              <form id="formSendChat" class="chat-input-bar">
+                <input type="text" id="chatTextInput" class="chat-text-input" placeholder="Escribir un mensaje en #sala-general..." required>
+                <button type="submit" class="btn-post-submit">Enviar</button>
+              </form>
+            <?php else: ?>
+              <div class="chat-guest-lock-bar">
+                <span style="font-size: 0.88rem; color: var(--c-text-sub); font-weight: 500;">🔒 El chat en vivo es exclusivo para miembros del Campus.</span>
+                <button type="button" class="btn-post-submit" onclick="openLoginModal('Iniciá sesión para chatear en la comunidad.')" style="padding: 6px 14px; font-size: 0.82rem;">
+                  🔑 Ingresar al Campus
+                </button>
+              </div>
+            <?php endif; ?>
           </div>
 
         </div>
@@ -956,6 +1022,12 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <label for="adminLessonDescInput">Descripción / Tareas:</label>
               <textarea id="adminLessonDescInput" class="admin-form-textarea" rows="3"></textarea>
             </div>
+            <div class="admin-form-group" style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+              <input type="checkbox" id="adminLessonIsFreeInput" style="width: 18px; height: 18px; accent-color: var(--c-fire-primary);">
+              <label for="adminLessonIsFreeInput" style="font-size: 0.88rem; font-weight: 700; color: var(--c-text-main); margin: 0; cursor: pointer;">
+                🟢 Clase Abierta / Gratis (Visible para visitantes sin login)
+              </label>
+            </div>
             <div class="admin-modal-actions">
               <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminLesson')">Cancelar</button>
               <button type="submit" class="admin-btn-add">Guardar Lección</button>
@@ -1056,6 +1128,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
       </div>
 
       <!-- 7. Modal de Login y Credenciales -->
+      <!-- 7. Modal de Login y Credenciales -->
       <div id="modalLogin" class="admin-modal-overlay">
         <div class="admin-modal-box" style="max-width: 440px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
@@ -1063,17 +1136,17 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <span style="font-size: 1.4rem;">🔥</span>
               <h3 style="font-family: var(--c-font-head); font-weight: 900; font-size: 1.2rem; color: var(--c-text-main);">Acceso al Campus</h3>
             </div>
-            <button type="button" onclick="document.getElementById('modalLogin').style.display='none';" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-text-muted);">&times;</button>
+            <button type="button" onclick="closeLoginModal()" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-text-muted);">&times;</button>
           </div>
 
           <form id="formCampusLogin">
             <div style="margin-bottom: 14px;">
               <label for="loginEmailInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Email:</label>
-              <input type="email" id="loginEmailInput" class="admin-form-input" placeholder="tu@email.com" value="<?= htmlspecialchars($user['email'] ?? 'mfmujic@gmail.com') ?>" required>
+              <input type="email" id="loginEmailInput" class="admin-form-input" placeholder="tu@email.com" value="" required>
             </div>
             <div style="margin-bottom: 16px;">
               <label for="loginPasswordInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Contraseña:</label>
-              <input type="password" id="loginPasswordInput" class="admin-form-input" placeholder="••••••••" value="marcelito" required>
+              <input type="password" id="loginPasswordInput" class="admin-form-input" placeholder="••••••••" value="" required>
             </div>
 
             <div id="loginFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
@@ -1100,6 +1173,6 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   </main>
 
   <!-- JS Controller con soporte completo de ABM y Avatar Dropdown -->
-  <script src="/assets/js/campus.js?v=3.5"></script>
+  <script src="/assets/js/campus.js?v=4.0"></script>
 </body>
 </html>

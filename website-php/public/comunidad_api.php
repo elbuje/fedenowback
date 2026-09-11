@@ -44,6 +44,19 @@ function fede_require_admin($user) {
     }
 }
 
+// Auth Guard Helper (Guest / Unauthenticated Restriction)
+function fede_require_auth($user) {
+    if (empty($user['is_logged_in']) || empty($user['role']) || $user['role'] === 'guest') {
+        http_response_code(401);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Debés iniciar sesión en el Campus para participar o publicar.',
+            'require_login' => true
+        ]);
+        exit;
+    }
+}
+
 switch ($action) {
 
     case 'get_state':
@@ -146,8 +159,20 @@ switch ($action) {
         }
 
     case 'auth_logout':
-        $user['is_logged_in'] = false;
-        $user['role'] = 'guest';
+        $_SESSION['fede_user'] = [
+            'id' => null,
+            'email' => '',
+            'name' => 'Invitado',
+            'handle' => '@invitado',
+            'avatar' => '/assets/img/fede_avatar_mini.png',
+            'role' => 'guest',
+            'is_logged_in' => false,
+            'points' => 0,
+            'level' => 1,
+            'level_name' => 'Visitante',
+            'completed_lessons' => [],
+            'joined_date' => date('F Y')
+        ];
         echo json_encode(['success' => true, 'message' => 'Sesión cerrada correctamente.']);
         exit;
 
@@ -182,6 +207,7 @@ switch ($action) {
         exit;
 
     case 'create_post':
+        fede_require_auth($user);
         $title = trim($json_data['title'] ?? $_POST['title'] ?? '');
         $content = trim($json_data['content'] ?? $_POST['content'] ?? '');
         $category = trim($json_data['category'] ?? $_POST['category'] ?? 'general');
@@ -231,6 +257,7 @@ switch ($action) {
         exit;
 
     case 'like_post':
+        fede_require_auth($user);
         $post_id = $json_data['post_id'] ?? $_POST['post_id'] ?? '';
         $numeric_post_id = (int)str_replace('post_', '', $post_id);
 
@@ -262,6 +289,7 @@ switch ($action) {
         exit;
 
     case 'add_comment':
+        fede_require_auth($user);
         $post_id = $json_data['post_id'] ?? $_POST['post_id'] ?? '';
         $content = trim($json_data['content'] ?? $_POST['content'] ?? '');
         $numeric_post_id = (int)str_replace('post_', '', $post_id);
@@ -297,6 +325,7 @@ switch ($action) {
         exit;
 
     case 'complete_lesson':
+        fede_require_auth($user);
         $lesson_id = $json_data['lesson_id'] ?? $_POST['lesson_id'] ?? '';
         if ($lesson_id && !in_array($lesson_id, $user['completed_lessons'])) {
             $user['completed_lessons'][] = $lesson_id;
@@ -310,6 +339,7 @@ switch ($action) {
         exit;
 
     case 'send_chat':
+        fede_require_auth($user);
         $message = trim($json_data['message'] ?? $_POST['message'] ?? '');
         if (empty($message)) {
             echo json_encode(['success' => false, 'error' => 'Mensaje vacío']);
@@ -506,6 +536,7 @@ switch ($action) {
         $duration = trim($json_data['duration'] ?? '15:00');
         $video_url = trim($json_data['video_url'] ?? '');
         $description = trim($json_data['description'] ?? '');
+        $is_free = !empty($json_data['is_free']) ? 1 : 0;
 
         if (empty($title)) {
             echo json_encode(['success' => false, 'error' => 'El título de la lección es obligatorio']);
@@ -525,13 +556,14 @@ switch ($action) {
             }
 
             if ($lesson_id > 0) {
-                $stmt = $pdo->prepare("UPDATE `fede_lessons` SET `title`=?, `duration`=?, `video_url`=?, `description`=? WHERE `id`=?");
-                $stmt->execute([$title, $duration, $video_url, $description, $lesson_id]);
+                $stmt = $pdo->prepare("UPDATE `fede_lessons` SET `title`=?, `duration`=?, `video_url`=?, `description`=?, `is_free`=? WHERE `id`=?");
+                $stmt->execute([$title, $duration, $video_url, $description, $is_free, $lesson_id]);
             } else {
-                $stmt = $pdo->prepare("INSERT INTO `fede_lessons` (`module_id`, `title`, `duration`, `video_url`, `description`, `action_items`, `resources`, `order_num`) VALUES (?, ?, ?, ?, ?, '[]', '[]', 1)");
-                $stmt->execute([$module_id, $title, $duration, $video_url, $description]);
+                $stmt = $pdo->prepare("INSERT INTO `fede_lessons` (`module_id`, `title`, `duration`, `video_url`, `description`, `is_free`) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$module_id ?: 1, $title, $duration, $video_url, $description, $is_free]);
+                $lesson_id = $pdo->lastInsertId();
             }
-            echo json_encode(['success' => true, 'message' => 'Lección guardada']);
+            echo json_encode(['success' => true, 'message' => 'Lección guardada', 'lesson_id' => $lesson_id]);
             exit;
         }
         echo json_encode(['success' => false, 'error' => 'Error de BD']);

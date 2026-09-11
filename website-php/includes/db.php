@@ -151,12 +151,20 @@ function fede_db_init_schema() {
             `duration` VARCHAR(30) NOT NULL DEFAULT '15:00',
             `video_url` TEXT,
             `description` TEXT,
+            `is_free` TINYINT(1) NOT NULL DEFAULT 0,
             `action_items` TEXT,
             `resources` TEXT,
             `order_num` INT NOT NULL DEFAULT 0,
             FOREIGN KEY (`module_id`) REFERENCES `fede_modules`(`id`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
+
+    // Safe column check/addition for is_free
+    try {
+        $pdo->exec("ALTER TABLE `fede_lessons` ADD COLUMN `is_free` TINYINT(1) NOT NULL DEFAULT 0 AFTER `description`");
+    } catch (Exception $e) {
+        // Column already exists
+    }
 
     // 9. User Lesson Progress Table
     $pdo->exec("

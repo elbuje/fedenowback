@@ -30,9 +30,9 @@ function get_fede_wa($msg = '') {
   <link rel="canonical" href="<?= htmlspecialchars($canonical_url) ?>">
 
   <!-- Favicons Oficiales Fede Nowback -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=6">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png?v=6">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png?v=6">
 
   <!-- Open Graph / WhatsApp Preview -->
   <meta property="og:type" content="website">

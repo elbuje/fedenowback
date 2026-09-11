@@ -48,6 +48,31 @@ function closeAdminModal(modalId) {
   if (modal) modal.style.display = 'none';
 }
 
+// Global Login Modal Helpers
+window.openLoginModal = function(msg) {
+  const modal = document.getElementById('modalLogin');
+  if (modal) {
+    modal.style.display = 'block';
+    const feedback = document.getElementById('loginFeedbackMsg');
+    if (feedback) {
+      if (msg) {
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(255, 85, 0, 0.12)';
+        feedback.style.color = '#ea580c';
+        feedback.textContent = '🔒 ' + msg;
+      } else {
+        feedback.style.display = 'none';
+        feedback.textContent = '';
+      }
+    }
+  }
+};
+
+window.closeLoginModal = function() {
+  const modal = document.getElementById('modalLogin');
+  if (modal) modal.style.display = 'none';
+};
+
 // Lesson Player Modal
 function playLessonModal(title, videoUrl, desc) {
   document.getElementById('playerLessonTitle').textContent = title || 'Clase de la Academia';
@@ -84,7 +109,7 @@ function openAdminCourseModal(id, title = '', slug = '', desc = '', duration = '
   openAdminModal('modalAdminCourse');
 }
 
-function openAdminLessonModal(id, courseId = 0, title = '', videoUrl = '', duration = '15:00', desc = '') {
+function openAdminLessonModal(id, courseId = 0, title = '', videoUrl = '', duration = '15:00', desc = '', isFree = 0) {
   document.getElementById('modalLessonTitle').textContent = (id > 0) ? 'Editar Lección' : 'Nueva Lección';
   document.getElementById('adminLessonIdInput').value = id || 0;
   if (courseId > 0) {
@@ -94,6 +119,8 @@ function openAdminLessonModal(id, courseId = 0, title = '', videoUrl = '', durat
   document.getElementById('adminLessonVideoInput').value = videoUrl || '';
   document.getElementById('adminLessonDurationInput').value = duration || '15:00';
   document.getElementById('adminLessonDescInput').value = desc || '';
+  const freeCheck = document.getElementById('adminLessonIsFreeInput');
+  if (freeCheck) freeCheck.checked = !!isFree;
   openAdminModal('modalAdminLesson');
 }
 
@@ -555,6 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
         video_url: document.getElementById('adminLessonVideoInput').value.trim(),
         duration: document.getElementById('adminLessonDurationInput').value.trim(),
         description: document.getElementById('adminLessonDescInput').value.trim(),
+        is_free: document.getElementById('adminLessonIsFreeInput')?.checked ? 1 : 0,
         csrf_token: csrfToken
       };
       try {
