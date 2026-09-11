@@ -1,18 +1,17 @@
 <?php
 /**
- * Landing Page de Alta Conversión - Evento "Encendé tu Fuego"
- * Fede Nowback — Sábado 12 de Septiembre, 9:30 a 12:00 hs — Lavalle 362 Piso 7, CABA
+ * Landing Page de Alta Conversión — ENCENDÉ TU FUEGO: Oferta Exclusiva de Acompañamiento
+ * Fede Nowback — Programas & Membresías
  * WhatsApp Oficial: +54 9 11 3820-5570
  */
 
-$page_title = "Encendé tu Fuego | Masterclass Presencial en CABA — Fede Nowback";
-$page_desc = "Evento presencial exclusivo: 7 reglas para dejar de postergar, vencer el miedo y cumplir tus metas. Sábado 12 de Septiembre de 9:30 a 12:00 hs en Lavalle 362 Piso 7 (CABA). ¡Últimos 6 lugares!";
-$canonical_url = "https://fedenowback.com.ar";
-$og_image = "https://fedenowback.com.ar/assets/img/evento_encende_tu_fuego.jpg";
+$page_title = "Encendé tu Fuego | Programas & Acompañamiento — Fede Nowback";
+$page_desc = "Elegí cómo querés que te acompañe: 3 modalidades según el nivel de claridad, estrategia y aceleración que necesita hoy tu negocio o marca personal.";
+$canonical_url = "https://fedenowback.com.ar/encende-tu-fuego";
 
-function get_evento_wa($msg = '') {
+function get_fede_wa_link($msg = '') {
     if (empty($msg)) {
-        $msg = "Hola Fede! Quiero reservar uno de los últimos 6 lugares para el evento presencial 'Encendé tu Fuego' del 12 de Septiembre en Lavalle 362.";
+        $msg = "Hola Fede! Tengo una consulta sobre los programas de Encendé tu Fuego.";
     }
     return "https://wa.me/5491138205570?text=" . urlencode($msg);
 }
@@ -24,1169 +23,866 @@ function get_evento_wa($msg = '') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($page_title) ?></title>
   <meta name="description" content="<?= htmlspecialchars($page_desc) ?>">
-  <meta name="keywords" content="encende tu fuego, fede nowback, evento dejar de postergar, masterclass presencial caba, desarrollo personal buenos aires, metas 2026">
+  <meta name="keywords" content="encende tu fuego, fede nowback, mentoria marca personal, comunidad emprendedores, templos de fuego, aceleracion negocios digitales">
   <meta name="author" content="Fede Nowback">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="canonical" href="<?= htmlspecialchars($canonical_url) ?>">
 
-  <!-- Favicons Oficiales Fede Nowback -->
+  <!-- Favicons -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico?v=6">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png?v=6">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png?v=6">
 
-  <!-- Open Graph / WhatsApp Preview -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">
   <meta property="og:site_name" content="Fede Nowback">
   <meta property="og:title" content="<?= htmlspecialchars($page_title) ?>">
   <meta property="og:description" content="<?= htmlspecialchars($page_desc) ?>">
   <meta property="og:url" content="<?= htmlspecialchars($canonical_url) ?>">
-  <meta property="og:image" content="<?= htmlspecialchars($og_image) ?>?v=3">
-  <meta property="og:image:secure_url" content="<?= htmlspecialchars($og_image) ?>?v=3">
-  <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="682">
-  <meta property="og:image:height" content="1024">
-  <meta property="og:image:alt" content="Encendé tu Fuego - Fede Nowback">
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="<?= htmlspecialchars($page_title) ?>">
-  <meta name="twitter:description" content="<?= htmlspecialchars($page_desc) ?>">
-  <meta name="twitter:image" content="<?= htmlspecialchars($og_image) ?>?v=3">
-
-  <!-- Google Fonts: Montserrat (Tipografía con pegada y autoridad) + Inter -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-
-  <!-- Schema.org JSON-LD Event -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    "name": "Encendé tu Fuego: 7 Reglas para Dejar de Postergar y Cumplir tus Metas",
-    "description": "Masterclass presencial de mentalidad, superación del miedo y ejecución de objetivos con Fede Nowback.",
-    "image": "https://fedenowback.com.ar/assets/img/evento_encende_tu_fuego.jpg",
-    "startDate": "2026-09-12T09:30:00-03:00",
-    "endDate": "2026-09-12T12:00:00-03:00",
-    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "location": {
-      "@type": "Place",
-      "name": "Auditorio Lavalle 362",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Lavalle 362 Piso 7",
-        "addressLocality": "Ciudad Autónoma de Buenos Aires",
-        "addressRegion": "CABA",
-        "addressCountry": "AR"
-      }
-    },
-    "organizer": {
-      "@type": "Person",
-      "name": "Fede Nowback",
-      "url": "https://fedenowback.com.ar",
-      "sameAs": [
-        "https://www.instagram.com/fedenowback/",
-        "https://www.tiktok.com/@fedenowback"
-      ]
-    }
-  }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --f-bg: #06080d;
-      --f-card: rgba(18, 22, 32, 0.88);
-      --f-card-hover: rgba(26, 32, 46, 0.95);
-      --f-orange: #ff5500;
-      --f-yellow: #ffb703;
-      --f-red: #d90429;
-      --f-text: #ffffff;
-      --f-muted: #9ca3af;
-      --f-sub: #d1d5db;
-      --f-font-h: 'Montserrat', sans-serif;
-      --f-font-b: 'Inter', sans-serif;
+      --f-bg: #07090e;
+      --f-bg-alt: #0c0f17;
+      --f-card: rgba(17, 22, 33, 0.92);
+      --f-card-hover: rgba(23, 30, 46, 0.98);
+      --f-card-popular: rgba(28, 20, 15, 0.95);
       --f-border: rgba(255, 255, 255, 0.08);
-      --f-border-fire: rgba(255, 85, 0, 0.35);
+      --f-border-popular: rgba(255, 85, 0, 0.55);
+      
+      --f-fire: #ff5500;
+      --f-fire-gold: #ffb703;
+      --f-fire-amber: #fb8500;
+      --f-fire-gradient: linear-gradient(135deg, #ff5500 0%, #ffb703 100%);
+      --f-fire-gradient-glow: radial-gradient(circle at 50% 20%, rgba(255, 85, 0, 0.22) 0%, rgba(255, 183, 3, 0.06) 45%, transparent 70%);
+      
+      --f-text: #f8fafc;
+      --f-text-muted: #94a3b8;
+      --f-text-sub: #cbd5e1;
+      
+      --f-radius: 18px;
+      --f-radius-sm: 10px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       background-color: var(--f-bg);
       color: var(--f-text);
-      font-family: var(--f-font-b);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .container {
-      max-width: 1060px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* Top Sticky Bar de Urgencia */
-    .top-urgency-bar {
-      background: linear-gradient(90deg, #d90429, #ff5500, #d90429);
-      background-size: 200% 100%;
-      animation: pulseGlow 4s linear infinite;
-      color: #fff;
-      text-align: center;
-      padding: 10px 15px;
-      font-family: var(--f-font-h);
-      font-size: 0.88rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    @keyframes pulseGlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Header Minimalista (Sin enlaces distractivos) */
-    .landing-header {
-      padding: 14px 0;
-      border-bottom: 1px solid var(--f-border);
-      background: rgba(6, 8, 13, 0.92);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(14px);
-    }
-
-    .header-wrap {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .brand-tag {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: #fff;
-    }
-
-    .brand-badge {
-      background: linear-gradient(135deg, var(--f-orange), var(--f-red));
-      color: #fff;
-      font-family: var(--f-font-h);
-      font-weight: 900;
-      font-size: 0.8rem;
-      padding: 4px 10px;
-      border-radius: 6px;
-      letter-spacing: 0.05em;
-    }
-
-    .brand-text {
-      font-family: var(--f-font-h);
-      font-weight: 800;
-      font-size: 1.15rem;
-    }
-
-    /* Botón WhatsApp Header */
-    .btn-wa-header {
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: #fff;
-      font-family: var(--f-font-b);
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 10px 20px;
-      border-radius: 9999px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
-      transition: all 0.25s ease;
-    }
-
-    .btn-wa-header:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
-    }
-
-    /* Hero Section */
-    .hero {
+      flex-direction: column;
       position: relative;
-      padding: 45px 0 65px;
-      overflow: hidden;
     }
 
-    .hero-glow {
+    /* Ambient Background Glow */
+    .ambient-glow {
       position: absolute;
-      top: -120px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(255, 85, 0, 0.2) 0%, rgba(217, 4, 41, 0.05) 60%, transparent 70%);
-      filter: blur(80px);
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 750px;
+      background: var(--f-fire-gradient-glow);
       pointer-events: none;
       z-index: 0;
     }
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 36px;
-      align-items: center;
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 20px;
       position: relative;
       z-index: 1;
     }
 
-    .badge-presencial {
+    /* Minimalist Top Nav */
+    .site-header {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--f-border);
+      backdrop-filter: blur(12px);
+      background: rgba(7, 9, 14, 0.85);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-badge {
+      background: var(--f-fire-gradient);
+      color: #000;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+
+    .brand-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-right-link {
+      color: var(--f-text-sub);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .nav-right-link:hover {
+      color: var(--f-fire-gold);
+    }
+
+    /* Hero Full Width Section */
+    .hero-section {
+      padding: 65px 0 45px;
+      text-align: center;
+    }
+
+    .hero-supertag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: rgba(255, 85, 0, 0.12);
-      border: 1px solid rgba(255, 85, 0, 0.4);
-      color: var(--f-yellow);
-      font-family: var(--f-font-h);
-      font-size: 0.82rem;
+      border: 1px solid rgba(255, 85, 0, 0.35);
+      color: var(--f-fire-gold);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
       font-weight: 900;
-      padding: 6px 14px;
+      padding: 6px 16px;
       border-radius: 9999px;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 16px;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
     }
 
-    .hero-h1 {
-      font-family: var(--f-font-h);
-      font-size: clamp(2.4rem, 4.8vw, 3.8rem);
+    .hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2.4rem, 6.5vw, 4.4rem);
       font-weight: 900;
-      line-height: 1.05;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
       text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    .fire-text {
-      background: linear-gradient(135deg, var(--f-yellow) 0%, var(--f-orange) 50%, var(--f-red) 100%);
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #ffffff 30%, #ffb703 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .hero-lead {
-      font-size: 1.12rem;
-      color: var(--f-sub);
-      margin-bottom: 24px;
-      line-height: 1.55;
+    .hero-subtitle-box {
+      max-width: 820px;
+      margin: 0 auto;
+      background: rgba(17, 22, 33, 0.6);
+      border: 1px solid var(--f-border);
+      border-radius: var(--f-radius);
+      padding: 24px 30px;
+      backdrop-filter: blur(8px);
     }
 
-    /* Contador Regresivo en Vivo */
-    .countdown-box {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--f-border-fire);
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 24px;
-    }
-
-    .countdown-title {
-      font-size: 0.78rem;
-      color: var(--f-muted);
-      text-transform: uppercase;
+    .hero-sub-head {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
       font-weight: 800;
-      letter-spacing: 0.05em;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .countdown-timer {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      text-align: center;
-    }
-
-    .time-card {
-      background: rgba(255, 85, 0, 0.08);
-      border: 1px solid rgba(255, 85, 0, 0.2);
-      border-radius: 8px;
-      padding: 8px 4px;
-    }
-
-    .time-num {
-      font-family: var(--f-font-h);
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: var(--f-yellow);
-      line-height: 1;
-    }
-
-    .time-lbl {
-      font-size: 0.68rem;
-      color: var(--f-muted);
+      color: var(--f-fire-gold);
+      margin-bottom: 12px;
       text-transform: uppercase;
-      font-weight: 700;
-      margin-top: 4px;
+      letter-spacing: 0.02em;
     }
 
-    /* Barra de Escasez */
-    .scarcity-wrap {
-      margin-bottom: 24px;
+    .hero-lead-p {
+      color: var(--f-text-sub);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 8px;
     }
 
-    .scarcity-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .scarcity-bar-bg {
-      width: 100%;
-      height: 10px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 9999px;
-      overflow: hidden;
-    }
-
-    .scarcity-bar-fill {
-      width: 88%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--f-yellow), var(--f-orange), var(--f-red));
-      border-radius: 9999px;
-    }
-
-    /* Event Data Cards Grid */
-    .event-details-grid {
-      background: var(--f-card);
-      border: 1px solid var(--f-border-fire);
-      border-radius: 14px;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-
-    .detail-item {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .detail-lbl {
-      font-size: 0.72rem;
-      color: var(--f-muted);
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .detail-val {
-      font-family: var(--f-font-h);
-      font-size: 0.98rem;
-      font-weight: 800;
+    .hero-lead-p strong {
       color: #fff;
     }
 
-    /* Botón Fuego Principal */
-    .btn-fire-hero {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: linear-gradient(135deg, var(--f-orange), var(--f-yellow));
+    /* 3 Offers Pricing Grid */
+    .offers-section {
+      padding: 30px 0 70px;
+    }
+
+    .offers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 1024px) {
+      .offers-grid {
+        grid-template-columns: 1fr;
+        max-width: 650px;
+        margin: 0 auto;
+      }
+    }
+
+    /* Offer Card */
+    .offer-card {
+      background: var(--f-card);
+      border: 1px solid var(--f-border);
+      border-radius: var(--f-radius);
+      padding: 36px 28px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .offer-card:hover {
+      transform: translateY(-6px);
+      background: var(--f-card-hover);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    /* Popular / Highlighted Card (Opción 2) */
+    .offer-card.featured {
+      background: var(--f-card-popular);
+      border: 2px solid var(--f-border-popular);
+      box-shadow: 0 15px 45px rgba(255, 85, 0, 0.2);
+      transform: scale(1.02);
+    }
+
+    .offer-card.featured:hover {
+      transform: scale(1.02) translateY(-6px);
+      box-shadow: 0 25px 60px rgba(255, 85, 0, 0.32);
+      border-color: var(--f-fire-gold);
+    }
+
+    .featured-ribbon {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--f-fire-gradient);
       color: #000;
-      font-family: var(--f-font-h);
+      font-family: 'Montserrat', sans-serif;
       font-weight: 900;
-      font-size: 1.05rem;
-      padding: 16px 32px;
+      font-size: 0.75rem;
+      padding: 5px 16px;
       border-radius: 9999px;
-      text-decoration: none;
-      box-shadow: 0 6px 25px rgba(255, 85, 0, 0.45);
-      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: 0 4px 14px rgba(255, 85, 0, 0.5);
+      white-space: nowrap;
+    }
+
+    .card-top-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 900;
+      color: var(--f-fire-gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 6px;
+      line-height: 1.18;
+    }
+
+    .card-subheadline {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--f-fire-amber);
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      width: 100%;
-      text-align: center;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--f-border);
     }
 
-    .btn-fire-hero:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 35px rgba(255, 85, 0, 0.65);
-      background: linear-gradient(135deg, #ff6b1a, #ffc629);
-    }
-
-    .flyer-hero-img {
-      width: 100%;
-      border-radius: 16px;
-      border: 2px solid rgba(255, 85, 0, 0.4);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 85, 0, 0.25);
-      display: block;
-    }
-
-    /* Secciones */
-    .section-wrap {
-      padding: 65px 0;
-      border-top: 1px solid var(--f-border);
-    }
-
-    .sec-header {
-      text-align: center;
-      max-width: 680px;
-      margin: 0 auto 45px;
-    }
-
-    .sec-tag {
-      color: var(--f-yellow);
-      font-family: var(--f-font-h);
-      font-size: 0.82rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .sec-title {
-      font-family: var(--f-font-h);
-      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-      font-weight: 900;
-      line-height: 1.15;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    /* PAS (Problema - Agitación - Solución) */
-    .pas-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .pas-card {
-      background: var(--f-card);
-      border: 1px solid var(--f-border);
-      border-radius: 14px;
-      padding: 26px;
-    }
-
-    .pas-card.highlight {
-      border-color: var(--f-orange);
-      background: linear-gradient(180deg, rgba(255, 85, 0, 0.12) 0%, rgba(18, 22, 32, 0.95) 100%);
-    }
-
-    .pas-icon {
-      font-size: 2rem;
-      margin-bottom: 14px;
-    }
-
-    .pas-h3 {
-      font-family: var(--f-font-h);
-      font-size: 1.15rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      color: #fff;
-    }
-
-    .pas-p {
-      color: var(--f-muted);
-      font-size: 0.92rem;
+    .card-body-desc {
+      color: var(--f-text-sub);
+      font-size: 0.94rem;
       line-height: 1.55;
+      margin-bottom: 20px;
     }
 
-    /* Las 7 Reglas */
-    .rules-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-    }
-
-    .rule-card {
-      background: var(--f-card);
-      border: 1px solid var(--f-border);
-      border-radius: 12px;
-      padding: 22px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    .rule-card:hover {
-      border-color: var(--f-border-fire);
-    }
-
-    .rule-num {
-      width: 42px;
-      height: 42px;
-      background: rgba(255, 85, 0, 0.15);
-      border: 1px solid var(--f-border-fire);
-      color: var(--f-yellow);
-      font-family: var(--f-font-h);
-      font-weight: 900;
-      font-size: 1.25rem;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .rule-title {
-      font-family: var(--f-font-h);
-      font-size: 1.05rem;
-      font-weight: 800;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
-    .rule-desc {
-      color: var(--f-muted);
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
-    /* Agenda del Evento */
-    .agenda-box {
-      background: var(--f-card);
-      border: 1px solid var(--f-border-fire);
-      border-radius: 16px;
-      padding: 32px;
-      max-width: 780px;
-      margin: 0 auto;
-    }
-
-    .agenda-item {
-      display: flex;
-      gap: 20px;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .agenda-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .agenda-time {
-      font-family: var(--f-font-h);
-      font-weight: 900;
-      font-size: 1rem;
-      color: var(--f-yellow);
-      min-width: 80px;
-    }
-
-    .agenda-info strong {
-      display: block;
-      color: #fff;
-      font-size: 1.02rem;
-      margin-bottom: 4px;
-    }
-
-    .agenda-info p {
-      color: var(--f-muted);
-      font-size: 0.88rem;
-    }
-
-    /* Galería 3 Fotos Reales */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .gallery-item {
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      aspect-ratio: 4/5;
-      border: 1px solid var(--f-border);
-      background: #12151f;
-    }
-
-    .gallery-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.35s ease;
-    }
-
-    .gallery-item:hover img {
-      transform: scale(1.04);
-    }
-
-    .gallery-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(6, 8, 13, 0.95) 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 16px;
-    }
-
-    /* Para quién es / No es */
-    .who-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-    }
-
-    .who-box {
-      background: var(--f-card);
-      border: 1px solid var(--f-border);
-      border-radius: 14px;
-      padding: 28px;
-    }
-
-    .who-box.yes { border-color: rgba(16, 185, 129, 0.35); }
-    .who-box.no { border-color: rgba(217, 4, 41, 0.35); }
-
-    .who-title {
-      font-family: var(--f-font-h);
-      font-size: 1.2rem;
-      font-weight: 800;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .who-list {
+    .features-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      font-size: 0.92rem;
-      color: var(--f-sub);
+      margin-bottom: 26px;
+      font-size: 0.91rem;
+      color: var(--f-text-sub);
     }
 
-    /* Sticky Floating WhatsApp */
-    .wa-float {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 999;
+    .features-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.45;
+    }
+
+    .features-list li .bullet {
+      color: var(--f-fire-gold);
+      font-weight: 900;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+      margin-top: -1px;
+    }
+
+    .features-list li strong {
+      color: #fff;
+    }
+
+    .section-breakout {
+      background: rgba(255, 85, 0, 0.08);
+      border: 1px solid rgba(255, 85, 0, 0.22);
+      border-radius: var(--f-radius-sm);
+      padding: 14px;
+      margin: 18px 0;
+    }
+
+    .section-breakout-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 900;
+      color: var(--f-fire-gold);
+      margin-bottom: 6px;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: #fff;
-      padding: 14px 24px;
-      border-radius: 9999px;
-      text-decoration: none;
-      font-family: var(--f-font-h);
+      gap: 6px;
+    }
+
+    .section-breakout p {
+      font-size: 0.86rem;
+      color: var(--f-text-sub);
+      line-height: 1.45;
+    }
+
+    /* Price Section Inside Card */
+    .card-pricing-box {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--f-border);
+      text-align: center;
+    }
+
+    .price-label {
+      font-size: 0.78rem;
       font-weight: 800;
-      font-size: 0.92rem;
-      box-shadow: 0 8px 30px rgba(37, 211, 102, 0.45);
-      transition: all 0.25s ease;
+      color: var(--f-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
     }
 
-    .wa-float:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 12px 35px rgba(37, 211, 102, 0.65);
+    .price-main {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 4px;
     }
 
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      background: #ff5500;
-      border-radius: 50%;
-      display: inline-block;
-      box-shadow: 0 0 10px #ff5500;
+    .price-usd {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--f-fire-gold);
+      margin-bottom: 18px;
     }
 
-    /* FAQ */
-    .faq-list {
-      max-width: 760px;
-      margin: 0 auto;
+    /* CTA Button */
+    .btn-buy-mp {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: var(--f-fire-gradient);
+      color: #000;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 900;
+      padding: 16px 20px;
+      border-radius: var(--f-radius-sm);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      box-shadow: 0 8px 25px rgba(255, 85, 0, 0.35);
+      transition: all 0.25s ease;
+      cursor: pointer;
     }
 
-    .faq-item {
-      background: var(--f-card);
-      border: 1px solid var(--f-border);
-      border-radius: 10px;
-      padding: 18px 22px;
+    .btn-buy-mp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(255, 85, 0, 0.55);
+      filter: brightness(1.08);
     }
 
-    .faq-q {
-      font-family: var(--f-font-h);
-      font-weight: 800;
-      font-size: 1rem;
+    .btn-buy-mp-featured {
+      background: linear-gradient(135deg, #ff8500 0%, #ffc107 100%);
+      box-shadow: 0 10px 30px rgba(255, 133, 0, 0.45);
+    }
+
+    .card-security-note {
+      font-size: 0.75rem;
+      color: var(--f-text-muted);
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Manifest & Closing Banner */
+    .closing-section {
+      padding: 60px 0 80px;
+      background: linear-gradient(180deg, transparent 0%, rgba(255, 85, 0, 0.05) 50%, rgba(0,0,0,0.5) 100%);
+      border-top: 1px solid var(--f-border);
+    }
+
+    .manifesto-box {
+      max-width: 860px;
+      margin: 0 auto;
+      background: rgba(17, 22, 33, 0.75);
+      border: 1px solid rgba(255, 85, 0, 0.3);
+      border-radius: var(--f-radius);
+      padding: 45px 36px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .manifesto-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
       color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 20px;
+    }
+
+    .manifesto-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+      text-align: left;
+    }
+
+    .manifesto-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--f-border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .manifesto-item-icon {
+      font-size: 1.4rem;
       margin-bottom: 6px;
     }
 
-    .faq-a {
-      color: var(--f-muted);
+    .manifesto-item-text {
       font-size: 0.92rem;
-      line-height: 1.55;
+      color: var(--f-text-sub);
+      line-height: 1.45;
     }
 
-    /* Footer Simple */
-    .landing-footer {
+    .manifesto-conclusion {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--f-fire-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-top: 25px;
+      padding-top: 20px;
       border-top: 1px solid var(--f-border);
-      padding: 36px 0;
-      text-align: center;
-      color: var(--f-muted);
-      font-size: 0.85rem;
     }
 
-    /* Responsive */
-    @media (max-width: 860px) {
-      .hero-grid, .pas-grid, .rules-grid, .gallery-grid, .who-grid, .event-details-grid {
-        grid-template-columns: 1fr;
-      }
-      .countdown-timer {
-        grid-template-columns: repeat(4, 1fr);
-      }
+    .footer-help {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.92rem;
+      color: var(--f-text-muted);
+    }
+
+    .footer-help a {
+      color: var(--f-fire-gold);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .footer-help a:hover {
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    .site-footer {
+      padding: 30px 0;
+      border-top: 1px solid var(--f-border);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--f-text-muted);
+      background: #040508;
     }
   </style>
 </head>
 <body>
 
-  <!-- Barra Superior de Urgencia -->
-  <div class="top-urgency-bar">
-    ⚡ ¡Últimos 6 Lugares Disponibles! • Sábado 12 de Septiembre en Lavalle 362 (CABA)
-  </div>
+  <div class="ambient-glow"></div>
 
-  <!-- Header Minimalista -->
-  <header class="landing-header">
-    <div class="container header-wrap">
-      <div class="brand-tag">
+  <!-- Minimal Header -->
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="/" class="brand">
         <span class="brand-badge">NOWBACK</span>
-        <span class="brand-text">FEDE NOWBACK</span>
-      </div>
-
-      <a href="<?= get_evento_wa() ?>" target="_blank" rel="noopener noreferrer" class="btn-wa-header">
+        <span class="brand-name">FEDE NOWBACK</span>
+      </a>
+      <a href="<?= get_fede_wa_link('Hola Fede! Tengo una consulta sobre los 3 programas de Encendé tu Fuego.') ?>" target="_blank" rel="noopener noreferrer" class="nav-right-link">
         <span>💬</span>
-        <span>Reservar Lugar</span>
+        <span>Consultar por WhatsApp</span>
       </a>
     </div>
   </header>
 
-  <!-- Hero Section con Técnicas de Venta -->
-  <section class="hero">
-    <div class="hero-glow"></div>
+  <!-- Hero Section -->
+  <section class="hero-section">
     <div class="container">
-      <div class="hero-grid">
+      
+      <div class="hero-supertag">
+        🔥 OFERTA EXCLUSIVA • ENCENDÉ TU FUEGO
+      </div>
+
+      <h1 class="hero-title">
+        ENCENDÉ TU FUEGO
+      </h1>
+
+      <div class="hero-subtitle-box">
+        <h2 class="hero-sub-head">ELEGÍ CÓMO QUERÉS QUE TE ACOMPAÑE</h2>
+        <p class="hero-lead-p">
+          <strong>No necesitás acumular más información.</strong><br>
+          Necesitás claridad, estrategia, herramientas y acompañamiento para ejecutar.
+        </p>
+        <p class="hero-lead-p" style="font-size: 0.96rem; color: var(--f-text-muted); margin-top: 6px;">
+          Por eso armé <strong>tres formas diferentes de trabajar conmigo</strong>, según el nivel de acompañamiento que necesites hoy para hacer crecer tu negocio o marca personal.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3 Pricing & Offers Blocks -->
+  <section class="offers-section" id="planes">
+    <div class="container">
+      <div class="offers-grid">
+
+        <!-- ========================================== -->
+        <!-- OPCIÓN 1: EMPEZÁ A MOVERTE -->
+        <!-- ========================================== -->
+        <div class="offer-card">
+          <div>
+            <div class="card-top-tag">OPCIÓN 1</div>
+            <h3 class="card-title">EMPEZÁ A MOVERTE</h3>
+            <div class="card-subheadline">
+              1 MES DE MEMBRESÍA + 1 ENCUENTRO 1 A 1
+            </div>
+
+            <p class="card-body-desc">
+              Durante un mes vas a formar parte de nuestra <strong>Comunidad de Emprendedores</strong> con acceso integral a formación y networking:
+            </p>
+
+            <ul class="features-list">
+              <li>
+                <span class="bullet">✓</span>
+                <span><strong>1 encuentro grupal semanal</strong> por Zoom en vivo.</span>
+              </li>
+              <li>
+                <span class="bullet">✓</span>
+                <span><strong>Clases estratégicas</strong> sobre negocios, ventas, contenido, marca personal y mentalidad.</span>
+              </li>
+              <li>
+                <span class="bullet">✓</span>
+                <span><strong>Espacio abierto</strong> para hacer tus consultas directas.</span>
+              </li>
+              <li>
+                <span class="bullet">✓</span>
+                <span><strong>Comunidad privada</strong> + grupo exclusivo de WhatsApp.</span>
+              </li>
+              <li>
+                <span class="bullet">✓</span>
+                <span><strong>Acceso a los cursos grabados</strong> disponibles durante tu membresía.</span>
+              </li>
+              <li>
+                <span class="bullet">✓</span>
+                <span><strong>Beneficios especiales</strong> en futuros eventos presenciales.</span>
+              </li>
+            </ul>
+
+            <div class="section-breakout">
+              <div class="section-breakout-title">
+                <span>🎯</span> + ENCUENTRO PRIVADO CONMIGO
+              </div>
+              <p>
+                Un encuentro 1 a 1 de <strong>una hora vía Google Meet</strong> para trabajar específicamente sobre tu negocio, detectar qué necesitás mejorar y definir próximos pasos claros.
+              </p>
+            </div>
+          </div>
+
+          <div class="card-pricing-box">
+            <div class="price-label">INVERSIÓN</div>
+            <div class="price-main">$99.000 <span style="font-size: 0.9rem; font-weight: 600; color: var(--f-text-muted);">ARS</span></div>
+            <div class="price-usd">USD 60 (Exterior)</div>
+
+            <a href="https://mpago.la/14zkFmJ" target="_blank" rel="noopener noreferrer" class="btn-buy-mp">
+              <span>💳 Reservar Opción 1</span>
+              <span>→</span>
+            </a>
+
+            <div class="card-security-note">
+              <span>🔒</span> Pago seguro procesado por MercadoPago
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- OPCIÓN 2: RODEATE. TRABAJÁ. AVANZÁ. (MÁS ELEGIDO) -->
+        <!-- ========================================== -->
+        <div class="offer-card featured">
+          <div class="featured-ribbon">
+            🔥 MÁS ELEGIDO • GRUPO REDUCIDO
+          </div>
+
+          <div>
+            <div class="card-top-tag" style="color: var(--f-fire-gold);">OPCIÓN 2</div>
+            <h3 class="card-title">RODEATE. TRABAJÁ. AVANZÁ.</h3>
+            <div class="card-subheadline" style="color: var(--f-fire-gold);">
+              2 MESES DE MEMBRESÍA + 2 MESES EN SALAS TEMPLO DE FUEGO + 1 ENCUENTRO 1 A 1
+            </div>
+
+            <p class="card-body-desc">
+              Además de tener <strong>2 meses completos</strong> dentro de la Comunidad de Emprendedores, vas a acceder durante dos meses a:
+            </p>
+
+            <div class="section-breakout" style="background: rgba(255, 183, 3, 0.1); border-color: rgba(255, 183, 3, 0.35);">
+              <div class="section-breakout-title" style="color: var(--f-fire-gold); font-size: 0.92rem;">
+                <span>🔥</span> SALAS TEMPLO DE FUEGO
+              </div>
+              <p style="margin-bottom: 8px;">
+                Un espacio privado de trabajo formado por <strong>solamente 4 emprendedores</strong>.
+              </p>
+              <p style="font-size: 0.84rem; color: var(--f-text-sub); line-height: 1.45;">
+                Nos encontramos <strong>4 veces por mes</strong> para trabajar sobre los negocios, compartir situaciones reales, resolver problemas, bajar ideas a tierra y avanzar acompañados.
+              </p>
+              <div style="margin-top: 8px; font-weight: 800; color: #fff; font-size: 0.84rem;">
+                ⚡ 2 meses dentro de la Sala • 8 encuentros privados en grupo reducido.
+              </div>
+            </div>
+
+            <ul class="features-list">
+              <li>
+                <span class="bullet" style="color: var(--f-fire-gold);">✓</span>
+                <span><strong>2 meses completos</strong> de Comunidad de Emprendedores.</span>
+              </li>
+              <li>
+                <span class="bullet" style="color: var(--f-fire-gold);">✓</span>
+                <span><strong>Encuentros grupales semanales</strong> + clases y cursos grabados.</span>
+              </li>
+              <li>
+                <span class="bullet" style="color: var(--f-fire-gold);">✓</span>
+                <span><strong>Comunidad privada + WhatsApp</strong> y espacio para consultas.</span>
+              </li>
+              <li>
+                <span class="bullet" style="color: var(--f-fire-gold);">✓</span>
+                <span><strong>Beneficios prioritarios</strong> en futuros eventos presenciales.</span>
+              </li>
+              <li>
+                <span class="bullet" style="color: var(--f-fire-gold);">✓</span>
+                <span><strong>1 encuentro privado 1 a 1 de 1 hora</strong> conmigo vía Google Meet.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-pricing-box">
+            <div class="price-label">INVERSIÓN</div>
+            <div class="price-main" style="color: var(--f-fire-gold);">$250.000 <span style="font-size: 0.9rem; font-weight: 600; color: var(--f-text-muted);">ARS</span></div>
+            <div class="price-usd">USD 165 (Exterior)</div>
+
+            <a href="https://mpago.li/26skaPq" target="_blank" rel="noopener noreferrer" class="btn-buy-mp btn-buy-mp-featured">
+              <span>🔥 Reservar Opción 2</span>
+              <span>→</span>
+            </a>
+
+            <div class="card-security-note">
+              <span>🔒</span> Cupos estrictamente limitados a 4 por Sala
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- OPCIÓN 3: ACOMPAÑAMIENTO INTENSIVO -->
+        <!-- ========================================== -->
+        <div class="offer-card">
+          <div>
+            <div class="card-top-tag">OPCIÓN 3</div>
+            <h3 class="card-title">ACOMPAÑAMIENTO INTENSIVO</h3>
+            <div class="card-subheadline">
+              3 MESES DE MEMBRESÍA + 1 MES DE MENTORÍA PRIVADA 1 A 1
+            </div>
+
+            <p class="card-body-desc">
+              Esta opción es para quien busca un <strong>acompañamiento mucho más cercano, personalizado y de alto impacto</strong>.
+            </p>
+
+            <ul class="features-list">
+              <li>
+                <span class="bullet">✓</span>
+                <span><strong>3 meses completos</strong> dentro de la Comunidad de Emprendedores.</span>
+              </li>
+              <li>
+                <span class="bullet">✓</span>
+                <span>Acceso a <strong>todos los encuentros, clases, cursos, consultas y nuevos contenidos</strong> que se incorporen en el período.</span>
+              </li>
+            </ul>
+
+            <div class="section-breakout" style="background: rgba(255, 85, 0, 0.12); border-color: rgba(255, 85, 0, 0.35);">
+              <div class="section-breakout-title">
+                <span>👑</span> + 1 MES DE MENTORÍA PRIVADA CONMIGO
+              </div>
+              <ul style="list-style: none; font-size: 0.86rem; color: var(--f-text-sub); display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
+                <li>• <strong>4 encuentros privados 1 a 1</strong> (1 por semana, 1 hora cada uno).</li>
+                <li>• Trabajo directo sobre tu negocio, marca personal, comunicación, estrategia y ventas.</li>
+                <li>• Toma de decisiones estratégicas para desbloquear tu facturación.</li>
+                <li>• <strong>Acompañamiento continuo por WhatsApp directo</strong> durante todo el proceso.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card-pricing-box">
+            <div class="price-label">INVERSIÓN</div>
+            <div class="price-main">$447.000 <span style="font-size: 0.9rem; font-weight: 600; color: var(--f-text-muted);">ARS</span></div>
+            <div class="price-usd">USD 290 (Exterior)</div>
+
+            <a href="https://mpago.li/1sqwSxe" target="_blank" rel="noopener noreferrer" class="btn-buy-mp">
+              <span>👑 Reservar Opción 3</span>
+              <span>→</span>
+            </a>
+
+            <div class="card-security-note">
+              <span>🔒</span> Plazas limitadas por agenda de mentoría
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Manifesto & Closing Section -->
+  <section class="closing-section">
+    <div class="container">
+      
+      <div class="manifesto-box">
+        <h3 class="manifesto-title">NO ES SOLO CONTENIDO.</h3>
         
-        <!-- Columna de Texto & Conversión -->
-        <div>
-          <span class="badge-presencial">
-            <span class="pulse-dot"></span> Masterclass Presencial en CABA
-          </span>
-          <h1 class="hero-h1">
-            ENCENDÉ <span class="fire-text">TU FUEGO</span>
-          </h1>
-          <p class="hero-lead">
-            <strong>7 Reglas Prácticas para Dejar de Postergar, Vencer el Miedo y Cumplir tus Metas.</strong> Un encuentro intensivo de 2 horas y media para reprogramar tu disciplina y accionar definitivamente.
-          </p>
-
-          <!-- Contador Regresivo en Vivo -->
-          <div class="countdown-box">
-            <div class="countdown-title">
-              <span>⏳ El evento comienza en:</span>
-              <span style="color: var(--f-yellow);">Sábado 12/09 • 09:30 hs</span>
-            </div>
-            <div class="countdown-timer">
-              <div class="time-card">
-                <div class="time-num" id="cd-days">02</div>
-                <div class="time-lbl">Días</div>
-              </div>
-              <div class="time-card">
-                <div class="time-num" id="cd-hours">09</div>
-                <div class="time-lbl">Horas</div>
-              </div>
-              <div class="time-card">
-                <div class="time-num" id="cd-mins">15</div>
-                <div class="time-lbl">Minutos</div>
-              </div>
-              <div class="time-card">
-                <div class="time-num" id="cd-secs">30</div>
-                <div class="time-lbl">Segundos</div>
-              </div>
+        <div class="manifesto-grid">
+          <div class="manifesto-item">
+            <div class="manifesto-item-icon">❓</div>
+            <div class="manifesto-item-text">
+              <strong>Es tener un lugar donde preguntar</strong> sin miedo y con respuestas estratégicas basadas en la práctica.
             </div>
           </div>
 
-          <!-- Barra de Escasez / Cupos -->
-          <div class="scarcity-wrap">
-            <div class="scarcity-header">
-              <span style="color: #ff4d6d;">🔥 Capacidad del Auditorio: 88% Reservado</span>
-              <span style="color: var(--f-yellow);">Quedan 6 Entradas</span>
-            </div>
-            <div class="scarcity-bar-bg">
-              <div class="scarcity-bar-fill"></div>
+          <div class="manifesto-item">
+            <div class="manifesto-item-icon">🤝</div>
+            <div class="manifesto-item-text">
+              <strong>Personas con quienes compartir el camino</strong>, rodearte de pares con tu misma ambición y empuje.
             </div>
           </div>
 
-          <!-- Detalles del Evento -->
-          <div class="event-details-grid">
-            <div class="detail-item">
-              <span class="detail-lbl">📅 Fecha</span>
-              <span class="detail-val">12 de Septiembre</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-lbl">⏰ Horario</span>
-              <span class="detail-val">9:30 a 12:00 H</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-lbl">📍 Ubicación</span>
-              <span class="detail-val">Lavalle 362, Piso 7</span>
+          <div class="manifesto-item">
+            <div class="manifesto-item-icon">🛠️</div>
+            <div class="manifesto-item-text">
+              <strong>Herramientas para aplicar</strong> en tu día a día, sin rodeos ni teorías que no mueven la aguja.
             </div>
           </div>
 
-          <!-- CTA Principal -->
-          <a href="<?= get_evento_wa() ?>" target="_blank" rel="noopener noreferrer" class="btn-fire-hero">
-            🔥 Asegurar Mi Entrada por WhatsApp
+          <div class="manifesto-item">
+            <div class="manifesto-item-icon">🚀</div>
+            <div class="manifesto-item-text">
+              <strong>Distintos niveles de acompañamiento</strong> para transformar tus ideas y conocimientos en acciones que generen resultados reales.
+            </div>
+          </div>
+        </div>
+
+        <div class="manifesto-conclusion">
+          AHORA TE TOCA ELEGIR CÓMO QUERÉS AVANZAR.
+        </div>
+
+        <div style="margin-top: 25px;">
+          <a href="#planes" class="btn-buy-mp" style="max-width: 380px; margin: 0 auto;">
+            ⚡ Ver las 3 Opciones y Reservar
           </a>
-          <p style="text-align: center; color: var(--f-muted); font-size: 0.82rem; margin-top: 8px;">
-            Coordinación y reserva directa con Fede al <strong>+54 9 11 3820-5570</strong>
-          </p>
-        </div>
-
-        <!-- Flyer Oficial -->
-        <div>
-          <img src="/assets/img/evento_encende_tu_fuego.jpg" alt="Flyer Oficial Encendé tu Fuego - Fede Nowback" class="flyer-hero-img">
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Problema - Agitación - Solución (PAS) -->
-  <section class="section-wrap">
-    <div class="container">
-      <div class="sec-header">
-        <span class="sec-tag">El Diagnóstico</span>
-        <h2 class="sec-title">¿Por qué seguís postergando lo que sabés que tenés que hacer?</h2>
-      </div>
-
-      <div class="pas-grid">
-        <div class="pas-card">
-          <div class="pas-icon">⏳</div>
-          <h3 class="pas-h3">1. La Trampa del "Empiezo el Lunes"</h3>
-          <p class="pas-p">Tenés ideas y ganas, pero cuando llega el momento de ejecutar te gana la pereza, la distracción del celular o el cansancio mental.</p>
-        </div>
-
-        <div class="pas-card">
-          <div class="pas-icon">🛑</div>
-          <h3 class="pas-h3">2. El Miedo al Qué Dirán</h3>
-          <p class="pas-p">Te da vergüenza mostrarte, temés que tus conocidos te critiquen o pensás que no estás 100% listo para dar el paso.</p>
-        </div>
-
-        <div class="pas-card highlight">
-          <div class="pas-icon">🔥</div>
-          <h3 class="pas-h3" style="color: var(--f-yellow);">3. La Solución: Encender tu Fuego</h3>
-          <p class="pas-p" style="color: #fff;">Un sistema mental y de hábitos probado para salir de la inercia, blindar tu convicción y sostener la disciplina pase lo que pase.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Las 7 Reglas del Encuentro -->
-  <section class="section-wrap" style="background: rgba(255,255,255,0.015);">
-    <div class="container">
-      <div class="sec-header">
-        <span class="sec-tag">El Programa de Transformación</span>
-        <h2 class="sec-title">Las 7 Reglas que vas a incorporar</h2>
-      </div>
-
-      <div class="rules-grid">
-        <div class="rule-card">
-          <div class="rule-num">1</div>
-          <div>
-            <h3 class="rule-title">Destruir la Procrastinación de Raíz</h3>
-            <p class="rule-desc">El método exacto para eliminar las justificaciones mentales y ejecutar en bloques de acción masiva.</p>
-          </div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-num">2</div>
-          <div>
-            <h3 class="rule-title">Blindaje Mental contra las Críticas</h3>
-            <p class="rule-desc">Cómo desapegarte de la opinión ajena: los que critican nunca están en la arena construyendo.</p>
-          </div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-num">3</div>
-          <div>
-            <h3 class="rule-title">Gestión de la Frustración y el Rechazo</h3>
-            <p class="rule-desc">Cómo mantener la energía y la convicción intactas cuando los resultados tardan o se caen ventas.</p>
-          </div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-num">4</div>
-          <div>
-            <h3 class="rule-title">El Poder del Círculo Íntimo</h3>
-            <p class="rule-desc">Cómo purgar entornos tóxicos y rodearte de personas que te exijan subir tu estándar de vida.</p>
-          </div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-num">5</div>
-          <div>
-            <h3 class="rule-title">Estructura de Metas Inquebrantables</h3>
-            <p class="rule-desc">La ingeniería inversa de objetivos: cómo dividir una meta grande en 3 acciones diarias simples.</p>
-          </div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-num">6</div>
-          <div>
-            <h3 class="rule-title">Hábitos de Alta Energía y Foco</h3>
-            <p class="rule-desc">Rutinas de desconexión y enfoque profundo para triplicar tu productividad sin quemarte.</p>
-          </div>
-        </div>
-
-        <div class="rule-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(255,85,0,0.1) 0%, rgba(18,22,32,0.9) 100%); border-color: var(--f-orange);">
-          <div class="rule-num" style="background: var(--f-orange); color: #000;">7</div>
-          <div>
-            <h3 class="rule-title" style="color: var(--f-yellow);">De Gacela a León: Autoestima y Liderazgo</h3>
-            <p class="rule-desc" style="color: #fff;">Dejar de actuar desde la escasez o la necesidad para negociar, vender y vivir con absoluta autoridad.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Agenda del Evento -->
-  <section class="section-wrap">
-    <div class="container">
-      <div class="sec-header">
-        <span class="sec-tag">Cronograma Oficial</span>
-        <h2 class="sec-title">Agenda • Sábado 12 de Septiembre</h2>
-      </div>
-
-      <div class="agenda-box">
-        <div class="agenda-item">
-          <div class="agenda-time">09:30 hs</div>
-          <div class="agenda-info">
-            <strong>Acreditación & Café de Bienvenida</strong>
-            <p>Recepción en Lavalle 362 Piso 7, entrega de materiales y networking inicial.</p>
-          </div>
-        </div>
-
-        <div class="agenda-item">
-          <div class="agenda-time">10:00 hs</div>
-          <div class="agenda-info">
-            <strong>Bloque 1: Romper la Inercia & Superar el Miedo</strong>
-            <p>Destrucción de creencias limitantes, superación de la vergüenza y reglas 1 a 3.</p>
-          </div>
-        </div>
-
-        <div class="agenda-item">
-          <div class="agenda-time">10:45 hs</div>
-          <div class="agenda-info">
-            <strong>Bloque 2: Hábitos, Metas y Entornos Ganadores</strong>
-            <p>Estructura de ejecución diaria, blindaje mental y reglas 4 a 7.</p>
-          </div>
-        </div>
-
-        <div class="agenda-item">
-          <div class="agenda-time">11:30 hs</div>
-          <div class="agenda-info">
-            <strong>Bloque 3: Preguntas & Respuestas en Vivo + Cierre</strong>
-            <p>Resolución de casos en vivo con Fede, dinámicas de compromiso y networking final.</p>
-          </div>
         </div>
       </div>
 
-      <div style="text-align: center; margin-top: 32px;">
-        <a href="<?= get_evento_wa() ?>" target="_blank" rel="noopener noreferrer" class="btn-fire-hero" style="max-width: 440px; margin: 0 auto;">
-          🔥 Reservar Mi Asiento Ahora
+      <div class="footer-help">
+        ¿Tenés dudas sobre cuál es la mejor opción para tu caso? 
+        <a href="<?= get_fede_wa_link('Hola Fede! Tengo dudas sobre cuál de las 3 opciones de Encendé tu Fuego elegir para mi negocio.') ?>" target="_blank" rel="noopener noreferrer">
+          Escribime por WhatsApp
         </a>
       </div>
+
     </div>
   </section>
 
-  <!-- Quién es Fede Nowback (3 Fotos Reales) -->
-  <section class="section-wrap" style="background: rgba(255,255,255,0.015);">
+  <!-- Global Minimal Footer -->
+  <footer class="site-footer">
     <div class="container">
-      <div class="sec-header">
-        <span class="sec-tag">Tu Mentor</span>
-        <h2 class="sec-title">Conocé a Fede Nowback</h2>
-        <p style="color: var(--f-muted);">+65.000 seguidores en redes • Estratega de Marca Personal & Mentor de Negocios</p>
-      </div>
-
-      <div class="gallery-grid" style="margin-bottom: 36px;">
-        <div class="gallery-item">
-          <img src="/assets/img/fede_nowback_hero.jpg" alt="Fede Nowback Estratega de Marca Personal">
-          <div class="gallery-overlay">
-            <strong style="color:#fff;">Fede Nowback</strong>
-            <span style="font-size:0.8rem; color:var(--f-yellow);">Estratega de Marca Personal</span>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <img src="/assets/img/fede_nowback_fuego.jpg" alt="Fede Nowback Encendé tu Fuego">
-          <div class="gallery-overlay">
-            <strong style="color:#fff;">Disciplina & Metas</strong>
-            <span style="font-size:0.8rem; color:var(--f-yellow);">7 Reglas de Ejecución</span>
-          </div>
-        </div>
-
-        <div class="gallery-item">
-          <img src="/assets/img/evento_encende_tu_fuego.jpg" alt="Flyer Evento CABA">
-          <div class="gallery-overlay">
-            <strong style="color:#fff;">Sábado 12 de Septiembre</strong>
-            <span style="font-size:0.8rem; color:var(--f-yellow);">Lavalle 362 Piso 7</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Historia Real de Transformación -->
-      <div style="background: var(--f-card); border: 1px solid var(--f-border); border-radius: 14px; padding: 32px; max-width: 820px; margin: 0 auto;">
-        <h3 style="font-family: var(--f-font-h); font-size: 1.3rem; font-weight: 900; margin-bottom: 12px; color: #fff;">
-          "No nací con confianza. Tuve que filmarme con miedo."
-        </h3>
-        <p style="color: var(--f-sub); margin-bottom: 12px; font-size: 0.95rem;">
-          Durante años sufrí ataques de ansiedad, inseguridades profundas y el temor constante al qué dirán. Trabajaba en relación de dependencia sintiendo que mis semanas se repetían en un bucle sin sentido.
-        </p>
-        <p style="color: var(--f-sub); margin-bottom: 16px; font-size: 0.95rem;">
-          Cuando decidí tomar el control de mi mente, de mis hábitos y de mis decisiones, logré construir una comunidad de decenas de miles de personas y vivir 100% de mi pasión. En este evento presencial te voy a entregar exactamente las reglas que me permitieron dar ese salto.
-        </p>
-        <div style="border-left: 3px solid var(--f-orange); background: rgba(255,85,0,0.08); padding: 12px 18px; border-radius: 0 8px 8px 0; font-style: italic; color: #fff; font-weight: 600;">
-          "Dejá de actuar como una gacela cuando dentro tuyo vive un león. El momento de encender tu fuego es ahora."
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Para Quién Es y Para Quién NO Es -->
-  <section class="section-wrap">
-    <div class="container">
-      <div class="sec-header">
-        <span class="sec-tag">Filtro de Compromiso</span>
-        <h2 class="sec-title">¿Este evento es para vos?</h2>
-      </div>
-
-      <div class="who-grid">
-        <div class="who-box yes">
-          <div class="who-title" style="color: #10b981;">
-            <span>✅</span> SÍ es para vos si:
-          </div>
-          <ul class="who-list">
-            <li>• Estás cansado de postergar proyectos y querés un plan de acción claro.</li>
-            <li>• Querés superar el miedo al juicio ajeno y la vergüenza de mostrarte.</li>
-            <li>• Buscás rodearte de personas enfocadas y con ganas de crecer.</li>
-            <li>• Estás dispuesto a incomodarte para subir tu estándar de vida.</li>
-          </ul>
-        </div>
-
-        <div class="who-box no">
-          <div class="who-title" style="color: #ef4444;">
-            <span>❌</span> NO es para vos si:
-          </div>
-          <ul class="who-list">
-            <li>• Buscás fórmulas mágicas o resultados de la noche a la mañana.</li>
-            <li>• Preferís quedarte en la queja y culpar a las circunstancias.</li>
-            <li>• No estás dispuesto a invertir 2 horas y media en tu propio crecimiento.</li>
-            <li>• No vas a poner en práctica lo que aprendas al salir del auditorio.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="section-wrap" style="background: rgba(255,255,255,0.015);">
-    <div class="container">
-      <div class="sec-header">
-        <span class="sec-tag">Preguntas Frecuentes</span>
-        <h2 class="sec-title">Dudas Comunes</h2>
-      </div>
-
-      <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-q">¿Dónde y a qué hora es exactamente?</div>
-          <div class="faq-a">Es el <strong>Sábado 12 de Septiembre de 9:30 a 12:00 hs</strong> en <strong>Lavalle 362, Piso 7, Ciudad de Buenos Aires (CABA)</strong>.</div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q">¿Cómo aseguro mi lugar y cuáles son los medios de pago?</div>
-          <div class="faq-a">Hacés clic en los botones de WhatsApp y coordinás tu entrada directamente con Fede al <strong>+54 9 11 3820-5570</strong> (transferencia bancaria / Mercado Pago).</div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q">¿Puedo ir si todavía no tengo un negocio en marcha?</div>
-          <div class="faq-a">Totalmente. El evento trabaja los fundamentos de disciplina, superación del miedo y enfoque que aplican tanto para emprender como para tu vida personal.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Final con Urgencia -->
-  <section class="section-wrap" style="padding-bottom: 90px;">
-    <div class="container">
-      <div style="background: linear-gradient(135deg, #2b0c03 0%, #150600 100%); border: 2px solid var(--f-orange); border-radius: 18px; padding: 48px 24px; text-align: center; box-shadow: 0 0 50px rgba(255, 85, 0, 0.3);">
-        <span style="background: var(--f-red); color: #fff; font-family: var(--f-font-h); font-weight: 900; font-size: 0.8rem; padding: 4px 14px; border-radius: 9999px; text-transform: uppercase;">
-          ⚠️ ÚLTIMOS 6 LUGARES
-        </span>
-        <h2 style="font-family: var(--f-font-h); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; text-transform: uppercase; margin: 16px 0 10px;">
-          ¿Vas a seguir postergando o vas a encender tu fuego?
-        </h2>
-        <p style="color: #e5e7eb; font-size: 1.1rem; max-width: 540px; margin: 0 auto 28px;">
-          No dejes pasar otro mes en el mismo lugar. Asegurá tu entrada ahora antes de que se agoten los cupos.
-        </p>
-        <a href="<?= get_evento_wa() ?>" target="_blank" rel="noopener noreferrer" class="btn-fire-hero" style="max-width: 460px; margin: 0 auto;">
-          🔥 Quiero Mi Entrada por WhatsApp
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer Simple -->
-  <footer class="landing-footer">
-    <div class="container">
-      <p style="margin-bottom: 6px;">&copy; <?= date('Y') ?> <strong>Fede Nowback</strong>. Todos los derechos reservados.</p>
-      <p>Consultas WhatsApp directo: <strong>+54 9 11 3820-5570</strong> • Instagram: <strong>@fedenowback</strong></p>
+      <p>&copy; <?= date('Y') ?> <strong>Fede Nowback</strong>. Todos los derechos reservados. Marca Personal & Estrategia de Negocios.</p>
     </div>
   </footer>
-
-  <!-- Floating Sticky WhatsApp Button -->
-  <a href="<?= get_evento_wa() ?>" target="_blank" rel="noopener noreferrer" class="wa-float" aria-label="WhatsApp Fede Nowback">
-    <span style="font-size: 1.3rem;">💬</span>
-    <span>Reservar Lugar</span>
-  </a>
-
-  <!-- Script Contador Regresivo en Tiempo Real -->
-  <script>
-    function updateCountdown() {
-      // Fecha del evento: Sábado 12 de Septiembre 2026 a las 09:30 AM (GMT-3)
-      const eventDate = new Date("2026-09-12T09:30:00-03:00").getTime();
-      const now = new Date().getTime();
-      const diff = eventDate - now;
-
-      if (diff > 0) {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-        document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
-        document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
-        document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
-        document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
-      } else {
-        document.getElementById('cd-days').textContent = '00';
-        document.getElementById('cd-hours').textContent = '00';
-        document.getElementById('cd-mins').textContent = '00';
-        document.getElementById('cd-secs').textContent = '00';
-      }
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-  </script>
 
 </body>
 </html>
