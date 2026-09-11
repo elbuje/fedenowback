@@ -1,3 +1,10 @@
+---
+title: LLM Wiki — Fede Nowback
+project: fedenowback
+type: index
+tags: [index, hub, fedenowback, wiki]
+---
+
 # 🧠 LLM Wiki — Fede Nowback (`fedenowback.com.ar`)
 
 Bienvenido a la base de conocimiento viva del proyecto **Fede Nowback**, gestionada bajo el estándar universal de 3 capas.
@@ -6,23 +13,31 @@ Bienvenido a la base de conocimiento viva del proyecto **Fede Nowback**, gestion
 
 ## 📌 Nodos Conceptuales y Técnicos
 
-- [🏛️ Arquitectura del Sistema](nodes/arquitectura_sistema.md) — Ruteo nativo, estructura modular y layout.
-- [🖥️ Infraestructura y Servidores](nodes/infraestructura_y_servidores.md) — Servidor Dev (:8015), Ploi (errante), Nginx y .env.
-- [🚀 Despliegue y Configuración en Ploi](nodes/despliegue_y_ploi.md) — Scripts de deploy, webhook y permisos en servidor Ploi.
-- [🔒 SSL y Gestión de Dominios](nodes/ssl_y_dominios.md) — Configuración DNS, NIC.ar, Let's Encrypt y ZeroSSL.
-- [🛣️ Rutas y Estrategia SEO](nodes/rutas_y_seo.md) — Landings de alta conversión, metatags y Schemas JSON-LD.
-- [🗄️ Base de Datos y Modelos](nodes/base_de_datos.md) — Esquema MySQL, usuarios y tablas del campus.
+- [[nodes/arquitectura_sistema]] — Ruteo nativo, estructura modular y layout.
+- [[nodes/infraestructura_y_servidores]] — Servidor Dev (:8015), Ploi (errante), Nginx y .env.
+- [[nodes/despliegue_y_ploi]] — Scripts de deploy, webhook y permisos en servidor Ploi.
+- [[nodes/ssl_y_dominios]] — Configuración DNS, NIC.ar, Let's Encrypt y ZeroSSL.
+- [[nodes/rutas_y_seo]] — Landings de alta conversión, metatags y Schemas JSON-LD.
+- [[nodes/base_de_datos]] — Esquema MySQL, usuarios y tablas del campus.
+
+---
+
+## 📖 Guías Operativas
+
+- [[guides/guia_despliegue_y_mantenimiento]] — Procedimientos de deploy en Ploi, testing local y mantenimiento de base de datos.
 
 ---
 
 ## 📜 Historial de Sesiones
 
-- [2026-09-11: Migración a Proyecto Independiente y Puesta en Producción](sessions/2026-09-11-migracion-proyecto-independiente.md)
+- [[sessions/2026-09-11-migracion-proyecto-independiente]] — Migración a proyecto independiente, arquitectura MVC nativa y puesta en producción.
 
 ---
 
 ## 📚 Enlaces de Referencia
-- [Fuentes de Verdad & Repositorio](sources.md)
-- [Bitácora de Cambios](log.md)
-- [Estado del Proyecto](../status.md)
-- [Documentación Completa de Infraestructura](../DOCUMENTACION_INFRAESTRUCTURA.md)
+
+- [[sources]] — Fuentes de Verdad & Repositorio
+- [[log]] — Bitácora de Cambios
+- [Estado del Proyecto (status.md)](file:///home/mfmujic/fedenowback/status.md)
+- [Documentación de Infraestructura](file:///home/mfmujic/fedenowback/DOCUMENTACION_INFRAESTRUCTURA.md)
+- [MetaWiki Global](file:///home/mfmujic/.agent/wiki/index.md)

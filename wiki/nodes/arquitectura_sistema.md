@@ -1,3 +1,10 @@
+---
+title: Arquitectura del Sistema — Fede Nowback
+project: fedenowback
+type: node
+tags: [architecture, mvc, php, routing, backend]
+---
+
 # 🏛️ Arquitectura del Sistema — Fede Nowback
 
 ## 1. Patrón Arquitectónico
@@ -12,3 +19,10 @@ El proyecto sigue un patrón **MVC Ligero en PHP Nativo (Vanilla)**, sin depende
 - `website-php/includes/seo_helper.php`: Motor dinámico de etiquetas SEO y JSON-LD.
 - `website-php/includes/db.php`: Conector PDO singleton con auto-migración de tablas (`fede_db_init_schema()`).
 - `website-php/includes/community_store.php`: Lógica de negocio para ranking, debates, cursos y perfiles del Campus Pro.
+
+---
+
+## 🔗 Nodos Relacionados
+- [[nodes/rutas_y_seo]] — Estrategia de ruteo, páginas de aterrizaje y metadatos SEO.
+- [[nodes/base_de_datos]] — Conexión a MySQL y definición del esquema relacional.
+- [[nodes/infraestructura_y_servidores]] — Entornos de ejecución y configuración de servidores.

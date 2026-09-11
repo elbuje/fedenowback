@@ -1,3 +1,10 @@
+---
+title: Infraestructura y Servidores — Fede Nowback
+project: fedenowback
+type: node
+tags: [infrastructure, hostinger, ploi, dev-server, production, ports]
+---
+
 # 🖥️ Infraestructura y Servidores — Fede Nowback
 
 ## 1. Entorno de Desarrollo (Dev)
@@ -22,3 +29,10 @@
 ## 3. Repositorio Git
 - **URL:** `https://github.com/elbuje/fedenowback.git`
 - **Ramas:** `main` (Producción), `dev` (Desarrollo).
+
+---
+
+## 🔗 Nodos Relacionados
+- [[nodes/despliegue_y_ploi]] — Configuración de despliegue en servidor Ploi.
+- [[nodes/ssl_y_dominios]] — Gestión de dominios y certificados SSL.
+- [[nodes/arquitectura_sistema]] — Estructura técnica de la aplicación.

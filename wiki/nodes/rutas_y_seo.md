@@ -1,3 +1,10 @@
+---
+title: Rutas y Estrategia SEO — Fede Nowback
+project: fedenowback
+type: node
+tags: [seo, routes, open-graph, json-ld, landings, marketing]
+---
+
 # 🛣️ Rutas y Estrategia SEO — Fede Nowback
 
 ## 1. Mapa de Landings y URLs Amigables
@@ -13,10 +20,15 @@ Todas las páginas están optimizadas para posicionamiento orgánico en búsqued
 | `/contacto` | `views/contacto.php` | Contacto Oficial & Asesoría Directa \| Fede Nowback | `ContactPage` |
 | `/sitemap.xml` | Dinámico | Mapa de sitio XML indexable por Google | XML Sitemap |
 
-## 2. Helper SEO (`includes/seo_helper.php`)
+## 2. Helper SEO (`website-php/includes/seo_helper.php`)
 Genera automáticamente:
 - `<title>` y `<meta name="description">` dinámicos.
 - Canonical URLs absolutas basadas en `SITE_URL`.
 - Open Graph tags (`og:title`, `og:description`, `og:image`, `og:url`).
 - Twitter Card tags.
 - Bloques de datos estructurados `<script type="application/ld+json">`.
+
+---
+
+## 🔗 Nodos Relacionados
+- [[nodes/arquitectura_sistema]] — Estructura del ruteador y Front Controller.
