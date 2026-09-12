@@ -623,6 +623,10 @@ function get_fede_wa_link($msg = '') {
         <!-- ========================================== -->
         <div class="offer-card">
           <div>
+            <div class="card-img-banner" style="margin-bottom: 18px; border-radius: 12px; overflow: hidden; border: 1px solid var(--f-border); box-shadow: 0 8px 20px rgba(0,0,0,0.4);">
+              <img src="/assets/img/promo_opcion_1.jpg" alt="Opción 1: Empezá a moverte" style="width: 100%; height: auto; display: block;">
+            </div>
+
             <div class="card-top-tag">OPCIÓN 1</div>
             <h3 class="card-title">EMPEZÁ A MOVERTE</h3>
             <div class="card-subheadline">
@@ -695,6 +699,10 @@ function get_fede_wa_link($msg = '') {
           </div>
 
           <div>
+            <div class="card-img-banner" style="margin-bottom: 18px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 85, 0, 0.4); box-shadow: 0 8px 25px rgba(255,85,0,0.25);">
+              <img src="/assets/img/promo_opcion_2.jpg" alt="Opción 2: Rodeate. Trabajá. Avanzá." style="width: 100%; height: auto; display: block;">
+            </div>
+
             <div class="card-top-tag" style="color: var(--f-fire-gold);">OPCIÓN 2</div>
             <h3 class="card-title">RODEATE. TRABAJÁ. AVANZÁ.</h3>
             <div class="card-subheadline" style="color: var(--f-fire-gold);">
@@ -765,6 +773,10 @@ function get_fede_wa_link($msg = '') {
         <!-- ========================================== -->
         <div class="offer-card">
           <div>
+            <div class="card-img-banner" style="margin-bottom: 18px; border-radius: 12px; overflow: hidden; border: 1px solid var(--f-border); box-shadow: 0 8px 20px rgba(0,0,0,0.4);">
+              <img src="/assets/img/promo_opcion_3.jpg" alt="Opción 3: Acompañamiento Intensivo" style="width: 100%; height: auto; display: block;">
+            </div>
+
             <div class="card-top-tag">OPCIÓN 3</div>
             <h3 class="card-title">ACOMPAÑAMIENTO INTENSIVO</h3>
             <div class="card-subheadline">
