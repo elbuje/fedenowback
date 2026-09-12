@@ -7,6 +7,13 @@ tags: [log, changelog, history, fedenowback]
 
 # 🪵 Bitácora de Cambios (Log) — Fede Nowback
 
+## [2026-09-12] - Landing PHP Tecnobrain, Estrategia Social 3 Meses & Metricool
+- **FEAT:** Landing autónoma en PHP liviano (`website-php/views/tecnobrain-campus-virtual.php`) respetando el manual de marca y sin alterar `tecnobrain` (Next.js).
+- **ROUTING:** Habilitación de URLs amigables en `website-php/public/index.php` activas en puertos `:8015` y `:8011`.
+- **CONTENT:** Estrategia de 4 piezas recurrentes enfocadas en "Herramienta Completa" (sin ataques a competidores) para Instagram, Facebook, LinkedIn y Google con calendario de rotación para 3 meses (2 publicaciones/semana).
+- **MEDIA:** Generación de imágenes profesionales en alta resolución incluyendo mockup fotorrealista del Campus Real con Muro social, Meets y Recursos.
+- **INTEGRATION:** Verificación y prueba de la API de Metricool (`/api/v2/scheduler/posts`) con credenciales oficiales de Tecnobrain.
+
 ## [2026-09-12] - Landing Page SEO 5 Capas & Precios Ecosistema Tecnobrain
 - **FEAT:** Creación de la Landing Page de alta conversión en `tecnobrain.ar/campus-virtual-para-coaches-mentores-marca-personal`.
 - **DOC:** Integración oficial de la lista de precios desde `PreciosWeb.docx` (Landing $150k, Web $550k, Comunidad Full $900k).

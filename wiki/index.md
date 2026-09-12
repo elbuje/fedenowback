@@ -30,6 +30,7 @@ Bienvenido a la base de conocimiento viva del proyecto **Fede Nowback**, gestion
 
 ## 📜 Historial de Sesiones
 
+- [[sessions/2026-09-12-landing-tecnobrain-campus-estrategia-social-metricool]] — Landing PHP Tecnobrain, Estrategia Social 3 Meses y Configuración Metricool.
 - [[sessions/2026-09-12-landing-precios-tecnobrain-campus-virtual]] — Landing Page SEO 5 Capas & Precios Ecosistema Campus Virtual Tecnobrain.
 - [[sessions/2026-09-11-estandarizacion-wiki-y-diagnostico-ssl]] — Estandarización total de LLM Wiki bajo 3 capas y diagnóstico de Certbot / SSL.
 - [[sessions/2026-09-11-migracion-proyecto-independiente]] — Migración a proyecto independiente, arquitectura MVC nativa y puesta en producción.

@@ -1,14 +1,14 @@
 # 📊 Estado del Proyecto — Fede Nowback (`v1.0.0`)
 
-**Última actualización:** 2026-09-11  
+**Última actualización:** 2026-09-12  
 **Rama activa:** `main` / `dev`  
 **Deploy en Producción:** ✅ Activo (`18d09b7`)  
-**Servidor Dev:** ✅ Activo en `:8015`  
+**Servidor Dev:** ✅ Activo en `:8015` y `:8011`  
 **LLM Wiki 3 Capas:** ✅ 100% Estandarizada e Indexada en Grafo 3D  
 
 ---
 
-## 🎯 Tareas Completadas (v1.0.0)
+## 🎯 Tareas Completadas (v1.0.0 & Expansión Comercial)
 - [x] Extracción y desacople del monolito `estudio-pericial-sur`.
 - [x] Creación de arquitectura modular independiente en `/home/mfmujic/fedenowback/`.
 - [x] Creación de front controller en `public/index.php` con ruteo limpio.
@@ -25,16 +25,16 @@
 - [x] Sitio creado y desplegado en Ploi (`errante` - Site ID `406351`).
 - [x] Configuración de auto-inicio en `start-dev-servers.sh` y registro en `PORT_REGISTRY.md`.
 - [x] Estandarización total de LLM Wiki bajo arquitectura de 3 capas con frontmatter YAML y guías operativas.
-- [x] Actualización de métricas de autoridad: de +300 a `+100 Alumnos & Mentorías`.
-- [x] Precios oficiales configurados: Mentoría 1 a 1 a `U$D 390` y Membresía Campus a `U$D 58 / mes` con botones de consulta directa a WhatsApp.
-- [x] Creación de la Landing Page comercial en Tecnobrain (`tecnobrain.ar/campus-virtual-para-coaches-mentores-marca-personal`) con auditoría SEO 5 Capas (Health Index: 98/100), caso de estudio real de Fede Nowback y los 3 paquetes oficiales de precios ($150k, $550k y $900k).
-- [x] Herramientas de moderación y borrado total (posts del muro, comentarios, mensajes de chat y lecciones) para administradores.
-- [x] Barra superior de acceso rápido para Administrador (`.campus-admin-topbar`) y botones de creación/edición directa en cada sección (Zoom, Clases, Cursos).
-- [x] Conversión automática de enlaces de YouTube (watch/shorts/share a embed) en el modal de lecciones.
+- [x] Landing comercial en PHP liviano autónomo (`website-php/views/tecnobrain-campus-virtual.php`) respetando manual de marca Tecnobrain, flyer oficial de precios y preservando 100% intacto el código de `tecnobrain`.
+- [x] Estrategia de 4 publicaciones recurrentes enfocadas en "Herramienta Completa" para Instagram, Facebook, LinkedIn y Google.
+- [x] Generación de 4 activos visuales fotorrealistas en alta resolución (speaker en escenario, mentor en estudio, mockup en monitor de la comunidad real con Muro/Meets/Recursos y conferencista ejecutiva).
+- [x] Calendario rotativo aleatorizado para 3 meses (12 semanas, 2 publicaciones/semana = 24 publicaciones).
+- [x] Test técnico y validación de endpoints de la API de Metricool (`/api/v2/scheduler/posts`) con credenciales de Tecnobrain.
 
 ---
 
 ## ⏳ Backlog / Próximas Tareas
+- [ ] Programación automatizada de las 24 publicaciones en el planificador de Metricool.
 - [ ] Emisión de certificado SSL Let's Encrypt en Ploi (ventana de rate limit finaliza a las `01:25:46 UTC`).
 - [ ] Alta en Google Search Console y envío de `https://fedenowback.com.ar/sitemap.xml`.
 - [ ] Integración de Google Analytics / Pixel de Meta.

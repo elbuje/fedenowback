@@ -30,6 +30,10 @@ $routes = [
     "campus"                              => __DIR__ . "/../views/comunidad.php",
     "skool"                               => __DIR__ . "/../views/comunidad.php",
     "contacto"                            => __DIR__ . "/../views/contacto.php",
+    "campus-virtual-para-coaches-mentores-marca-personal" => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
+    "campus-virtual-para-coaches-y-mentores"              => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
+    "tecnobrain-campus-virtual"                           => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
+    "campus-virtual"                                      => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
 ];
 
 // API Endpoint Direct Routing
