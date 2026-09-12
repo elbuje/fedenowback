@@ -7,6 +7,13 @@ tags: [log, changelog, history, fedenowback]
 
 # 🪵 Bitácora de Cambios (Log) — Fede Nowback
 
+## [2026-09-12] - Landing Page SEO 5 Capas & Precios Ecosistema Tecnobrain
+- **FEAT:** Creación de la Landing Page de alta conversión en `tecnobrain.ar/campus-virtual-para-coaches-mentores-marca-personal`.
+- **DOC:** Integración oficial de la lista de precios desde `PreciosWeb.docx` (Landing $150k, Web $550k, Comunidad Full $900k).
+- **SEO:** Auditoría y ejecución de las 5 Capas SEO (+2.200 palabras, no thin content, Schemas JSON-LD `Service`, `OfferCatalog`, `FAQPage`, `BreadcrumbList`).
+- **COMMERCIAL:** Políticas claras: 0% comisión x 6 meses en Comunidad Full, dominio por cuenta del cliente y cobros directos sin intermediarios.
+- **SOCIAL PROOF:** Caso de estudio real con `fedenowback.com.ar` como referencia en producción.
+
 ## [2026-09-11] - Estandarización Wiki & Diagnóstico SSL
 - **DOC:** Estandarización total de LLM Wiki bajo arquitectura universal de 3 capas.
 - **DOC:** Incorporación de frontmatters YAML, tags y wikilinks bidireccionales en todos los nodos y sesiones.
