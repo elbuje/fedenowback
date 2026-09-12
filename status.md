@@ -28,13 +28,12 @@
 - [x] Landing comercial en PHP liviano autónomo (`website-php/views/tecnobrain-campus-virtual.php`) respetando manual de marca Tecnobrain, flyer oficial de precios y preservando 100% intacto el código de `tecnobrain`.
 - [x] Estrategia de 4 publicaciones recurrentes enfocadas en "Herramienta Completa" para Instagram, Facebook, LinkedIn y Google.
 - [x] Generación de 4 activos visuales fotorrealistas en alta resolución (speaker en escenario, mentor en estudio, mockup en monitor de la comunidad real con Muro/Meets/Recursos y conferencista ejecutiva).
-- [x] Calendario rotativo aleatorizado para 3 meses (12 semanas, 2 publicaciones/semana = 24 publicaciones).
-- [x] Test técnico y validación de endpoints de la API de Metricool (`/api/v2/scheduler/posts`) con credenciales de Tecnobrain.
+- [x] Programación automatizada de las 24 publicaciones del calendario de 3 meses en el planificador de Metricool.
+- [x] Publicación inmediata de la Pieza 3 ("El Campus por Dentro") en Metricool (Post ID: 374960975) con imagen normalizada en Instagram, Facebook, LinkedIn y GMB.
 
 ---
 
 ## ⏳ Backlog / Próximas Tareas
-- [ ] Programación automatizada de las 24 publicaciones en el planificador de Metricool.
 - [ ] Emisión de certificado SSL Let's Encrypt en Ploi (ventana de rate limit finaliza a las `01:25:46 UTC`).
 - [ ] Alta en Google Search Console y envío de `https://fedenowback.com.ar/sitemap.xml`.
 - [ ] Integración de Google Analytics / Pixel de Meta.

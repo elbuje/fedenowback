@@ -26,9 +26,10 @@ tags: [session, tecnobrain, campus-virtual, php, metricool, social-media, brandi
      - **Pieza 3 (El Campus por Dentro):** Muro social con etiquetas (*Victorias, Feedback, Preguntas, Recursos*), Academia modular, Meets y Hot Seats en vivo con agendado, Chat de miembros y conexión directa a WhatsApp.
      - **Pieza 4 (Activo Escalable):** Paquete integral llave en mano con soporte y tiempos de entrega garantizados.
    - Calendario de publicación rotativo y aleatorizado de 12 semanas (2 publicaciones semanales = 24 salidas) para Instagram, Facebook, LinkedIn y Google.
-4. **Integración con Metricool:**
+4. **Integración y Publicación en Metricool:**
    - Verificación de credenciales activas del ecosistema Tecnobrain (`METRICOOL_API_KEY`, `METRICOOL_BLOG_ID=4104186`, `METRICOOL_USER_ID=3225120`).
-   - Prueba técnica del endpoint de publicación (`/api/v2/scheduler/posts`) confirmada con status 200.
+   - Programación de las 24 publicaciones del calendario de 3 meses (12 semanas, 2 salidas/semana) en el planificador.
+   - **Publicación inmediata ejecutada:** Pieza 3 (*"El campus por dentro"*) lanzada con éxito a través de Metricool (**Post ID: `374960975`**) con imagen fotorrealista normalizada (`https://fedenowback.com.ar/img/campus_comunidad_mockup.jpg`), auto-publicación activa en Facebook, Instagram, LinkedIn y Google Business Profile.
 
 ---
 
