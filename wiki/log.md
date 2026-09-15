@@ -8,7 +8,10 @@ tags: [log, changelog, history, fedenowback]
 # 🪵 Bitácora de Cambios (Log) — Fede Nowback
 
 ## [2026-09-15] - Gestión Integral Campus: Usuarios, Planes, Recuperación, Clases y MySQL
-- **FEAT:** ABM completo de usuarios en Campus (`fede_users`) con selector de planes (Gratuito, Pro, Mentoria VIP, Vitalicio), cálculo de vencimientos automáticos (+30d, +90d, +1y), estados semánticos y badges de caducidad.
+- **FEAT (USERS & ADMIN):** Manejo diferenciado de Administradores (acceso total permanente sin plan ni vencimiento en UI y MySQL).
+- **FEAT (PROFILE & AVATAR):** Módulo integral "Mi Perfil & Avatar" para todos los usuarios con compresión de imágenes en Canvas del cliente, persistencia en disco de servidor (`/assets/uploads/avatars/`), nombre, bio, intereses, redes sociales y cambio seguro de clave.
+- **SECURITY & HANDLES:** Deduplicación automática de handles (`@usuario`) en MySQL y validación de unicidad en registros/perfiles; eliminación definitiva del switcher de roles de prueba y sincronización estricta de sesión en tiempo real contra MySQL.
+- **WHATSAPP TOOL:** Modal interactivo `modalWhatsAppShare` con botón `📋 Copiar Mensaje` (sin pérdida de saltos ni emojis) y enlace directo a WhatsApp incluyendo la contraseña asignada.
 - **SECURITY:** Campos de confirmación de contraseña, toggles de visualización con ojo (👁️), hashes seguros `PASSWORD_BCRYPT` y protección estricta contra eliminación del superadmin principal.
 - **EMAIL & WHATSAPP:** Generación de enlaces y mensajes directos para WhatsApp con credenciales listas para enviar; sistema de notificaciones por email para bienvenida y flujo seguro de "¿Olvidaste tu contraseña?" con token temporal SHA-256 (`reset_token`).
 - **FIX (DB):** Corrección de fallo silencioso en `community_store.php` por `PDO::FETCH_KEY_PAIR` en tabla de 3 columnas (`fede_settings`) que provocaba fallback a usuarios dummy con IDs alfanuméricos. Migración DDL automática de columnas en `db.php` y persistencia 100% real en MySQL.

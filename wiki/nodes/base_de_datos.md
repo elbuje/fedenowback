@@ -15,7 +15,7 @@ tags: [database, mysql, schema, migrations, backend]
 
 ## 2. Tablas Principales
 El script `website-php/includes/db.php` (`fede_db_init_schema()`) crea y migra automáticamente las siguientes tablas en MySQL:
-- `fede_users`: Alumnos y miembros del campus (`id`, `email`, `password_hash`, `name`, `handle`, `avatar`, `role`, `points`, `level`, `plan_id`, `plan_name`, `plan_expires_at`, `status`, `reset_token`, `reset_token_expires_at`, `email_verified`).
+- `fede_users`: Alumnos y miembros del campus (`id`, `email`, `password_hash`, `name`, `handle`, `avatar` (MEDIUMTEXT/file upload), `bio`, `interests`, `instagram`, `linkedin`, `website`, `role`, `points`, `level`, `plan_id`, `plan_name`, `plan_expires_at`, `status`, `reset_token`, `reset_token_expires_at`, `email_verified`).
 - `fede_courses`: Cursos de la academia (`id`, `title`, `slug`, `thumbnail`, `duration`, `level_required`, `description`).
 - `fede_modules`: Módulos agrupadores de clases (`id`, `course_id`, `title`, `order_num`).
 - `fede_lessons`: Clases y videos embebidos (`id`, `module_id`, `title`, `duration`, `video_url`, `description`, `is_free`).

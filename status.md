@@ -12,6 +12,11 @@
 - [x] **Auth & Login:** Remoción de botones demo residuales del modal de acceso.
 - [x] **Seguridad de Contraseñas:** Toggle de visibilidad (ojo 👁️), confirmación de contraseña, hash `PASSWORD_BCRYPT`.
 - [x] **Gestión de Planes y Vencimientos:** Selector de planes (`Gratuito`, `Pro`, `Mentoría VIP`, `Vitalicio`), atajos de vigencia (+30d, +90d, +1y, Vitalicio), etiquetas semánticas de caducidad.
+- [x] **Cuentas Administrador:** Acceso total ilimitado sin requerir plan ni caducidad, ocultando la sección en modales y badges claros en tablas.
+- [x] **Módulo "Mi Perfil & Avatar":** Modal para todos los miembros con carga y compresión inteligente en Canvas de avatar, guardado en disco del servidor, nombre, handle único, bio, intereses, redes y cambio de clave.
+- [x] **Unicidad de Handles:** Deduplicación automática en MySQL (`@fedenowback` exclusivo para Fede, `@mfmujic` para Marcelo Mujica) y validación en tiempo real.
+- [x] **Herramienta WhatsApp:** Modal y botón `📋 Copiar Mensaje` con credenciales completas y contraseña asignada sin errores de codificación.
+- [x] **Blindaje de Sesión:** Eliminación definitiva del switcher de rol demo y sincronización estricta de sesión en tiempo real contra MySQL (`fede_users`).
 - [x] **Notificaciones y Accesos:** Envío de correo de bienvenida y generador de mensaje con link directo a WhatsApp con un solo clic.
 - [x] **Recuperación de Contraseña:** Flujo completo de "¿Olvidaste tu contraseña?" y "Cambiar Contraseña" mediante tokens seguros SHA-256 (`reset_token`).
 - [x] **MySQL Fix & Persistencia Real:** Corrección del error de fetch en `community_store.php`, migración DDL automática de columnas en `fede_users` y eliminación segura de usuarios con protección de superadmin.
