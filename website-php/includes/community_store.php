@@ -24,6 +24,36 @@ if (!isset($_SESSION['fede_user'])) {
     $_SESSION['fede_user']['avatar'] = fede_clean_avatar($_SESSION['fede_user']['avatar'] ?? null);
 }
 
+// Synchronize logged-in user role and data strictly from MySQL on every request
+if (!empty($_SESSION['fede_user']['email'])) {
+    try {
+        $pdo_sync = fede_db();
+        if ($pdo_sync) {
+            $sync_stmt = $pdo_sync->prepare("SELECT * FROM `fede_users` WHERE `email` = ? LIMIT 1");
+            $sync_stmt->execute([$_SESSION['fede_user']['email']]);
+            $synced_user = $sync_stmt->fetch(PDO::FETCH_ASSOC);
+            if ($synced_user) {
+                $_SESSION['fede_user']['id'] = (string)$synced_user['id'];
+                $_SESSION['fede_user']['name'] = $synced_user['name'];
+                $_SESSION['fede_user']['handle'] = $synced_user['handle'];
+                $_SESSION['fede_user']['avatar'] = fede_clean_avatar($synced_user['avatar']);
+                $_SESSION['fede_user']['role'] = $synced_user['role']; // Strictly from MySQL
+                $_SESSION['fede_user']['points'] = (int)$synced_user['points'];
+                $_SESSION['fede_user']['level'] = (int)$synced_user['level'];
+                $_SESSION['fede_user']['level_name'] = $synced_user['level_name'];
+                $_SESSION['fede_user']['bio'] = $synced_user['bio'] ?? '';
+                $_SESSION['fede_user']['interests'] = $synced_user['interests'] ?? '';
+                $_SESSION['fede_user']['instagram'] = $synced_user['instagram'] ?? '';
+                $_SESSION['fede_user']['linkedin'] = $synced_user['linkedin'] ?? '';
+                $_SESSION['fede_user']['website'] = $synced_user['website'] ?? '';
+                $_SESSION['fede_user']['is_logged_in'] = true;
+            }
+        }
+    } catch (\Throwable $e) {
+        // Fallback gracefully if db error
+    }
+}
+
 // CSRF Token Generation & Validation
 if (!isset($_SESSION['fede_csrf_token'])) {
     $_SESSION['fede_csrf_token'] = bin2hex(random_bytes(24));

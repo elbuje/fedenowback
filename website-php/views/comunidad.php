@@ -141,11 +141,6 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                   </a>
                 </li>
                 <li>
-                  <button type="button" id="btnDropdownRoleSwitch" data-current-role="<?= htmlspecialchars($user['role']) ?>">
-                    <span>⚡</span> <span>Alternar a <?= $user['role'] === 'admin' ? 'Vista Alumno' : 'Vista Admin' ?></span>
-                  </button>
-                </li>
-                <li>
                   <a href="/" target="_blank">
                     <span>🌐</span> <span>Ir al Sitio Web Oficial ↗</span>
                   </a>
@@ -1693,6 +1688,8 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             </button>
           </form>
         </div>
+      </div>
+
       <!-- 10. Modal Mi Perfil & Avatar del Usuario -->
       <div id="modalMyProfile" class="admin-modal-overlay">
         <div class="admin-modal-box" style="max-width: 540px; max-height: 90vh; overflow-y: auto;">
@@ -1816,6 +1813,6 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   </main>
 
   <!-- JS Controller con soporte completo de ABM, Buscador y Recuperación -->
-  <script src="/assets/js/campus.js?v=6.7"></script>
+  <script src="/assets/js/campus.js?v=<?= time() ?>"></script>
 </body>
 </html>

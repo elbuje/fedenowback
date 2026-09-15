@@ -25,7 +25,7 @@ $csrf_token = $_POST['csrf_token'] ?? $json_data['csrf_token'] ?? $_SERVER['HTTP
 
 // Basic CSRF verification for modifying actions
 if (in_array($action, [
-    'create_post', 'like_post', 'add_comment', 'complete_lesson', 'send_chat', 'create_meet', 'switch_role',
+    'create_post', 'like_post', 'add_comment', 'complete_lesson', 'send_chat', 'create_meet',
     'update_my_profile',
     'delete_post', 'admin_delete_post', 'delete_comment', 'admin_delete_comment', 'delete_chat', 'admin_delete_chat',
     'admin_save_user', 'admin_delete_user', 'admin_save_course', 'admin_delete_course',
@@ -263,35 +263,6 @@ switch ($action) {
         echo json_encode(['success' => true, 'message' => 'Sesión cerrada correctamente.']);
         exit;
 
-    case 'switch_role':
-        $target_role = $json_data['role'] ?? $_POST['role'] ?? 'member';
-        if ($pdo) {
-            $stmt = $pdo->prepare("SELECT * FROM `fede_users` WHERE `role` = ? LIMIT 1");
-            $stmt->execute([$target_role]);
-            $db_user = $stmt->fetch();
-            if ($db_user) {
-                $user = [
-                    'id' => (string)$db_user['id'],
-                    'email' => $db_user['email'],
-                    'name' => $db_user['name'],
-                    'handle' => $db_user['handle'],
-                    'avatar' => $db_user['avatar'] ?: '/assets/img/fede_avatar_mini.png',
-                    'role' => $db_user['role'],
-                    'is_logged_in' => true,
-                    'points' => (int)$db_user['points'],
-                    'level' => (int)$db_user['level'],
-                    'level_name' => $db_user['level_name'],
-                    'completed_lessons' => ['lesson_1_1', 'lesson_1_2', 'lesson_2_1'],
-                    'joined_date' => date('F Y', strtotime($db_user['created_at']))
-                ];
-            } else {
-                $user['role'] = $target_role;
-            }
-        } else {
-            $user['role'] = $target_role;
-        }
-        echo json_encode(['success' => true, 'user' => $user]);
-        exit;
 
     // ==========================================
     // 👤 GESTIÓN DE "MI PERFIL" Y AVATAR

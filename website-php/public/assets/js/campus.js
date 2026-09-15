@@ -634,29 +634,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 3. Dropdown Role Switcher
-  const btnRoleSwitch = document.getElementById('btnDropdownRoleSwitch');
-  if (btnRoleSwitch) {
-    btnRoleSwitch.addEventListener('click', async () => {
-      const currentRole = btnRoleSwitch.dataset.currentRole;
-      const targetRole = currentRole === 'admin' ? 'member' : 'admin';
-      
-      try {
-        const res = await fetch(API_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-          body: JSON.stringify({ action: 'switch_role', role: targetRole, csrf_token: csrfToken })
-        });
-        const data = await res.json();
-        if (data.success) {
-          window.location.reload();
-        }
-      } catch (err) {
-        console.error('Error switching role:', err);
-      }
-    });
-  }
-
   // 4. Dropdown Logout
   const btnLogout = document.getElementById('btnDropdownLogout');
   if (btnLogout) {
