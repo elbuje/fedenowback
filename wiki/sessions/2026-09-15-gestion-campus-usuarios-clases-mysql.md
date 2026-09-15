@@ -31,43 +31,43 @@ tags: [session, campus, mysql, usuarios, abm, video, auth, password-recovery, wh
    - Modal y flujo para solicitar reseteo por email con token temporal seguro de 2 horas.
    - Modal para actualizar la contraseña con confirmación.
 
+7. **Gestión de Administradores vs Alumnos:**
+   - Los usuarios con rol `admin` no requieren asignación de plan ni fecha de vencimiento.
+   - En la tabla de administración se identifican como `👑 Acceso Total (Admin)` y vigencia `💎 Ilimitado`.
+   - En los modales de alta/edición, al seleccionar Administrador se oculta automáticamente la sección de planes y se muestra el aviso de Acceso Total.
+8. **Generador y Copiador de Mensajes de WhatsApp:**
+   - Modal interactivo `modalWhatsAppShare` con el texto listo para copiar al portapapeles (`📋 Copiar Mensaje`) y enlace directo `🟢 Abrir en WhatsApp`.
+   - Incluye automáticamente el nombre, correo, plan (o acceso admin), enlace al campus y la **contraseña asignada/modificada**.
+   - Solución definitiva a caracteres unicode/emojis corruptos (eliminación de artefactos `` o signos de pregunta).
+9. **Unicidad de Nombre de Usuario / Handle (`@usuario`):**
+   - Validación y deduplicación automática de handles para evitar usuarios duplicados (ej: `@fedenowback` único para Fede, y `@mfmujic` para Marcelo Mujica).
+   - Campo editable de `@usuario` en el alta/edición de usuarios del panel admin y en "Mi Perfil".
+10. **Módulo Completo "Mi Perfil & Avatar":**
+    - Modal accesible para todos los usuarios (alumnos y admins) con contraste óptimo en el menú desplegable.
+    - Carga de foto de perfil personalizada (selector de archivo hasta 3MB) y presets de avatares.
+    - Campos de Nombre, Usuario (@handle), Biografía/Descripción, Intereses/Nicho, Instagram, LinkedIn/Web y cambio seguro de contraseña.
+
 ---
 
 ## 🛠️ Cambios Técnicos Implementados
 
 ### 1. Base de Datos & Migraciones (`website-php/includes/db.php`)
-- Se agregaron las columnas `plan_id`, `plan_name`, `plan_expires_at`, `status`, `reset_token`, `reset_token_expires_at`, `email_verified`, `verification_token` a `fede_users`.
-- Se implementó auto-migración no destructiva con `SHOW COLUMNS FROM fede_users` ejecutada en la conexión inicial `fede_db()`.
-- Se agregó la función helper `fede_format_video_embed_url($url)` para normalizar URLs de YouTube, Vimeo, Loom y MP4.
+- Columnas agregadas a `fede_users`: `bio`, `interests`, `instagram`, `linkedin`, `website`, `plan_id`, `plan_name`, `plan_expires_at`, `status`, `reset_token`, `reset_token_expires_at`, `email_verified`, `verification_token`.
+- Deduplicación automática de handles en el inicio para garantizar unicidad.
+- Auto-migración no destructiva con `SHOW COLUMNS FROM fede_users`.
 
 ### 2. Capa de Datos & Mail Helpers (`website-php/includes/community_store.php`)
-- Se corrigió la consulta de `fede_settings` (`SELECT setting_key, setting_value`) que causaba una excepción PDO y provocaba el fallback a datos demo.
-- Se enriqueció `fede_load_community_data()` para cargar todos los campos de usuarios desde MySQL y calcular el estado de vigencia y días restantes.
-- Se implementaron las funciones de envío de correos HTML con estilo corporativo Fede Nowback:
-  - `fede_send_welcome_user_email($email, $name, $password, $plan_name)`
-  - `fede_send_reset_password_email($email, $name, $reset_url)`
+- `fede_load_community_data()` con soporte para usuarios admin sin vencimiento y badges con contraste claro.
+- Envío de correos HTML de bienvenida y reseteo de claves.
 
 ### 3. API AJAX Backend (`website-php/public/comunidad_api.php`)
-- `admin_save_user`: Manejo de campos completos (nombre, email, passwords con validación de coincidencia, plan, vencimiento, rol, puntos y envío de email).
-- `admin_delete_user`: Validación de ID numérico y protección contra eliminación del superadmin `mfmujic@gmail.com`.
-- `admin_save_lesson`: Normalización automática de URLs de video antes de persistir en MySQL.
-- `auth_forgot_password` y `auth_reset_password`: Generación de tokens seguros, validación de caducidad y actualización de hash BCRYPT.
+- `get_my_profile` y `update_my_profile`: Lectura y actualización de perfil, bio, intereses, redes, avatar y cambio de contraseña con validación de handle único.
+- `admin_save_user`: Forzado de plan nulo / `Acceso Total (Admin)` para administradores y validación de unicidad de handle.
 
 ### 4. Vistas y Modales (`website-php/views/comunidad.php`)
-- **Subtab Cursos:** Vista desplegable de clases dentro de cada curso con botón *▶️ Ver / Probar Video*, *✏️ Editar* y *🗑️ Borrar*.
-- **Subtab Usuarios:** Toolbar con buscador en vivo, contador dinámico, ordenamiento interactivo y badges semánticos de vencimiento.
-- **Modal Usuario (`modalAdminUser`):** Ojito toggle, confirmación de clave, selector de plan, fecha con atajos y botón WhatsApp.
-- **Modales de Auth:** Eliminación de botones demo en login, link de recuperación, `modalForgotPassword` y `modalResetPassword`.
-
-### 5. Controlador Frontend (`website-php/public/assets/js/campus.js`)
-- Lógica de búsqueda en vivo en tabla, ordenamiento dinámico por columnas, toggles de visibilidad de contraseñas, generador de mensajes de WhatsApp y apertura automática de reseteo si la URL contiene `?reset_token=...`.
-
----
-
-## 🧪 Pruebas y Verificación
-- **Prueba CLI `test_backend.php`:** Conexión exitosa a MySQL, migración de esquema validada y carga de miembros con plan y vigencia correctos.
-- **Prueba CLI `test_user_crud.php`:** Creación de usuario de prueba con BCRYPT, consulta, actualización de plan y eliminación limpia en `fede_users`.
-- **Prueba de Normalización de Video:** `https://youtu.be/civfV2xxrNE?si=LAzH0-8x5IRmIWKh` $\rightarrow$ `https://www.youtube.com/embed/civfV2xxrNE`.
+- `modalMyProfile`: Modal completo de edición de perfil.
+- `modalWhatsAppShare`: Modal generador de mensaje con copia al portapapeles.
+- Mejora de contraste en el menú desplegable del avatar (texto blanco legible).
 
 ---
 
