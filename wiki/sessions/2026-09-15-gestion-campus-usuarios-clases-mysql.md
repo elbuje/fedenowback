@@ -46,6 +46,12 @@ tags: [session, campus, mysql, usuarios, abm, video, auth, password-recovery, wh
     - Modal accesible para todos los usuarios (alumnos y admins) con contraste óptimo en el menú desplegable.
     - Carga de foto de perfil personalizada (selector de archivo hasta 3MB) y presets de avatares.
     - Campos de Nombre, Usuario (@handle), Biografía/Descripción, Intereses/Nicho, Instagram, LinkedIn/Web y cambio seguro de contraseña.
+11. **Corrección de Apertura del Modal "Mi Perfil":**
+    - Se corrigió la estructura HTML donde `modalMyProfile` había quedado accidentalmente dentro del contenedor cerrado de `modalResetPassword`.
+    - Se agregó cache-busting dinámico por timestamp a `campus.js` para asegurar que el navegador cargue inmediatamente el código actualizado.
+12. **Blindaje de Roles & Eliminación de Switcher Demo:**
+    - Se eliminó por completo el botón y endpoint de prueba `switch_role` que permitía alternar roles.
+    - Se implementó sincronización en tiempo real de sesión contra MySQL (`fede_users`) en cada petición, impidiendo que un usuario mantenga o suplante permisos de administrador.
 
 ---
 
