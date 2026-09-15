@@ -16,6 +16,7 @@ define('FEDE_DB_PASS', getenv('FEDE_DB_PASS') ?: 'NowbackFuego2026_SecurePass!')
  */
 function fede_db() {
     static $pdo = null;
+    static $migrated = false;
     if ($pdo === null) {
         $dsn = "mysql:host=" . FEDE_DB_HOST . ";port=" . FEDE_DB_PORT . ";dbname=" . FEDE_DB_NAME . ";charset=utf8mb4";
         $options = [
@@ -25,6 +26,10 @@ function fede_db() {
         ];
         try {
             $pdo = new PDO($dsn, FEDE_DB_USER, FEDE_DB_PASS, $options);
+            if (!$migrated) {
+                $migrated = true;
+                fede_db_init_schema($pdo);
+            }
         } catch (PDOException $e) {
             error_log("Fede Nowback DB Connection Error: " . $e->getMessage());
             return null;
@@ -36,8 +41,8 @@ function fede_db() {
 /**
  * Run Auto-Migrations & Seed Initial Data if Tables Don't Exist
  */
-function fede_db_init_schema() {
-    $pdo = fede_db();
+function fede_db_init_schema($existing_pdo = null) {
+    $pdo = $existing_pdo ?: fede_db();
     if (!$pdo) return false;
 
     // 1. Users Table
@@ -54,9 +59,39 @@ function fede_db_init_schema() {
             `points` INT NOT NULL DEFAULT 0,
             `level` INT NOT NULL DEFAULT 1,
             `level_name` VARCHAR(60) NOT NULL DEFAULT 'Iniciado',
+            `plan_id` INT DEFAULT NULL,
+            `plan_name` VARCHAR(100) NOT NULL DEFAULT 'Campus Nowback Pro (Mensual)',
+            `plan_expires_at` DATE DEFAULT NULL,
+            `status` ENUM('active', 'pending', 'expired', 'suspended') NOT NULL DEFAULT 'active',
+            `reset_token` VARCHAR(100) DEFAULT NULL,
+            `reset_token_expires_at` DATETIME DEFAULT NULL,
+            `email_verified` TINYINT(1) NOT NULL DEFAULT 1,
+            `verification_token` VARCHAR(100) DEFAULT NULL,
             `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
+
+    // Auto-migration helper for existing installations
+    $user_cols = [
+        'plan_id' => "INT DEFAULT NULL",
+        'plan_name' => "VARCHAR(100) NOT NULL DEFAULT 'Campus Nowback Pro (Mensual)'",
+        'plan_expires_at' => "DATE DEFAULT NULL",
+        'status' => "ENUM('active', 'pending', 'expired', 'suspended') NOT NULL DEFAULT 'active'",
+        'reset_token' => "VARCHAR(100) DEFAULT NULL",
+        'reset_token_expires_at' => "DATETIME DEFAULT NULL",
+        'email_verified' => "TINYINT(1) NOT NULL DEFAULT 1",
+        'verification_token' => "VARCHAR(100) DEFAULT NULL"
+    ];
+    try {
+        $existing_cols = $pdo->query("SHOW COLUMNS FROM `fede_users`")->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($user_cols as $col => $def) {
+            if (!in_array($col, $existing_cols)) {
+                $pdo->exec("ALTER TABLE `fede_users` ADD COLUMN `$col` $def");
+            }
+        }
+    } catch (Exception $e) {
+        error_log("Migration error in fede_users: " . $e->getMessage());
+    }
 
     // 2. Categories Table
     $pdo->exec("
@@ -570,4 +605,29 @@ function fede_db_init_schema() {
     }
 
     return true;
+}
+
+/**
+ * Normalize Video URL to Embed Format (YouTube, Vimeo, Loom, MP4)
+ */
+function fede_format_video_embed_url($url) {
+    if (empty($url)) return '';
+    $url = trim($url);
+
+    // YouTube watch or share URL
+    if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $url, $matches)) {
+        return 'https://www.youtube.com/embed/' . $matches[1];
+    }
+
+    // Vimeo URL
+    if (preg_match('/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/i', $url, $matches)) {
+        return 'https://player.vimeo.com/video/' . end($matches);
+    }
+
+    // Loom URL
+    if (preg_match('/loom\.com\/(?:share|embed)\/([a-zA-Z0-9]+)/i', $url, $matches)) {
+        return 'https://www.loom.com/embed/' . $matches[1];
+    }
+
+    return $url;
 }

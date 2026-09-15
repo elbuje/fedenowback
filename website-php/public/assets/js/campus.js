@@ -93,17 +93,107 @@ window.closeLessonPlayerModal = function() {
   closeAdminModal('modalLessonPlayer');
 };
 
-// Admin ABM Modal Openers
-function openAdminUserModal(id, name = '', email = '', role = 'member', points = 10) {
-  document.getElementById('modalUserTitle').textContent = (id > 0) ? 'Editar Usuario' : 'Nuevo Usuario';
+// Admin ABM Modal Openers & Helpers
+window.togglePasswordEye = function(inputId, btnEl) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (btnEl) btnEl.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    if (btnEl) btnEl.textContent = '👁️';
+  }
+};
+
+window.setUserExpiryDays = function(days) {
+  const input = document.getElementById('adminUserExpiresInput');
+  if (!input) return;
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  input.value = d.toISOString().split('T')[0];
+};
+
+window.syncPlanSelection = function(selectEl) {
+  const selectedOpt = selectEl.options[selectEl.selectedIndex];
+  const planName = selectedOpt ? selectedOpt.getAttribute('data-plan-name') : 'Campus Nowback Pro (Mensual)';
+  const hiddenInput = document.getElementById('adminUserPlanNameInput');
+  if (hiddenInput) hiddenInput.value = planName;
+};
+
+window.shareUserViaWhatsapp = function(name, email, planName) {
+  const siteUrl = window.location.origin + '/campus';
+  const text = `¡Hola ${name}! Te damos la bienvenida oficial al Campus Fede Nowback Pro 🚀.\n\nTu suscripción al plan *${planName || 'Campus Nowback Pro'}* ya se encuentra activa.\n\n📌 *Tus datos de acceso:*\n📧 Email: ${email}\n🔗 Ingreso al Campus: ${siteUrl}\n\n¡Nos vemos adentro para empezar a romperla! 🔥`;
+  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+};
+
+window.shareModalUserWhatsApp = function() {
+  const name = document.getElementById('adminUserNameInput')?.value.trim() || 'Alumno';
+  const email = document.getElementById('adminUserEmailInput')?.value.trim() || '';
+  const password = document.getElementById('adminUserPasswordInput')?.value || '';
+  const planName = document.getElementById('adminUserPlanNameInput')?.value || 'Campus Nowback Pro';
+  const siteUrl = window.location.origin + '/campus';
+
+  let passText = password ? `\n🔑 Contraseña inicial: ${password}` : '';
+  const text = `¡Hola ${name}! Te damos la bienvenida oficial al Campus Fede Nowback Pro 🚀.\n\nTu suscripción al plan *${planName}* ya se encuentra activa.\n\n📌 *Tus datos de ingreso:*\n📧 Email: ${email}${passText}\n🔗 Ingreso: ${siteUrl}\n\n¡Nos vemos adentro! 🔥`;
+  
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+};
+
+window.openAdminUserModal = function(id = 0, name = '', email = '', role = 'member', points = 10, planId = 0, planName = 'Campus Nowback Pro (Mensual)', planExpires = '') {
+  const isEdit = id > 0;
+  const titleEl = document.getElementById('modalUserTitle');
+  const lblPass = document.getElementById('lblAdminUserPassword');
+  const btnSubmit = document.getElementById('btnAdminUserSubmit');
+  const feedback = document.getElementById('adminUserFeedbackMsg');
+
+  if (titleEl) titleEl.textContent = isEdit ? `✏️ Editar Usuario: ${name}` : '➕ Alta de Nuevo Usuario / Alumno';
+  if (lblPass) lblPass.innerHTML = isEdit ? 'Nueva Contraseña (dejar en blanco para mantener actual):' : 'Contraseña <span style="color: #ef4444;">*</span>:';
+  if (btnSubmit) btnSubmit.textContent = isEdit ? '💾 Guardar Cambios' : '➕ Crear Usuario';
+  if (feedback) feedback.style.display = 'none';
+
   document.getElementById('adminUserIdInput').value = id || 0;
   document.getElementById('adminUserNameInput').value = name || '';
   document.getElementById('adminUserEmailInput').value = email || '';
   document.getElementById('adminUserPasswordInput').value = '';
+  document.getElementById('adminUserConfirmPasswordInput').value = '';
   document.getElementById('adminUserRoleInput').value = role || 'member';
   document.getElementById('adminUserPointsInput').value = points || 10;
+  
+  // Plan & Expiry
+  const planSelect = document.getElementById('adminUserPlanSelect');
+  if (planSelect) {
+    planSelect.value = planId || 0;
+    syncPlanSelection(planSelect);
+  }
+  const expiresInput = document.getElementById('adminUserExpiresInput');
+  if (expiresInput) {
+    expiresInput.value = planExpires || '';
+  }
+
+  // Eye toggle reset
+  document.getElementById('adminUserPasswordInput').type = 'password';
+  document.getElementById('adminUserConfirmPasswordInput').type = 'password';
+  document.querySelectorAll('#modalAdminUser .btn-toggle-eye').forEach(btn => btn.textContent = '👁️');
+
   openAdminModal('modalAdminUser');
-}
+};
+
+window.openForgotPasswordModal = function() {
+  closeLoginModal();
+  const feedback = document.getElementById('forgotFeedbackMsg');
+  if (feedback) feedback.style.display = 'none';
+  openAdminModal('modalForgotPassword');
+};
+
+window.openResetPasswordModal = function(token, email) {
+  document.getElementById('resetTokenInput').value = token || '';
+  document.getElementById('resetEmailInput').value = email || '';
+  const feedback = document.getElementById('resetFeedbackMsg');
+  if (feedback) feedback.style.display = 'none';
+  openAdminModal('modalResetPassword');
+};
 
 function openAdminCourseModal(id, title = '', slug = '', desc = '', duration = '3h 00m', thumb = '/assets/img/fede_nowback_hero.jpg', level = 1) {
   document.getElementById('modalCourseTitle').textContent = (id > 0) ? 'Editar Curso' : 'Nuevo Curso';
@@ -611,21 +701,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 11. Admin Form Submissions (ABM)
   
-  // User Form
+  // User Form Submission
   const formAdminUser = document.getElementById('formAdminUser');
   if (formAdminUser) {
+    // Realtime password match check
+    const passInput = document.getElementById('adminUserPasswordInput');
+    const confirmInput = document.getElementById('adminUserConfirmPasswordInput');
+    const matchIndicator = document.getElementById('passwordMatchIndicator');
+
+    function checkPasswordsMatch() {
+      if (!passInput || !confirmInput || !matchIndicator) return;
+      const p1 = passInput.value;
+      const p2 = confirmInput.value;
+      if (!p1 && !p2) {
+        matchIndicator.style.display = 'none';
+        return;
+      }
+      matchIndicator.style.display = 'block';
+      if (p1 === p2) {
+        matchIndicator.style.color = '#10b981';
+        matchIndicator.textContent = '✅ Las contraseñas coinciden';
+      } else {
+        matchIndicator.style.color = '#ef4444';
+        matchIndicator.textContent = '❌ Las contraseñas no coinciden';
+      }
+    }
+
+    if (passInput && confirmInput) {
+      passInput.addEventListener('input', checkPasswordsMatch);
+      confirmInput.addEventListener('input', checkPasswordsMatch);
+    }
+
     formAdminUser.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const userId = document.getElementById('adminUserIdInput').value;
+      const name = document.getElementById('adminUserNameInput').value.trim();
+      const email = document.getElementById('adminUserEmailInput').value.trim();
+      const password = document.getElementById('adminUserPasswordInput').value;
+      const confirmPassword = document.getElementById('adminUserConfirmPasswordInput').value;
+      const role = document.getElementById('adminUserRoleInput').value;
+      const points = document.getElementById('adminUserPointsInput').value;
+      const planSelect = document.getElementById('adminUserPlanSelect');
+      const planId = planSelect ? planSelect.value : 0;
+      const planName = document.getElementById('adminUserPlanNameInput')?.value || 'Campus Nowback Pro (Mensual)';
+      const planExpires = document.getElementById('adminUserExpiresInput')?.value || '';
+      const sendEmail = document.getElementById('adminUserSendEmailInput')?.checked ? 1 : 0;
+      const feedback = document.getElementById('adminUserFeedbackMsg');
+      const submitBtn = document.getElementById('btnAdminUserSubmit');
+
+      if (!name || !email) {
+        alert('Nombre y Email son obligatorios');
+        return;
+      }
+
+      if (userId == 0 && !password) {
+        alert('Debés asignar una contraseña para dar de alta al nuevo alumno.');
+        return;
+      }
+
+      if (password && confirmPassword && password !== confirmPassword) {
+        alert('Las contraseñas no coinciden. Por favor verifícalas.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Guardando en MySQL...';
+
       const payload = {
         action: 'admin_save_user',
-        user_id: document.getElementById('adminUserIdInput').value,
-        name: document.getElementById('adminUserNameInput').value.trim(),
-        email: document.getElementById('adminUserEmailInput').value.trim(),
-        password: document.getElementById('adminUserPasswordInput').value,
-        role: document.getElementById('adminUserRoleInput').value,
-        points: document.getElementById('adminUserPointsInput').value,
+        user_id: userId,
+        name: name,
+        email: email,
+        password: password,
+        confirm_password: confirmPassword,
+        role: role,
+        points: points,
+        plan_id: planId,
+        plan_name: planName,
+        plan_expires_at: planExpires,
+        send_email: sendEmail,
         csrf_token: csrfToken
       };
+
       try {
         const res = await fetch(API_ENDPOINT, {
           method: 'POST',
@@ -634,16 +791,93 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await res.json();
         if (data.success) {
-          alert('Usuario guardado exitosamente');
-          window.location.reload();
+          if (feedback) {
+            feedback.style.display = 'block';
+            feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+            feedback.style.color = '#10b981';
+            feedback.textContent = '✅ ' + data.message;
+          }
+          setTimeout(() => window.location.reload(), 700);
         } else {
+          if (feedback) {
+            feedback.style.display = 'block';
+            feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+            feedback.style.color = '#ef4444';
+            feedback.textContent = '❌ ' + (data.error || 'Error al guardar');
+          }
           alert(data.error || 'Error al guardar usuario');
+          submitBtn.disabled = false;
+          submitBtn.textContent = '💾 Guardar Usuario';
         }
       } catch (err) {
         console.error(err);
+        alert('Error de conexión con el servidor MySQL.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '💾 Guardar Usuario';
       }
     });
   }
+
+  // Live Real-Time Search for Admin Users Table
+  const usersSearchInput = document.getElementById('adminUsersSearchInput');
+  if (usersSearchInput) {
+    usersSearchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const rows = document.querySelectorAll('#adminUsersTableBody tr');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const name = row.dataset.name || '';
+        const email = row.dataset.email || '';
+        const plan = row.dataset.plan || '';
+        const role = row.dataset.role || '';
+
+        if (!q || name.includes(q) || email.includes(q) || plan.includes(q) || role.includes(q)) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const countLbl = document.getElementById('adminUsersCountLabel');
+      if (countLbl) {
+        countLbl.textContent = `Mostrando ${visibleCount} de ${rows.length} usuarios`;
+      }
+    });
+  }
+
+  // Interactive Sorting for Admin Users Table
+  let currentSortCol = '';
+  let currentSortAsc = true;
+  window.sortAdminUsersTable = function(column) {
+    const tbody = document.getElementById('adminUsersTableBody');
+    if (!tbody) return;
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    if (currentSortCol === column) {
+      currentSortAsc = !currentSortAsc;
+    } else {
+      currentSortCol = column;
+      currentSortAsc = true;
+    }
+
+    rows.sort((a, b) => {
+      let vA = (a.dataset[column] || '').toLowerCase();
+      let vB = (b.dataset[column] || '').toLowerCase();
+
+      if (column === 'points') {
+        vA = parseInt(a.dataset.points) || 0;
+        vB = parseInt(b.dataset.points) || 0;
+      }
+
+      if (vA < vB) return currentSortAsc ? -1 : 1;
+      if (vA > vB) return currentSortAsc ? 1 : -1;
+      return 0;
+    });
+
+    rows.forEach(r => tbody.appendChild(r));
+  };
 
   // Course Form
   const formAdminCourse = document.getElementById('formAdminCourse');
@@ -668,7 +902,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await res.json();
         if (data.success) {
-          alert('Curso guardado');
+          alert('Curso guardado exitosamente en MySQL');
           window.location.reload();
         } else {
           alert(data.error || 'Error al guardar curso');
@@ -713,10 +947,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await res.json();
         if (data.success) {
-          alert('Lección guardada');
+          alert('Lección guardada exitosamente. Podés probarla con el botón "▶️ Ver / Probar Video".');
           window.location.reload();
         } else {
-          alert(data.error || 'Error al guardar');
+          alert(data.error || 'Error al guardar lección');
         }
       } catch (err) {
         console.error(err);
@@ -891,4 +1125,129 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 13. Forgot Password Submission
+  const formForgot = document.getElementById('formForgotPassword');
+  if (formForgot) {
+    formForgot.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('forgotEmailInput').value.trim();
+      const feedback = document.getElementById('forgotFeedbackMsg');
+      const submitBtn = document.getElementById('btnForgotSubmit');
+
+      if (!email) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify({
+            action: 'auth_forgot_password',
+            email: email,
+            csrf_token: csrfToken
+          })
+        });
+        const data = await res.json();
+
+        feedback.style.display = 'block';
+        if (data.success) {
+          feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+          feedback.style.color = '#10b981';
+          feedback.textContent = '✅ ' + data.message;
+        } else {
+          feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+          feedback.style.color = '#ef4444';
+          feedback.textContent = '❌ ' + (data.error || 'Error al procesar solicitud');
+        }
+      } catch (err) {
+        console.error(err);
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+        feedback.style.color = '#ef4444';
+        feedback.textContent = '❌ Error de conexión al servidor.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '📩 Enviar Enlace de Recuperación';
+      }
+    });
+  }
+
+  // 14. Reset Password Submission
+  const formReset = document.getElementById('formResetPassword');
+  if (formReset) {
+    formReset.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const token = document.getElementById('resetTokenInput').value;
+      const email = document.getElementById('resetEmailInput').value;
+      const newPassword = document.getElementById('resetNewPasswordInput').value;
+      const confirmPassword = document.getElementById('resetConfirmPasswordInput').value;
+      const feedback = document.getElementById('resetFeedbackMsg');
+      const submitBtn = document.getElementById('btnResetSubmit');
+
+      if (!newPassword || !confirmPassword) return;
+
+      if (newPassword !== confirmPassword) {
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+        feedback.style.color = '#ef4444';
+        feedback.textContent = '❌ Las contraseñas no coinciden.';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Actualizando...';
+
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify({
+            action: 'auth_reset_password',
+            reset_token: token,
+            email: email,
+            password: newPassword,
+            confirm_password: confirmPassword,
+            csrf_token: csrfToken
+          })
+        });
+        const data = await res.json();
+
+        feedback.style.display = 'block';
+        if (data.success) {
+          feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+          feedback.style.color = '#10b981';
+          feedback.textContent = '✅ ' + data.message;
+          setTimeout(() => {
+            closeAdminModal('modalResetPassword');
+            openLoginModal();
+          }, 1500);
+        } else {
+          feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+          feedback.style.color = '#ef4444';
+          feedback.textContent = '❌ ' + (data.error || 'Error al actualizar contraseña');
+        }
+      } catch (err) {
+        console.error(err);
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+        feedback.style.color = '#ef4444';
+        feedback.textContent = '❌ Error de conexión al servidor.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '💾 Guardar Nueva Contraseña';
+      }
+    });
+  }
+
+  // Check URL params for Password Reset
+  const urlParams = new URLSearchParams(window.location.search);
+  const resetTokenParam = urlParams.get('reset_token');
+  const resetEmailParam = urlParams.get('email');
+  if (resetTokenParam) {
+    openResetPasswordModal(resetTokenParam, resetEmailParam);
+  }
+
 });
+

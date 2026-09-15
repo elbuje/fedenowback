@@ -30,6 +30,7 @@ Bienvenido a la base de conocimiento viva del proyecto **Fede Nowback**, gestion
 
 ## 📜 Historial de Sesiones
 
+- [[sessions/2026-09-15-gestion-campus-usuarios-clases-mysql]] — Gestión Integral del Campus, Usuarios, Clases, Recuperación de Contraseñas y MySQL.
 - [[sessions/2026-09-12-landing-tecnobrain-campus-estrategia-social-metricool]] — Landing PHP Tecnobrain, Estrategia Social 3 Meses y Configuración Metricool.
 - [[sessions/2026-09-12-landing-precios-tecnobrain-campus-virtual]] — Landing Page SEO 5 Capas & Precios Ecosistema Campus Virtual Tecnobrain.
 - [[sessions/2026-09-11-estandarizacion-wiki-y-diagnostico-ssl]] — Estandarización total de LLM Wiki bajo 3 capas y diagnóstico de Certbot / SSL.

@@ -667,7 +667,7 @@ function fede_load_community_data() {
             }
 
             // 6. Fetch Settings from MySQL
-            $db_settings = $pdo->query("SELECT * FROM `fede_settings`")->fetchAll(PDO::FETCH_KEY_PAIR);
+            $db_settings = $pdo->query("SELECT `setting_key`, `setting_value` FROM `fede_settings`")->fetchAll(PDO::FETCH_KEY_PAIR);
             $data['settings'] = $db_settings ?: [
                 'enable_gamification' => '0',
                 'community_name' => 'Campus Fede Nowback Pro',
@@ -675,24 +675,55 @@ function fede_load_community_data() {
             ];
 
             // 7. Fetch Members & Leaderboard from MySQL
-            $db_users = $pdo->query("SELECT * FROM `fede_users` ORDER BY `points` DESC LIMIT 50")->fetchAll();
+            $db_users = $pdo->query("SELECT * FROM `fede_users` ORDER BY `id` DESC LIMIT 100")->fetchAll();
             if (!empty($db_users)) {
                 $leaderboard = [];
                 $members = [];
                 $rank = 1;
+                $today = new DateTime('today');
+
                 foreach ($db_users as $du) {
+                    $expires_at = !empty($du['plan_expires_at']) ? $du['plan_expires_at'] : null;
+                    $days_left = null;
+                    $expiry_status = 'active'; // active, expiring_soon, expired, lifetime
+
+                    if ($expires_at) {
+                        $exp_date = new DateTime($expires_at);
+                        $diff = $today->diff($exp_date);
+                        $is_past = $exp_date < $today;
+                        $days_left = $is_past ? -$diff->days : $diff->days;
+
+                        if ($days_left < 0) {
+                            $expiry_status = 'expired';
+                        } elseif ($days_left <= 7) {
+                            $expiry_status = 'expiring_soon';
+                        } else {
+                            $expiry_status = 'active';
+                        }
+                    } else {
+                        $expiry_status = 'lifetime'; // Sin fecha = Vitalicio / Permanente
+                    }
+
                     $u_item = [
                         'id' => (string)$du['id'],
-                        'name' => $du['name'],
-                        'handle' => $du['handle'],
-                        'email' => $du['email'],
+                        'numeric_id' => (int)$du['id'],
+                        'name' => $du['name'] ?: 'Usuario #' . $du['id'],
+                        'handle' => $du['handle'] ?: ('@user' . $du['id']),
+                        'email' => $du['email'] ?: '',
                         'avatar' => fede_clean_avatar($du['avatar'], '/assets/img/fede_avatar_mini.png'),
-                        'role' => $du['role'],
-                        'points' => (int)$du['points'],
-                        'level' => (int)$du['level'],
-                        'level_name' => $du['level_name'],
-                        'badge' => ($du['role'] === 'admin' ? '👑 HOST' : '⚡ Rango ' . $du['level']),
-                        'bio' => $du['bio'],
+                        'role' => $du['role'] ?: 'member',
+                        'points' => (int)($du['points'] ?? 10),
+                        'level' => (int)($du['level'] ?? 1),
+                        'level_name' => $du['level_name'] ?: 'Iniciado',
+                        'badge' => ($du['role'] === 'admin' ? '👑 HOST' : '⚡ Rango ' . ($du['level'] ?? 1)),
+                        'plan_id' => !empty($du['plan_id']) ? (int)$du['plan_id'] : null,
+                        'plan_name' => $du['plan_name'] ?? 'Campus Nowback Pro (Mensual)',
+                        'plan_expires_at' => $expires_at,
+                        'plan_days_left' => $days_left,
+                        'expiry_status' => $expiry_status,
+                        'status' => $du['status'] ?? 'active',
+                        'bio' => $du['bio'] ?? '',
+                        'created_at' => $du['created_at'] ?? date('Y-m-d H:i:s'),
                         'is_current_user' => (isset($_SESSION['fede_user']['email']) && $_SESSION['fede_user']['email'] === $du['email'])
                     ];
                     $members[] = $u_item;
@@ -764,3 +795,110 @@ function fede_set_setting($key, $value) {
     }
     return false;
 }
+
+/**
+ * Send Welcome / Access Email to Student
+ */
+function fede_send_welcome_user_email($email, $name, $password, $plan_name = 'Campus Nowback Pro') {
+    if (empty($email)) return false;
+    $subject = "🔥 ¡Bienvenido al Campus Fede Nowback Pro! Tus accesos";
+    $login_url = defined('SITE_URL') ? (SITE_URL . '/campus') : 'https://fedenowback.com.ar/campus';
+
+    $html = '
+    <!DOCTYPE html>
+    <html lang="es">
+    <head><meta charset="utf-8"><title>Bienvenido al Campus</title></head>
+    <body style="font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; padding: 24px; margin: 0;">
+      <div style="max-width: 580px; margin: 0 auto; background: #1e293b; border-radius: 12px; border: 1px solid #334155; padding: 32px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h1 style="color: #f97316; font-size: 24px; margin: 0 0 8px 0;">🚀 Campus Fede Nowback Pro</h1>
+          <p style="color: #94a3b8; font-size: 14px; margin: 0;">Academia & Comunidad Privada de Creadores</p>
+        </div>
+        
+        <p style="font-size: 16px; color: #f8fafc; line-height: 1.5;">
+          ¡Hola <strong>' . htmlspecialchars($name) . '</strong>! Te damos la bienvenida oficial a nuestra plataforma privada.
+        </p>
+        <p style="font-size: 14px; color: #cbd5e1; line-height: 1.5;">
+          Tu suscripción al plan <strong>' . htmlspecialchars($plan_name) . '</strong> ya está activa. Acá tenés tus datos de ingreso para comenzar:
+        </p>
+
+        <div style="background: #0f172a; border-radius: 8px; border: 1px solid #334155; padding: 18px 20px; margin: 20px 0;">
+          <p style="margin: 0 0 8px 0; font-size: 14px; color: #94a3b8;">📧 <strong>Email de acceso:</strong> <span style="color: #f8fafc;">' . htmlspecialchars($email) . '</span></p>
+          ' . (!empty($password) ? ('<p style="margin: 0; font-size: 14px; color: #94a3b8;">🔑 <strong>Contraseña:</strong> <span style="color: #f8fafc; font-family: monospace; background: #1e293b; padding: 2px 6px; border-radius: 4px;">' . htmlspecialchars($password) . '</span></p>') : '') . '
+        </div>
+
+        <div style="text-align: center; margin: 30px 0 20px 0;">
+          <a href="' . htmlspecialchars($login_url) . '" style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+            🚀 Ingresar al Campus Ahora
+          </a>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #334155; margin: 24px 0;">
+        <p style="font-size: 12px; color: #64748b; line-height: 1.4; text-align: center; margin: 0;">
+          Si tenés alguna duda con tu acceso, podés responder este correo o comunicarte directamente por WhatsApp al soporte oficial.
+        </p>
+      </div>
+    </body>
+    </html>
+    ';
+
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8\r\n";
+    $headers .= "From: Fede Nowback <contacto@fedenowback.com.ar>\r\n";
+    $headers .= "Reply-To: contacto@fedenowback.com.ar\r\n";
+
+    return @mail($email, $subject, $html, $headers);
+}
+
+/**
+ * Send Password Reset Email
+ */
+function fede_send_reset_password_email($email, $name, $reset_url) {
+    if (empty($email)) return false;
+    $subject = "🔑 Restablecer contraseña — Campus Fede Nowback Pro";
+
+    $html = '
+    <!DOCTYPE html>
+    <html lang="es">
+    <head><meta charset="utf-8"><title>Restablecer contraseña</title></head>
+    <body style="font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; padding: 24px; margin: 0;">
+      <div style="max-width: 580px; margin: 0 auto; background: #1e293b; border-radius: 12px; border: 1px solid #334155; padding: 32px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h1 style="color: #f97316; font-size: 22px; margin: 0 0 8px 0;">Restablecer Contraseña</h1>
+          <p style="color: #94a3b8; font-size: 14px; margin: 0;">Campus Fede Nowback Pro</p>
+        </div>
+        
+        <p style="font-size: 15px; color: #f8fafc; line-height: 1.5;">
+          ¡Hola <strong>' . htmlspecialchars($name) . '</strong>! Recibimos una solicitud para restablecer la contraseña de tu cuenta.
+        </p>
+        <p style="font-size: 14px; color: #cbd5e1; line-height: 1.5;">
+          Hacé clic en el siguiente botón para elegir una nueva contraseña. Este enlace es válido por 2 horas.
+        </p>
+
+        <div style="text-align: center; margin: 28px 0;">
+          <a href="' . htmlspecialchars($reset_url) . '" style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); color: #ffffff; text-decoration: none; padding: 13px 28px; border-radius: 8px; font-weight: bold; font-size: 15px; display: inline-block;">
+            🔑 Restablecer Mi Contraseña
+          </a>
+        </div>
+
+        <p style="font-size: 12px; color: #94a3b8; word-break: break-all;">
+          O copia este link en tu navegador:<br>' . htmlspecialchars($reset_url) . '
+        </p>
+
+        <hr style="border: 0; border-top: 1px solid #334155; margin: 24px 0;">
+        <p style="font-size: 12px; color: #64748b; line-height: 1.4; text-align: center; margin: 0;">
+          Si no solicitaste este cambio, podés ignorar este correo con tranquilidad. Tu contraseña actual no será modificada.
+        </p>
+      </div>
+    </body>
+    </html>
+    ';
+
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8\r\n";
+    $headers .= "From: Fede Nowback <contacto@fedenowback.com.ar>\r\n";
+    $headers .= "Reply-To: contacto@fedenowback.com.ar\r\n";
+
+    return @mail($email, $subject, $html, $headers);
+}
+

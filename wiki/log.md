@@ -7,6 +7,15 @@ tags: [log, changelog, history, fedenowback]
 
 # 🪵 Bitácora de Cambios (Log) — Fede Nowback
 
+## [2026-09-15] - Gestión Integral Campus: Usuarios, Planes, Recuperación, Clases y MySQL
+- **FEAT:** ABM completo de usuarios en Campus (`fede_users`) con selector de planes (Gratuito, Pro, Mentoria VIP, Vitalicio), cálculo de vencimientos automáticos (+30d, +90d, +1y), estados semánticos y badges de caducidad.
+- **SECURITY:** Campos de confirmación de contraseña, toggles de visualización con ojo (👁️), hashes seguros `PASSWORD_BCRYPT` y protección estricta contra eliminación del superadmin principal.
+- **EMAIL & WHATSAPP:** Generación de enlaces y mensajes directos para WhatsApp con credenciales listas para enviar; sistema de notificaciones por email para bienvenida y flujo seguro de "¿Olvidaste tu contraseña?" con token temporal SHA-256 (`reset_token`).
+- **FIX (DB):** Corrección de fallo silencioso en `community_store.php` por `PDO::FETCH_KEY_PAIR` en tabla de 3 columnas (`fede_settings`) que provocaba fallback a usuarios dummy con IDs alfanuméricos. Migración DDL automática de columnas en `db.php` y persistencia 100% real en MySQL.
+- **FEAT (ACADEMY):** Visualización interactiva de clases por curso en pestaña Cursos del Admin con botón de preview/reproducción modal (`▶️ Ver / Probar Video`).
+- **MEDIA:** Parser y conversor automático de URLs compartidas de YouTube (`https://youtu.be/...`, `watch?v=...`) al formato embed reproducible (`fede_format_video_embed_url`).
+- **UI/UX:** Búsqueda en tiempo real y ordenamiento por columnas (↕️ Nombre, Email, Plan, Vencimiento, Estado) en la tabla de miembros del panel de administración.
+
 ## [2026-09-12] - Landing PHP Tecnobrain, Estrategia Social 3 Meses & Metricool
 - **FEAT:** Landing autónoma en PHP liviano (`website-php/views/tecnobrain-campus-virtual.php`) respetando el manual de marca y sin alterar `tecnobrain` (Next.js).
 - **ROUTING:** Habilitación de URLs amigables en `website-php/public/index.php` activas en puertos `:8015` y `:8011`.

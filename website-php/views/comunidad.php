@@ -868,23 +868,86 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
               <?php foreach ($data['courses'] as $c_item): ?>
-                <div class="campus-card" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <img src="<?= htmlspecialchars($c_item['thumbnail']) ?>" alt="" style="width: 90px; height: 55px; border-radius: 8px; object-fit: cover; border: 1px solid var(--c-border);">
-                    <div>
-                      <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 4px;"><?= htmlspecialchars($c_item['title']) ?></h4>
-                      <div style="font-size: 0.8rem; color: var(--c-text-muted);">
-                        Slug: <code>/<?= htmlspecialchars($c_item['slug']) ?></code> • <?= (int)$c_item['total_lessons'] ?> Lecciones • Duración: <?= htmlspecialchars($c_item['duration']) ?>
+                <div class="campus-card" style="border: 1px solid var(--c-border); padding: 20px;">
+                  <!-- Course Header -->
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; border-bottom: 1px dashed var(--c-border); padding-bottom: 16px; margin-bottom: 14px;">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                      <img src="<?= htmlspecialchars($c_item['thumbnail']) ?>" alt="" style="width: 100px; height: 62px; border-radius: 8px; object-fit: cover; border: 1px solid var(--c-border);">
+                      <div>
+                        <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.15rem; margin-bottom: 4px; color: var(--c-text-main);"><?= htmlspecialchars($c_item['title']) ?></h4>
+                        <div style="font-size: 0.82rem; color: var(--c-text-muted);">
+                          Slug: <code>/<?= htmlspecialchars($c_item['slug']) ?></code> • <?= (int)$c_item['total_lessons'] ?> Lecciones • Duración: <?= htmlspecialchars($c_item['duration']) ?>
+                        </div>
                       </div>
                     </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                      <button type="button" class="admin-btn-action" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0; font-weight: 700;" onclick="openAdminLessonModal(0, <?= (int)$c_item['id'] ?>)">
+                        ➕ Cargar Clase a este Curso
+                      </button>
+                      <button type="button" class="admin-btn-action admin-btn-edit" onclick="openAdminCourseModal(<?= (int)$c_item['id'] ?>, '<?= htmlspecialchars(addslashes($c_item['title'])) ?>', '<?= htmlspecialchars(addslashes($c_item['slug'])) ?>', '<?= htmlspecialchars(addslashes($c_item['description'])) ?>', '<?= htmlspecialchars(addslashes($c_item['duration'])) ?>', '<?= htmlspecialchars(addslashes($c_item['thumbnail'])) ?>', <?= (int)$c_item['level_required'] ?>)">
+                        ✏️ Editar Curso
+                      </button>
+                      <button type="button" class="admin-btn-action admin-btn-del" onclick="deleteAdminCourse(<?= (int)$c_item['id'] ?>)">
+                        🗑️ Borrar
+                      </button>
+                    </div>
                   </div>
-                  <div style="display: flex; gap: 8px;">
-                    <button class="admin-btn-action" style="background: #f0fdf4; color: #166534; border-color: #bbf7d0;" onclick="openAdminLessonModal(0, <?= (int)$c_item['id'] ?>)">➕ Cargar Clase</button>
-                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminCourseModal(<?= (int)$c_item['id'] ?>, '<?= htmlspecialchars(addslashes($c_item['title'])) ?>', '<?= htmlspecialchars(addslashes($c_item['slug'])) ?>', '<?= htmlspecialchars(addslashes($c_item['description'])) ?>', '<?= htmlspecialchars(addslashes($c_item['duration'])) ?>', '<?= htmlspecialchars(addslashes($c_item['thumbnail'])) ?>', <?= (int)$c_item['level_required'] ?>)">✏️ Editar</button>
-                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminCourse(<?= (int)$c_item['id'] ?>)">🗑️ Borrar</button>
+
+                  <!-- Lessons List inside this Course -->
+                  <div>
+                    <div style="font-size: 0.82rem; font-weight: 800; color: var(--c-text-muted); text-transform: uppercase; margin-bottom: 10px;">
+                      🎬 Clases y Videos incluidos (<?= (int)$c_item['total_lessons'] ?>):
+                    </div>
+                    <?php 
+                    $has_lessons = false;
+                    if (!empty($c_item['modules'])): 
+                      foreach ($c_item['modules'] as $mod_item):
+                        if (!empty($mod_item['lessons'])):
+                          $has_lessons = true;
+                          foreach ($mod_item['lessons'] as $les_item):
+                    ?>
+                      <div style="display: flex; justify-content: space-between; align-items: center; background: var(--c-bg-subtle); border: 1px solid var(--c-border); border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; gap: 10px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <span style="font-size: 1.1rem;">🎥</span>
+                          <div>
+                            <strong style="font-size: 0.9rem; color: var(--c-text-main); display: block;"><?= htmlspecialchars($les_item['title']) ?></strong>
+                            <div style="font-size: 0.78rem; color: var(--c-text-muted);">
+                              ⏱️ <?= htmlspecialchars($les_item['duration'] ?: '15:00') ?> 
+                              <?php if (!empty($les_item['is_free'])): ?>
+                                <span style="font-size: 0.7rem; font-weight: 800; background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">GRATIS</span>
+                              <?php endif; ?>
+                              <?php if (!empty($les_item['video_url'])): ?>
+                                <span style="margin-left: 8px; color: #0284c7;">🔗 <?= htmlspecialchars(substr($les_item['video_url'], 0, 40)) ?>...</span>
+                              <?php endif; ?>
+                            </div>
+                          </div>
+                        </div>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                          <button type="button" class="btn-reaction" style="padding: 5px 12px; font-size: 0.8rem; font-weight: 800; color: var(--c-fire-primary); background: var(--c-card); border-color: var(--c-fire-primary);" onclick="playLessonModal('<?= htmlspecialchars(addslashes($les_item['title'])) ?>', '<?= htmlspecialchars($les_item['video_url']) ?>', '<?= htmlspecialchars(addslashes($les_item['description'])) ?>')">
+                            ▶️ Ver / Probar Video
+                          </button>
+                          <button type="button" class="admin-btn-action admin-btn-edit" style="padding: 5px 10px; font-size: 0.8rem;" onclick="openAdminLessonModal(<?= (int)$les_item['id'] ?>, <?= (int)$c_item['id'] ?>, '<?= htmlspecialchars(addslashes($les_item['title'])) ?>', '<?= htmlspecialchars($les_item['video_url']) ?>', '<?= htmlspecialchars(addslashes($les_item['duration'])) ?>', '<?= htmlspecialchars(addslashes($les_item['description'])) ?>', <?= !empty($les_item['is_free']) ? 1 : 0 ?>)">
+                            ✏️
+                          </button>
+                          <button type="button" class="admin-btn-action admin-btn-del" style="padding: 5px 10px; font-size: 0.8rem;" onclick="deleteAdminLesson(<?= (int)$les_item['id'] ?>)">
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    <?php 
+                          endforeach;
+                        endif;
+                      endforeach;
+                    endif; 
+                    if (!$has_lessons): ?>
+                      <div style="padding: 14px; background: var(--c-bg-subtle); border-radius: 8px; border: 1px dashed var(--c-border); text-align: center; color: var(--c-text-muted); font-size: 0.85rem;">
+                        No hay clases cargadas en este curso todavía. <a href="javascript:void(0)" onclick="openAdminLessonModal(0, <?= (int)$c_item['id'] ?>)" style="color: var(--c-fire-primary); font-weight: 700;">Hacé clic acá para cargar la primera clase</a>.
+                      </div>
+                    <?php endif; ?>
                   </div>
+
                 </div>
               <?php endforeach; ?>
             </div>
@@ -969,49 +1032,107 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             </table>
           </div>
 
-          <!-- SUBTAB 4: USUARIOS (ABM) -->
+          <!-- SUBTAB 4: USUARIOS (ABM CON BUSCADOR, PLANES Y ORDENAMIENTO) -->
           <div id="admin-subtab-users" class="admin-subtab-content" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Directorio de Usuarios</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.25rem; margin-bottom: 4px;">Directorio de Usuarios & Alumnos</h3>
+                <p style="font-size: 0.82rem; color: var(--c-text-muted);">
+                  Gestioná cuentas en MySQL, planes contratados, vencimientos y compartí accesos por WhatsApp.
+                </p>
+              </div>
               <button type="button" class="admin-btn-add" onclick="openAdminUserModal(0)">➕ Nuevo Usuario / Alumno</button>
             </div>
 
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Usuario</th>
-                  <th>Email</th>
-                  <th>Rol</th>
-                  <th>Fuego</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="adminUsersTableBody">
-                <?php foreach ($data['members'] as $u_row): ?>
-                  <tr id="admin-user-row-<?= htmlspecialchars($u_row['id']) ?>">
-                    <td>
-                      <div style="display: flex; align-items: center; gap: 8px;">
-                        <img src="<?= htmlspecialchars($u_row['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="" style="width: 28px; height: 28px; border-radius: 50%;">
-                        <strong><?= htmlspecialchars($u_row['name']) ?></strong>
-                      </div>
-                    </td>
-                    <td><?= htmlspecialchars($u_row['email']) ?></td>
-                    <td>
-                      <span class="dropdown-role-badge <?= $u_row['role'] === 'admin' ? 'admin' : 'member' ?>">
-                        <?= $u_row['role'] === 'admin' ? '👑 Admin' : '👤 Alumno' ?>
-                      </span>
-                    </td>
-                    <td>🔥 <?= (int)$u_row['points'] ?></td>
-                    <td>
-                      <button class="admin-btn-action admin-btn-edit" onclick="openAdminUserModal(<?= (int)$u_row['id'] ?>, '<?= htmlspecialchars(addslashes($u_row['name'])) ?>', '<?= htmlspecialchars(addslashes($u_row['email'])) ?>', '<?= htmlspecialchars($u_row['role']) ?>', <?= (int)$u_row['points'] ?>)">✏️ Editar</button>
-                      <?php if ($u_row['email'] !== 'mfmujic@gmail.com'): ?>
-                        <button class="admin-btn-action admin-btn-del" onclick="deleteAdminUser(<?= (int)$u_row['id'] ?>)">🗑️ Borrar</button>
-                      <?php endif; ?>
-                    </td>
+            <!-- Toolbar con Buscador y Filtros -->
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+              <div style="position: relative; flex: 1; max-width: 420px;">
+                <input type="text" id="adminUsersSearchInput" class="admin-form-input" placeholder="🔍 Buscar por nombre, email, plan o rol..." style="padding-left: 36px;">
+                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: var(--c-text-muted);">🔍</span>
+              </div>
+              <div style="font-size: 0.84rem; color: var(--c-text-muted); font-weight: 700;" id="adminUsersCountLabel">
+                Mostrando <?= count($data['members']) ?> usuarios
+              </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table class="admin-table" id="adminUsersTable">
+                <thead>
+                  <tr>
+                    <th style="cursor: pointer;" onclick="sortAdminUsersTable('name')">Usuario <span class="sort-icon">↕️</span></th>
+                    <th style="cursor: pointer;" onclick="sortAdminUsersTable('email')">Email <span class="sort-icon">↕️</span></th>
+                    <th style="cursor: pointer;" onclick="sortAdminUsersTable('plan')">Plan Contratado <span class="sort-icon">↕️</span></th>
+                    <th style="cursor: pointer;" onclick="sortAdminUsersTable('expiry')">Estado / Vencimiento <span class="sort-icon">↕️</span></th>
+                    <th style="cursor: pointer;" onclick="sortAdminUsersTable('role')">Rol <span class="sort-icon">↕️</span></th>
+                    <th style="cursor: pointer;" onclick="sortAdminUsersTable('points')">Fuego <span class="sort-icon">↕️</span></th>
+                    <th style="text-align: right;">Acciones</th>
                   </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
+                </thead>
+                <tbody id="adminUsersTableBody">
+                  <?php foreach ($data['members'] as $u_row): 
+                    $uid = (int)($u_row['numeric_id'] ?? $u_row['id']);
+                    $expiry_badge = '';
+                    if ($u_row['expiry_status'] === 'lifetime') {
+                      $expiry_badge = '<span style="font-size: 0.74rem; font-weight: 800; background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px;">💎 Vitalicio</span>';
+                    } elseif ($u_row['expiry_status'] === 'expired') {
+                      $expiry_badge = '<span style="font-size: 0.74rem; font-weight: 800; background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 4px;">🔴 Vencido (' . htmlspecialchars($u_row['plan_expires_at']) . ')</span>';
+                    } elseif ($u_row['expiry_status'] === 'expiring_soon') {
+                      $expiry_badge = '<span style="font-size: 0.74rem; font-weight: 800; background: #fef3c7; color: #b45309; padding: 3px 8px; border-radius: 4px;">🟡 Vence en ' . (int)$u_row['plan_days_left'] . 'd</span>';
+                    } else {
+                      $expiry_badge = '<span style="font-size: 0.74rem; font-weight: 800; background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 4px;">🟢 Activo (' . htmlspecialchars($u_row['plan_expires_at']) . ')</span>';
+                    }
+                  ?>
+                    <tr id="admin-user-row-<?= $uid ?>" 
+                        data-name="<?= htmlspecialchars(strtolower($u_row['name'])) ?>" 
+                        data-email="<?= htmlspecialchars(strtolower($u_row['email'])) ?>" 
+                        data-plan="<?= htmlspecialchars(strtolower($u_row['plan_name'])) ?>" 
+                        data-role="<?= htmlspecialchars(strtolower($u_row['role'])) ?>" 
+                        data-points="<?= (int)$u_row['points'] ?>"
+                        data-expiry="<?= htmlspecialchars($u_row['plan_expires_at'] ?: '9999-12-31') ?>">
+                      <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <img src="<?= htmlspecialchars($u_row['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--c-border);">
+                          <div>
+                            <strong style="display: block; font-size: 0.9rem; color: var(--c-text-main);"><?= htmlspecialchars($u_row['name']) ?></strong>
+                            <span style="font-size: 0.75rem; color: var(--c-text-muted);"><?= htmlspecialchars($u_row['handle']) ?></span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <a href="mailto:<?= htmlspecialchars($u_row['email']) ?>" style="color: var(--c-text-sub); text-decoration: none; font-size: 0.84rem;">
+                          <?= htmlspecialchars($u_row['email']) ?>
+                        </a>
+                      </td>
+                      <td>
+                        <span style="font-size: 0.78rem; font-weight: 700; background: var(--c-bg-subtle); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--c-border);">
+                          <?= htmlspecialchars($u_row['plan_name']) ?>
+                        </span>
+                      </td>
+                      <td><?= $expiry_badge ?></td>
+                      <td>
+                        <span class="dropdown-role-badge <?= $u_row['role'] === 'admin' ? 'admin' : 'member' ?>">
+                          <?= $u_row['role'] === 'admin' ? '👑 Admin' : '👤 Alumno' ?>
+                        </span>
+                      </td>
+                      <td>🔥 <?= (int)$u_row['points'] ?></td>
+                      <td style="text-align: right; white-space: nowrap;">
+                        <button type="button" class="admin-btn-action admin-btn-edit" style="padding: 4px 8px; font-size: 0.78rem;" title="Editar Usuario" onclick="openAdminUserModal(<?= $uid ?>, '<?= htmlspecialchars(addslashes($u_row['name'])) ?>', '<?= htmlspecialchars(addslashes($u_row['email'])) ?>', '<?= htmlspecialchars($u_row['role']) ?>', <?= (int)$u_row['points'] ?>, <?= (int)($u_row['plan_id'] ?? 0) ?>, '<?= htmlspecialchars(addslashes($u_row['plan_name'])) ?>', '<?= htmlspecialchars($u_row['plan_expires_at'] ?? '') ?>')">
+                          ✏️ Editar
+                        </button>
+                        <button type="button" class="btn-reaction" style="padding: 4px 8px; font-size: 0.78rem; font-weight: 700; color: #166534; background: #dcfce7; border-color: #86efac;" title="Enviar accesos por WhatsApp" onclick="shareUserViaWhatsapp('<?= htmlspecialchars(addslashes($u_row['name'])) ?>', '<?= htmlspecialchars(addslashes($u_row['email'])) ?>', '<?= htmlspecialchars(addslashes($u_row['plan_name'])) ?>')">
+                          📲 WhatsApp
+                        </button>
+                        <?php if ($u_row['email'] !== 'mfmujic@gmail.com'): ?>
+                          <button type="button" class="admin-btn-action admin-btn-del" style="padding: 4px 8px; font-size: 0.78rem;" title="Eliminar Usuario" onclick="deleteAdminUser(<?= $uid ?>)">
+                            🗑️
+                          </button>
+                        <?php endif; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- SUBTAB 5: PLANES Y PRECIOS (ABM) -->
@@ -1107,36 +1228,109 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
       <!-- 2. Modal Admin: Usuario -->
       <div id="modalAdminUser" class="admin-modal-overlay">
-        <div class="admin-modal-box">
-          <h3 id="modalUserTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Nuevo Usuario</h3>
+        <div class="admin-modal-box" style="max-width: 520px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 id="modalUserTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.25rem;">Nuevo Usuario / Alumno</h3>
+            <button type="button" onclick="closeAdminModal('modalAdminUser')" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-text-muted);">&times;</button>
+          </div>
+
           <form id="formAdminUser">
             <input type="hidden" id="adminUserIdInput" value="0">
+            <input type="hidden" id="adminUserPlanNameInput" value="Campus Nowback Pro (Mensual)">
+
             <div class="admin-form-group">
-              <label for="adminUserNameInput">Nombre Completo:</label>
-              <input type="text" id="adminUserNameInput" class="admin-form-input" required>
+              <label for="adminUserNameInput">Nombre Completo <span style="color: #ef4444;">*</span>:</label>
+              <input type="text" id="adminUserNameInput" class="admin-form-input" placeholder="Ej: Marcela Gómez" required>
             </div>
+
             <div class="admin-form-group">
-              <label for="adminUserEmailInput">Email:</label>
-              <input type="email" id="adminUserEmailInput" class="admin-form-input" required>
+              <label for="adminUserEmailInput">Email de Acceso <span style="color: #ef4444;">*</span>:</label>
+              <input type="email" id="adminUserEmailInput" class="admin-form-input" placeholder="alumno@correo.com" required>
             </div>
+
+            <!-- Password with Eye Toggle -->
             <div class="admin-form-group">
-              <label for="adminUserPasswordInput">Contraseña (dejar en blanco para no cambiar):</label>
-              <input type="password" id="adminUserPasswordInput" class="admin-form-input" placeholder="••••••••">
+              <label id="lblAdminUserPassword" for="adminUserPasswordInput">Contraseña <span style="color: #ef4444;">*</span>:</label>
+              <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="adminUserPasswordInput" class="admin-form-input" placeholder="••••••••" style="padding-right: 42px;">
+                <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('adminUserPasswordInput', this)" style="position: absolute; right: 8px; background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px 6px; color: var(--c-text-muted);" title="Mostrar/Ocultar contraseña">
+                  👁️
+                </button>
+              </div>
             </div>
+
+            <!-- Confirm Password with Eye Toggle -->
             <div class="admin-form-group">
-              <label for="adminUserRoleInput">Rol:</label>
-              <select id="adminUserRoleInput" class="admin-form-select">
-                <option value="member">👤 Alumno (Member)</option>
-                <option value="admin">👑 Administrador (Admin)</option>
-              </select>
+              <label for="adminUserConfirmPasswordInput">Confirmar Contraseña:</label>
+              <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="adminUserConfirmPasswordInput" class="admin-form-input" placeholder="••••••••" style="padding-right: 42px;">
+                <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('adminUserConfirmPasswordInput', this)" style="position: absolute; right: 8px; background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px 6px; color: var(--c-text-muted);" title="Mostrar/Ocultar contraseña">
+                  👁️
+                </button>
+              </div>
+              <small id="passwordMatchIndicator" style="display: none; font-size: 0.78rem; font-weight: 700; margin-top: 4px;"></small>
             </div>
-            <div class="admin-form-group">
-              <label for="adminUserPointsInput">Puntos de Fuego Iniciales:</label>
-              <input type="number" id="adminUserPointsInput" class="admin-form-input" value="10">
+
+            <!-- Plan Selection & Expiration -->
+            <div style="background: var(--c-bg-subtle); padding: 14px; border-radius: 8px; border: 1px solid var(--c-border); margin-bottom: 16px;">
+              <div class="admin-form-group" style="margin-bottom: 12px;">
+                <label for="adminUserPlanSelect">Plan de Suscripción Contratado:</label>
+                <select id="adminUserPlanSelect" class="admin-form-select" onchange="syncPlanSelection(this)">
+                  <option value="0" data-plan-name="Campus Nowback Pro (Mensual)">Campus Nowback Pro (Mensual)</option>
+                  <?php foreach ($data['plans'] as $pl): ?>
+                    <option value="<?= (int)$pl['id'] ?>" data-plan-name="<?= htmlspecialchars($pl['name']) ?>">
+                      <?= htmlspecialchars($pl['name']) ?> (U$D <?= (int)$pl['price_usd'] ?>)
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+
+              <div class="admin-form-group" style="margin-bottom: 8px;">
+                <label for="adminUserExpiresInput">Fecha de Caducidad / Vencimiento:</label>
+                <input type="date" id="adminUserExpiresInput" class="admin-form-input" value="">
+              </div>
+
+              <!-- Quick Expiration Buttons -->
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;">
+                <button type="button" class="btn-reaction" style="font-size: 0.74rem; padding: 3px 8px;" onclick="setUserExpiryDays(30)">+30 días</button>
+                <button type="button" class="btn-reaction" style="font-size: 0.74rem; padding: 3px 8px;" onclick="setUserExpiryDays(90)">+90 días</button>
+                <button type="button" class="btn-reaction" style="font-size: 0.74rem; padding: 3px 8px;" onclick="setUserExpiryDays(365)">+1 año</button>
+                <button type="button" class="btn-reaction" style="font-size: 0.74rem; padding: 3px 8px; font-weight: 800; color: #0369a1;" onclick="document.getElementById('adminUserExpiresInput').value = '';">💎 Vitalicio</button>
+              </div>
             </div>
-            <div class="admin-modal-actions">
-              <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminUser')">Cancelar</button>
-              <button type="submit" class="admin-btn-add">Guardar Usuario</button>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="admin-form-group">
+                <label for="adminUserRoleInput">Rol de Usuario:</label>
+                <select id="adminUserRoleInput" class="admin-form-select">
+                  <option value="member">👤 Alumno (Member)</option>
+                  <option value="admin">👑 Administrador (Admin)</option>
+                </select>
+              </div>
+              <div class="admin-form-group">
+                <label for="adminUserPointsInput">Puntos de Fuego:</label>
+                <input type="number" id="adminUserPointsInput" class="admin-form-input" value="10">
+              </div>
+            </div>
+
+            <!-- Checkbox: Send Welcome Email -->
+            <div style="display: flex; align-items: center; gap: 8px; margin: 12px 0 16px 0;">
+              <input type="checkbox" id="adminUserSendEmailInput" checked style="width: 16px; height: 16px; accent-color: var(--c-fire-primary); cursor: pointer;">
+              <label for="adminUserSendEmailInput" style="font-size: 0.84rem; color: var(--c-text-sub); cursor: pointer; font-weight: 600;">
+                📧 Enviar correo de bienvenida con datos de acceso y link al campus
+              </label>
+            </div>
+
+            <div id="adminUserFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
+
+            <div class="admin-modal-actions" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <button type="button" class="btn-reaction" style="color: #166534; background: #dcfce7; border-color: #86efac; font-weight: 700; font-size: 0.85rem;" onclick="shareModalUserWhatsApp()">
+                📲 Mensaje WhatsApp
+              </button>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminUser')">Cancelar</button>
+                <button type="submit" id="btnAdminUserSubmit" class="admin-btn-add">💾 Guardar Usuario</button>
+              </div>
             </div>
           </form>
         </div>
@@ -1312,7 +1506,6 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
       </div>
 
       <!-- 7. Modal de Login y Credenciales -->
-      <!-- 7. Modal de Login y Credenciales -->
       <div id="modalLogin" class="admin-modal-overlay">
         <div class="admin-modal-box" style="max-width: 440px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
@@ -1328,27 +1521,97 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <label for="loginEmailInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Email:</label>
               <input type="email" id="loginEmailInput" class="admin-form-input" placeholder="tu@email.com" value="" required>
             </div>
-            <div style="margin-bottom: 16px;">
-              <label for="loginPasswordInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Contraseña:</label>
-              <input type="password" id="loginPasswordInput" class="admin-form-input" placeholder="••••••••" value="" required>
+            <div style="margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <label for="loginPasswordInput" style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub);">Contraseña:</label>
+                <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 0.75rem; color: var(--c-fire-primary); text-decoration: none; font-weight: 600;">¿Olvidaste tu contraseña?</a>
+              </div>
+              <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="loginPasswordInput" class="admin-form-input" placeholder="••••••••" value="" style="padding-right: 42px;" required>
+                <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('loginPasswordInput', this)" style="position: absolute; right: 8px; background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px 6px; color: var(--c-text-muted);" title="Mostrar/Ocultar contraseña">
+                  👁️
+                </button>
+              </div>
             </div>
 
-            <div id="loginFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
+            <div id="loginFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin: 12px 0;"></div>
 
-            <button type="submit" id="btnLoginSubmit" class="admin-btn-add" style="width: 100%; justify-content: center; padding: 11px 0; font-size: 0.95rem; margin-bottom: 12px;">
+            <button type="submit" id="btnLoginSubmit" class="admin-btn-add" style="width: 100%; justify-content: center; padding: 11px 0; font-size: 0.95rem; margin-top: 10px;">
               🚀 Ingresar al Campus
             </button>
+          </form>
+        </div>
+      </div>
 
-            <!-- Quick Auto-Fill Buttons -->
-            <div style="border-top: 1px dashed var(--c-border); padding-top: 14px; display: flex; flex-direction: column; gap: 8px;">
-              <div style="font-size: 0.75rem; font-weight: 800; color: var(--c-text-muted); text-transform: uppercase;">Accesos Demo:</div>
-              <button type="button" class="btn-reaction" style="width: 100%; justify-content: center; font-size: 0.82rem;" onclick="document.getElementById('loginEmailInput').value='mfmujic@gmail.com'; document.getElementById('loginPasswordInput').value='marcelito';">
-                👑 Ingresar como Administrador (Fede Nowback)
-              </button>
-              <button type="button" class="btn-reaction" style="width: 100%; justify-content: center; font-size: 0.82rem;" onclick="document.getElementById('loginEmailInput').value='alumno@fedenowback.com'; document.getElementById('loginPasswordInput').value='alumno123';">
-                👤 Ingresar como Alumno Pro
-              </button>
+      <!-- 8. Modal Recuperar Contraseña (Olvidé mi contraseña) -->
+      <div id="modalForgotPassword" class="admin-modal-overlay">
+        <div class="admin-modal-box" style="max-width: 440px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.3rem;">🔑</span>
+              <h3 style="font-family: var(--c-font-head); font-weight: 900; font-size: 1.15rem; color: var(--c-text-main);">Recuperar Contraseña</h3>
             </div>
+            <button type="button" onclick="closeAdminModal('modalForgotPassword')" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-text-muted);">&times;</button>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.5; margin-bottom: 16px;">
+            Ingresá tu email registrado y te enviaremos un enlace seguro para restablecer tu contraseña.
+          </p>
+
+          <form id="formForgotPassword">
+            <div style="margin-bottom: 14px;">
+              <label for="forgotEmailInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Tu Email:</label>
+              <input type="email" id="forgotEmailInput" class="admin-form-input" placeholder="tu@email.com" required>
+            </div>
+
+            <div id="forgotFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
+
+            <button type="submit" id="btnForgotSubmit" class="admin-btn-add" style="width: 100%; justify-content: center; padding: 11px 0; font-size: 0.95rem; margin-bottom: 8px;">
+              📩 Enviar Enlace de Recuperación
+            </button>
+            <button type="button" class="btn-reaction" style="width: 100%; justify-content: center; font-size: 0.82rem;" onclick="closeAdminModal('modalForgotPassword'); openLoginModal();">
+              ⬅️ Volver al Inicio de Sesión
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 9. Modal Restablecer Nueva Contraseña -->
+      <div id="modalResetPassword" class="admin-modal-overlay">
+        <div class="admin-modal-box" style="max-width: 440px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.3rem;">🔐</span>
+              <h3 style="font-family: var(--c-font-head); font-weight: 900; font-size: 1.15rem; color: var(--c-text-main);">Nueva Contraseña</h3>
+            </div>
+            <button type="button" onclick="closeAdminModal('modalResetPassword')" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-text-muted);">&times;</button>
+          </div>
+
+          <form id="formResetPassword">
+            <input type="hidden" id="resetTokenInput" value="">
+            <input type="hidden" id="resetEmailInput" value="">
+
+            <div class="admin-form-group">
+              <label for="resetNewPasswordInput">Nueva Contraseña:</label>
+              <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="resetNewPasswordInput" class="admin-form-input" placeholder="••••••••" style="padding-right: 42px;" required>
+                <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('resetNewPasswordInput', this)" style="position: absolute; right: 8px; background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px 6px; color: var(--c-text-muted);">👁️</button>
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="resetConfirmPasswordInput">Confirmar Nueva Contraseña:</label>
+              <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="resetConfirmPasswordInput" class="admin-form-input" placeholder="••••••••" style="padding-right: 42px;" required>
+                <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('resetConfirmPasswordInput', this)" style="position: absolute; right: 8px; background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px 6px; color: var(--c-text-muted);">👁️</button>
+              </div>
+            </div>
+
+            <div id="resetFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
+
+            <button type="submit" id="btnResetSubmit" class="admin-btn-add" style="width: 100%; justify-content: center; padding: 11px 0; font-size: 0.95rem;">
+              💾 Guardar Nueva Contraseña
+            </button>
           </form>
         </div>
       </div>
@@ -1356,7 +1619,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
     </div>
   </main>
 
-  <!-- JS Controller con soporte completo de ABM y Avatar Dropdown -->
-  <script src="/assets/js/campus.js?v=6.0"></script>
+  <!-- JS Controller con soporte completo de ABM, Buscador y Recuperación -->
+  <script src="/assets/js/campus.js?v=6.5"></script>
 </body>
 </html>

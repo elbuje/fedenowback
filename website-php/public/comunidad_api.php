@@ -164,6 +164,84 @@ switch ($action) {
             exit;
         }
 
+    case 'auth_forgot_password':
+        $email = trim(strtolower($json_data['email'] ?? $_POST['email'] ?? ''));
+        if (empty($email)) {
+            echo json_encode(['success' => false, 'error' => 'Por favor ingresa tu dirección de email.']);
+            exit;
+        }
+
+        if ($pdo) {
+            $stmt = $pdo->prepare("SELECT id, name, email FROM `fede_users` WHERE LOWER(`email`) = ?");
+            $stmt->execute([$email]);
+            $db_user = $stmt->fetch();
+
+            if ($db_user) {
+                $token = bin2hex(random_bytes(24));
+                $expires_at = date('Y-m-d H:i:s', strtotime('+2 hours'));
+
+                $upd = $pdo->prepare("UPDATE `fede_users` SET `reset_token` = ?, `reset_token_expires_at` = ? WHERE `id` = ?");
+                $upd->execute([$token, $expires_at, $db_user['id']]);
+
+                $site_base = defined('SITE_URL') ? SITE_URL : 'https://fedenowback.com.ar';
+                $reset_url = $site_base . '/campus?reset_token=' . $token . '&email=' . urlencode($email);
+
+                @fede_send_reset_password_email($email, $db_user['name'], $reset_url);
+
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Te hemos enviado un enlace a tu correo electrónico para restablecer tu contraseña. Revisa tu bandeja de entrada.'
+                ]);
+                exit;
+            }
+        }
+
+        // Even if email not found, give generic message to avoid email enumeration
+        echo json_encode([
+            'success' => true,
+            'message' => 'Si el correo está registrado en el Campus, recibirás un enlace de recuperación en los próximos minutos.'
+        ]);
+        exit;
+
+    case 'auth_reset_password':
+        $token = trim($json_data['reset_token'] ?? $_POST['reset_token'] ?? '');
+        $email = trim(strtolower($json_data['email'] ?? $_POST['email'] ?? ''));
+        $password = $json_data['password'] ?? $_POST['password'] ?? '';
+        $confirm_password = $json_data['confirm_password'] ?? $_POST['confirm_password'] ?? '';
+
+        if (empty($token) || empty($password)) {
+            echo json_encode(['success' => false, 'error' => 'Token y nueva contraseña son requeridos.']);
+            exit;
+        }
+
+        if ($password !== $confirm_password) {
+            echo json_encode(['success' => false, 'error' => 'Las contraseñas no coinciden.']);
+            exit;
+        }
+
+        if ($pdo) {
+            $stmt = $pdo->prepare("SELECT id, name FROM `fede_users` WHERE `reset_token` = ? AND `reset_token_expires_at` > NOW()");
+            $stmt->execute([$token]);
+            $db_user = $stmt->fetch();
+
+            if ($db_user) {
+                $pass_hash = password_hash($password, PASSWORD_BCRYPT);
+                $upd = $pdo->prepare("UPDATE `fede_users` SET `password_hash` = ?, `reset_token` = NULL, `reset_token_expires_at` = NULL WHERE `id` = ?");
+                $upd->execute([$pass_hash, $db_user['id']]);
+
+                echo json_encode([
+                    'success' => true,
+                    'message' => '¡Tu contraseña ha sido actualizada exitosamente! Ya podés iniciar sesión.'
+                ]);
+                exit;
+            } else {
+                echo json_encode(['success' => false, 'error' => 'El enlace de recuperación es inválido o ha expirado. Por favor solicita uno nuevo.']);
+                exit;
+            }
+        }
+        echo json_encode(['success' => false, 'error' => 'Error de conexión a la base de datos']);
+        exit;
+
     case 'auth_logout':
         $_SESSION['fede_user'] = [
             'id' => null,
@@ -392,45 +470,98 @@ switch ($action) {
         $email = trim(strtolower($json_data['email'] ?? ''));
         $name = trim($json_data['name'] ?? '');
         $role = in_array($json_data['role'] ?? '', ['admin', 'member']) ? $json_data['role'] : 'member';
-        $points = (int)($json_data['points'] ?? 0);
+        $points = (int)($json_data['points'] ?? 10);
         $password = $json_data['password'] ?? '';
+        $confirm_password = $json_data['confirm_password'] ?? '';
+        $plan_id = !empty($json_data['plan_id']) ? (int)$json_data['plan_id'] : null;
+        $plan_name = trim($json_data['plan_name'] ?? 'Campus Nowback Pro (Mensual)');
+        $plan_expires_at = !empty($json_data['plan_expires_at']) ? $json_data['plan_expires_at'] : null;
+        $status = in_array($json_data['status'] ?? '', ['active', 'pending', 'expired', 'suspended']) ? $json_data['status'] : 'active';
+        $send_email = !empty($json_data['send_email']);
 
         if (empty($email) || empty($name)) {
-            echo json_encode(['success' => false, 'error' => 'Email y nombre son requeridos']);
+            echo json_encode(['success' => false, 'error' => 'Email y nombre son requeridos.']);
+            exit;
+        }
+
+        // Validate passwords if provided
+        if (!empty($password) && !empty($confirm_password) && $password !== $confirm_password) {
+            echo json_encode(['success' => false, 'error' => 'Las contraseñas no coinciden. Por favor verifícalas.']);
+            exit;
+        }
+
+        if ($user_id <= 0 && empty($password)) {
+            echo json_encode(['success' => false, 'error' => 'La contraseña es obligatoria para nuevos usuarios.']);
             exit;
         }
 
         if ($pdo) {
             if ($user_id > 0) {
-                // Update
+                // Update existing user
                 if (!empty($password)) {
                     $pass_hash = password_hash($password, PASSWORD_BCRYPT);
-                    $stmt = $pdo->prepare("UPDATE `fede_users` SET `email`=?, `name`=?, `role`=?, `points`=?, `password_hash`=? WHERE `id`=?");
-                    $stmt->execute([$email, $name, $role, $points, $pass_hash, $user_id]);
+                    $stmt = $pdo->prepare("
+                        UPDATE `fede_users` 
+                        SET `email`=?, `name`=?, `role`=?, `points`=?, `password_hash`=?, `plan_id`=?, `plan_name`=?, `plan_expires_at`=?, `status`=? 
+                        WHERE `id`=?
+                    ");
+                    $stmt->execute([$email, $name, $role, $points, $pass_hash, $plan_id, $plan_name, $plan_expires_at, $status, $user_id]);
                 } else {
-                    $stmt = $pdo->prepare("UPDATE `fede_users` SET `email`=?, `name`=?, `role`=?, `points`=? WHERE `id`=?");
-                    $stmt->execute([$email, $name, $role, $points, $user_id]);
+                    $stmt = $pdo->prepare("
+                        UPDATE `fede_users` 
+                        SET `email`=?, `name`=?, `role`=?, `points`=?, `plan_id`=?, `plan_name`=?, `plan_expires_at`=?, `status`=? 
+                        WHERE `id`=?
+                    ");
+                    $stmt->execute([$email, $name, $role, $points, $plan_id, $plan_name, $plan_expires_at, $status, $user_id]);
                 }
+                $saved_id = $user_id;
             } else {
-                // Create
-                $pass_hash = password_hash(!empty($password) ? $password : 'alumno123', PASSWORD_BCRYPT);
+                // Create new user in MySQL
+                $pass_hash = password_hash($password, PASSWORD_BCRYPT);
                 $handle = '@' . strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', explode('@', $email)[0]));
                 $avatar = '/assets/img/fede_avatar_mini.png';
-                $stmt = $pdo->prepare("INSERT INTO `fede_users` (`email`, `password_hash`, `name`, `handle`, `avatar`, `role`, `points`, `level`, `level_name`) VALUES (?, ?, ?, ?, ?, ?, ?, 1, 'Iniciado')");
-                $stmt->execute([$email, $pass_hash, $name, $handle, $avatar, $role, $points]);
+                $stmt = $pdo->prepare("
+                    INSERT INTO `fede_users` 
+                    (`email`, `password_hash`, `name`, `handle`, `avatar`, `role`, `points`, `level`, `level_name`, `plan_id`, `plan_name`, `plan_expires_at`, `status`, `email_verified`) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 1, 'Iniciado', ?, ?, ?, ?, 1)
+                ");
+                $stmt->execute([$email, $pass_hash, $name, $handle, $avatar, $role, $points, $plan_id, $plan_name, $plan_expires_at, $status]);
+                $saved_id = (int)$pdo->lastInsertId();
             }
-            echo json_encode(['success' => true, 'message' => 'Usuario guardado con éxito']);
+
+            // Send Welcome Email if requested
+            if ($send_email && !empty($email)) {
+                @fede_send_welcome_user_email($email, $name, $password, $plan_name);
+            }
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Usuario guardado con éxito en MySQL.',
+                'user_id' => $saved_id
+            ]);
             exit;
         }
-        echo json_encode(['success' => false, 'error' => 'Error al guardar']);
+        echo json_encode(['success' => false, 'error' => 'Error de conexión a la base de datos']);
         exit;
 
     case 'admin_delete_user':
         fede_require_admin($user);
         $del_id = (int)($json_data['user_id'] ?? 0);
         if ($del_id > 0 && $pdo) {
-            $pdo->prepare("DELETE FROM `fede_users` WHERE `id` = ?")->execute([$del_id]);
-            echo json_encode(['success' => true, 'message' => 'Usuario eliminado']);
+            // Check if superadmin
+            $chk = $pdo->prepare("SELECT `email` FROM `fede_users` WHERE `id` = ?");
+            $chk->execute([$del_id]);
+            $user_email = strtolower($chk->fetchColumn() ?: '');
+
+            if ($user_email === 'mfmujic@gmail.com') {
+                echo json_encode(['success' => false, 'error' => 'No es posible eliminar al Administrador principal.']);
+                exit;
+            }
+
+            $stmt_del = $pdo->prepare("DELETE FROM `fede_users` WHERE `id` = ?");
+            $stmt_del->execute([$del_id]);
+
+            echo json_encode(['success' => true, 'message' => 'Usuario eliminado correctamente de la base de datos']);
             exit;
         }
         echo json_encode(['success' => false, 'error' => 'ID de usuario inválido']);
@@ -540,7 +671,7 @@ switch ($action) {
         $course_id = (int)($json_data['course_id'] ?? 0);
         $title = trim($json_data['title'] ?? '');
         $duration = trim($json_data['duration'] ?? '15:00');
-        $video_url = trim($json_data['video_url'] ?? '');
+        $video_url = fede_format_video_embed_url(trim($json_data['video_url'] ?? ''));
         $description = trim($json_data['description'] ?? '');
         $is_free = !empty($json_data['is_free']) ? 1 : 0;
 
