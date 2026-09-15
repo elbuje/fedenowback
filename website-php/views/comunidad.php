@@ -118,6 +118,11 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <?php endif; ?>
 
               <ul class="dropdown-menu-links">
+                <li>
+                  <button type="button" onclick="openMyProfileModal(); closeAvatarDropdown();" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 14px; font-size: 0.88rem; color: var(--c-text-main); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 6px;">
+                    <span>👤</span> <span>Mi Perfil & Avatar</span>
+                  </button>
+                </li>
                 <?php if ($is_admin): ?>
                   <li>
                     <a href="#admin" class="dropdown-admin-highlight" onclick="switchTab('admin'); closeAvatarDropdown();">
@@ -1104,8 +1109,8 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                         </a>
                       </td>
                       <td>
-                        <span style="font-size: 0.78rem; font-weight: 700; background: var(--c-bg-subtle); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--c-border);">
-                          <?= htmlspecialchars($u_row['plan_name']) ?>
+                        <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a; background: #e2e8f0; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; display: inline-block; box-shadow: 0 1px 2px rgba(0,0,0,0.06);">
+                          <?= htmlspecialchars($u_row['plan_name'] ?: 'Campus Nowback Pro') ?>
                         </span>
                       </td>
                       <td><?= $expiry_badge ?></td>
@@ -1617,12 +1622,129 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             </button>
           </form>
         </div>
+      <!-- 10. Modal Mi Perfil & Avatar del Usuario -->
+      <div id="modalMyProfile" class="admin-modal-overlay">
+        <div class="admin-modal-box" style="max-width: 540px; max-height: 90vh; overflow-y: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; position: sticky; top: 0; background: var(--c-card); z-index: 2; padding-bottom: 8px; border-bottom: 1px solid var(--c-border);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.4rem;">👤</span>
+              <h3 style="font-family: var(--c-font-head); font-weight: 900; font-size: 1.2rem; color: var(--c-text-main);">Mi Perfil en el Campus</h3>
+            </div>
+            <button type="button" onclick="closeAdminModal('modalMyProfile')" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-text-muted);">&times;</button>
+          </div>
+
+          <form id="formMyProfile">
+            <!-- Sección de Avatar -->
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 20px; padding: 14px; background: var(--c-bg-subtle); border-radius: 12px; border: 1px solid var(--c-border);">
+              <div style="position: relative; margin-bottom: 12px;">
+                <img id="myProfileAvatarPreview" src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Mi Avatar" style="width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--c-fire-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+                <label for="myProfileFileInput" style="position: absolute; bottom: 0; right: 0; background: var(--c-fire-primary); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; box-shadow: 0 2px 6px rgba(0,0,0,0.2);" title="Subir foto desde tu dispositivo">
+                  📷
+                </label>
+                <input type="file" id="myProfileFileInput" accept="image/*" style="display: none;">
+              </div>
+              <input type="hidden" id="myProfileAvatarInput" value="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>">
+              
+              <div style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 6px;">Foto de Perfil / Avatar</div>
+              <p style="font-size: 0.75rem; color: var(--c-text-muted); margin-bottom: 10px;">Subí tu propia foto o elegí un avatar predefinido:</p>
+              
+              <!-- Galería de Avatares Predefinidos -->
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('/assets/img/fede_avatar_mini.png')" title="Avatar Fede Nowback" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
+                  <img src="/assets/img/fede_avatar_mini.png" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
+                </button>
+                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80')" title="Avatar Creadora 1" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
+                </button>
+                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80')" title="Avatar Creador 2" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
+                </button>
+                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80')" title="Avatar Creadora 3" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
+                </button>
+                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80')" title="Avatar Creador 4" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
+                </button>
+                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80')" title="Avatar Creador 5" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
+                </button>
+              </div>
+            </div>
+
+            <!-- Datos Básicos -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div>
+                <label for="myProfileNameInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Nombre y Apellido <span style="color:#ef4444;">*</span>:</label>
+                <input type="text" id="myProfileNameInput" class="admin-form-input" value="<?= htmlspecialchars($user['name'] ?? '') ?>" placeholder="Tu nombre" required>
+              </div>
+              <div>
+                <label for="myProfileHandleInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Nombre de Usuario:</label>
+                <input type="text" id="myProfileHandleInput" class="admin-form-input" value="<?= htmlspecialchars($user['handle'] ?? '') ?>" placeholder="@tu_usuario">
+              </div>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label for="myProfileEmailInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Email de Cuenta:</label>
+              <input type="email" id="myProfileEmailInput" class="admin-form-input" value="<?= htmlspecialchars($user['email'] ?? '') ?>" disabled style="opacity: 0.75; cursor: not-allowed;">
+            </div>
+
+            <!-- Biografía y Presentación -->
+            <div style="margin-bottom: 12px;">
+              <label for="myProfileBioInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Biografía / ¿A qué te dedicás?:</label>
+              <textarea id="myProfileBioInput" class="admin-form-input" style="height: 68px; resize: vertical;" placeholder="Ej: Especialista en diseño UX y creador de contenidos. Ayudo a marcas a mejorar su conversión."><?= htmlspecialchars($user['bio'] ?? '') ?></textarea>
+            </div>
+
+            <!-- Intereses y Nicho -->
+            <div style="margin-bottom: 12px;">
+              <label for="myProfileInterestsInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Temas de Interés / Nicho:</label>
+              <input type="text" id="myProfileInterestsInput" class="admin-form-input" value="<?= htmlspecialchars($user['interests'] ?? '') ?>" placeholder="Ej: Reels, Marca Personal, Hot Seats, Coaching, E-commerce">
+            </div>
+
+            <!-- Redes Sociales -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label for="myProfileInstagramInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">📸 Instagram:</label>
+                <input type="text" id="myProfileInstagramInput" class="admin-form-input" value="<?= htmlspecialchars($user['instagram'] ?? '') ?>" placeholder="@tu_instagram">
+              </div>
+              <div>
+                <label for="myProfileLinkedinInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">💼 LinkedIn / Web:</label>
+                <input type="text" id="myProfileLinkedinInput" class="admin-form-input" value="<?= htmlspecialchars($user['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/...">
+              </div>
+            </div>
+
+            <!-- Cambio de Contraseña (Opcional) -->
+            <div style="margin-bottom: 16px; padding: 12px; background: var(--c-bg-subtle); border-radius: 8px; border: 1px dashed var(--c-border);">
+              <div style="font-size: 0.84rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 8px;">🔐 Cambiar Contraseña (opcional):</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                  <div style="position: relative; display: flex; align-items: center;">
+                    <input type="password" id="myProfileNewPassInput" class="admin-form-input" placeholder="Nueva clave" style="padding-right: 36px; font-size: 0.84rem;">
+                    <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('myProfileNewPassInput', this)" style="position: absolute; right: 6px; background: none; border: none; font-size: 1rem; cursor: pointer; color: var(--c-text-muted);">👁️</button>
+                  </div>
+                </div>
+                <div>
+                  <div style="position: relative; display: flex; align-items: center;">
+                    <input type="password" id="myProfileConfirmPassInput" class="admin-form-input" placeholder="Repetir nueva clave" style="padding-right: 36px; font-size: 0.84rem;">
+                    <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('myProfileConfirmPassInput', this)" style="position: absolute; right: 6px; background: none; border: none; font-size: 1rem; cursor: pointer; color: var(--c-text-muted);">👁️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="myProfileFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
+
+            <div class="admin-modal-actions">
+              <button type="button" class="btn-reaction" onclick="closeAdminModal('modalMyProfile')">Cancelar</button>
+              <button type="submit" id="btnMyProfileSubmit" class="admin-btn-add">💾 Guardar Cambios de Mi Perfil</button>
+            </div>
+          </form>
+        </div>
       </div>
 
     </div>
   </main>
 
   <!-- JS Controller con soporte completo de ABM, Buscador y Recuperación -->
-  <script src="/assets/js/campus.js?v=6.6"></script>
+  <script src="/assets/js/campus.js?v=6.7"></script>
 </body>
 </html>

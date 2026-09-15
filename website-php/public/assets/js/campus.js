@@ -6,7 +6,7 @@
 const API_ENDPOINT = '/comunidad_api.php';
 let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
-// Global Tab Switcher
+// Global Tab Switcher & Subtab Switcher with Persistence
 function switchTab(tabId) {
   const navItems = document.querySelectorAll('.campus-nav-item');
   const tabPanes = document.querySelectorAll('.campus-tab-pane');
@@ -17,9 +17,31 @@ function switchTab(tabId) {
   tabPanes.forEach(pane => {
     pane.style.display = (pane.id === `tab-${tabId}`) ? 'block' : 'none';
   });
-  // Update URL hash without scroll
-  history.replaceState(null, null, `#${tabId}`);
+  localStorage.setItem('fede_active_tab', tabId);
+
+  if (tabId === 'admin') {
+    const savedSubtab = localStorage.getItem('fede_active_admin_subtab') || 'users';
+    switchAdminSubtab(savedSubtab);
+  } else {
+    history.replaceState(null, null, `#${tabId}`);
+  }
 }
+
+window.switchAdminSubtab = function(subtabId) {
+  const adminSubtabBtns = document.querySelectorAll('.admin-subtab-btn');
+  const adminSubtabContents = document.querySelectorAll('.admin-subtab-content');
+
+  adminSubtabBtns.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.adminSubtab === subtabId);
+  });
+  adminSubtabContents.forEach(content => {
+    content.style.display = (content.id === `admin-subtab-${subtabId}`) ? 'block' : 'none';
+  });
+
+  localStorage.setItem('fede_active_tab', 'admin');
+  localStorage.setItem('fede_active_admin_subtab', subtabId);
+  history.replaceState(null, null, `#admin-${subtabId}`);
+};
 
 // Global Avatar Dropdown Helpers
 function toggleAvatarDropdown(e) {
@@ -350,6 +372,9 @@ window.deleteAdminUser = async function(id) {
     const data = await res.json();
     if (data.success) {
       alert('Usuario eliminado correctamente');
+      localStorage.setItem('fede_active_tab', 'admin');
+      localStorage.setItem('fede_active_admin_subtab', 'users');
+      window.location.hash = 'admin-users';
       window.location.reload();
     } else {
       alert(data.error || 'Error al eliminar usuario');
@@ -370,6 +395,9 @@ window.deleteAdminCourse = async function(id) {
     const data = await res.json();
     if (data.success) {
       alert('Curso eliminado');
+      localStorage.setItem('fede_active_tab', 'admin');
+      localStorage.setItem('fede_active_admin_subtab', 'courses');
+      window.location.hash = 'admin-courses';
       window.location.reload();
     } else {
       alert(data.error || 'Error al eliminar');
@@ -390,6 +418,9 @@ window.deleteAdminPlan = async function(id) {
     const data = await res.json();
     if (data.success) {
       alert('Plan eliminado');
+      localStorage.setItem('fede_active_tab', 'admin');
+      localStorage.setItem('fede_active_admin_subtab', 'plans');
+      window.location.hash = 'admin-plans';
       window.location.reload();
     } else {
       alert(data.error || 'Error al eliminar');
@@ -445,12 +476,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Handle initial tab from URL hash
-  const initialHash = window.location.hash.replace('#', '');
-  if (initialHash && document.getElementById(`tab-${initialHash}`)) {
-    switchTab(initialHash);
+  // Handle initial tab & subtab from URL hash or localStorage
+  const currentHash = window.location.hash.replace('#', '');
+  if (currentHash.startsWith('admin-')) {
+    const sub = currentHash.replace('admin-', '');
+    switchTab('admin');
+    switchAdminSubtab(sub);
+  } else if (currentHash && document.getElementById(`tab-${currentHash}`)) {
+    switchTab(currentHash);
   } else {
-    switchTab('community');
+    const savedTab = localStorage.getItem('fede_active_tab') || 'community';
+    const savedSubtab = localStorage.getItem('fede_active_admin_subtab') || 'users';
+    if (savedTab === 'admin') {
+      switchTab('admin');
+      switchAdminSubtab(savedSubtab);
+    } else if (document.getElementById(`tab-${savedTab}`)) {
+      switchTab(savedTab);
+    } else {
+      switchTab('community');
+    }
   }
 
   // 2. Avatar Dropdown Toggle
@@ -510,19 +554,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 5. Admin Subtabs Switching
+  // 5. Admin Subtabs Switching (with persistent switchAdminSubtab)
   const adminSubtabBtns = document.querySelectorAll('.admin-subtab-btn');
-  const adminSubtabContents = document.querySelectorAll('.admin-subtab-content');
-
   adminSubtabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      adminSubtabBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
       const targetSubtab = btn.dataset.adminSubtab;
-
-      adminSubtabContents.forEach(content => {
-        content.style.display = (content.id === `admin-subtab-${targetSubtab}`) ? 'block' : 'none';
-      });
+      if (targetSubtab) {
+        switchAdminSubtab(targetSubtab);
+      }
     });
   });
 
@@ -797,6 +836,9 @@ document.addEventListener('DOMContentLoaded', () => {
             feedback.style.color = '#10b981';
             feedback.textContent = '✅ ' + data.message;
           }
+          localStorage.setItem('fede_active_tab', 'admin');
+          localStorage.setItem('fede_active_admin_subtab', 'users');
+          window.location.hash = 'admin-users';
           setTimeout(() => window.location.reload(), 700);
         } else {
           if (feedback) {
@@ -903,6 +945,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if (data.success) {
           alert('Curso guardado exitosamente en MySQL');
+          localStorage.setItem('fede_active_tab', 'admin');
+          localStorage.setItem('fede_active_admin_subtab', 'courses');
+          window.location.hash = 'admin-courses';
           window.location.reload();
         } else {
           alert(data.error || 'Error al guardar curso');
@@ -948,6 +993,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if (data.success) {
           alert('Lección guardada exitosamente. Podés probarla con el botón "▶️ Ver / Probar Video".');
+          localStorage.setItem('fede_active_tab', 'admin');
+          localStorage.setItem('fede_active_admin_subtab', 'courses');
+          window.location.hash = 'admin-courses';
           window.location.reload();
         } else {
           alert(data.error || 'Error al guardar lección');
@@ -984,6 +1032,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if (data.success) {
           alert('Plan guardado exitosamente');
+          localStorage.setItem('fede_active_tab', 'admin');
+          localStorage.setItem('fede_active_admin_subtab', 'plans');
+          window.location.hash = 'admin-plans';
           window.location.reload();
         } else {
           alert(data.error || 'Error al guardar plan');
@@ -1020,6 +1071,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if (data.success) {
           alert('Sesión en vivo guardada');
+          localStorage.setItem('fede_active_tab', 'admin');
+          localStorage.setItem('fede_active_admin_subtab', 'meets');
+          window.location.hash = 'admin-meets';
           window.location.reload();
         } else {
           alert(data.error || 'Error al guardar');
@@ -1241,6 +1295,147 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ==========================================
+  // 👤 14. Mi Perfil & Avatar Handlers
+  // ==========================================
+
+  window.openMyProfileModal = async function() {
+    const modal = document.getElementById('modalMyProfile');
+    if (!modal) return;
+
+    const feedback = document.getElementById('myProfileFeedbackMsg');
+    if (feedback) feedback.style.display = 'none';
+
+    try {
+      const res = await fetch(`${API_ENDPOINT}?action=get_my_profile`);
+      const data = await res.json();
+      if (data.success && data.profile) {
+        const p = data.profile;
+        if (document.getElementById('myProfileNameInput')) document.getElementById('myProfileNameInput').value = p.name || '';
+        if (document.getElementById('myProfileHandleInput')) document.getElementById('myProfileHandleInput').value = p.handle || '';
+        if (document.getElementById('myProfileEmailInput')) document.getElementById('myProfileEmailInput').value = p.email || '';
+        if (document.getElementById('myProfileBioInput')) document.getElementById('myProfileBioInput').value = p.bio || '';
+        if (document.getElementById('myProfileInterestsInput')) document.getElementById('myProfileInterestsInput').value = p.interests || '';
+        if (document.getElementById('myProfileInstagramInput')) document.getElementById('myProfileInstagramInput').value = p.instagram || '';
+        if (document.getElementById('myProfileLinkedinInput')) document.getElementById('myProfileLinkedinInput').value = p.linkedin || '';
+        if (document.getElementById('myProfileAvatarInput')) document.getElementById('myProfileAvatarInput').value = p.avatar || '/assets/img/fede_avatar_mini.png';
+        if (document.getElementById('myProfileAvatarPreview')) document.getElementById('myProfileAvatarPreview').src = p.avatar || '/assets/img/fede_avatar_mini.png';
+        if (document.getElementById('myProfileNewPassInput')) document.getElementById('myProfileNewPassInput').value = '';
+        if (document.getElementById('myProfileConfirmPassInput')) document.getElementById('myProfileConfirmPassInput').value = '';
+      }
+    } catch (err) {
+      console.error('Error cargando perfil:', err);
+    }
+
+    modal.style.display = 'block';
+  };
+
+  window.selectPresetAvatar = function(url) {
+    const preview = document.getElementById('myProfileAvatarPreview');
+    const input = document.getElementById('myProfileAvatarInput');
+    if (preview) preview.src = url;
+    if (input) input.value = url;
+  };
+
+  const myProfileFileInput = document.getElementById('myProfileFileInput');
+  if (myProfileFileInput) {
+    myProfileFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 3 * 1024 * 1024) {
+          alert('La imagen seleccionada no debe superar los 3MB.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64Url = event.target.result;
+          const preview = document.getElementById('myProfileAvatarPreview');
+          const input = document.getElementById('myProfileAvatarInput');
+          if (preview) preview.src = base64Url;
+          if (input) input.value = base64Url;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  const formProfile = document.getElementById('formMyProfile');
+  if (formProfile) {
+    formProfile.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('myProfileNameInput')?.value.trim() || '';
+      const handle = document.getElementById('myProfileHandleInput')?.value.trim() || '';
+      const avatar = document.getElementById('myProfileAvatarInput')?.value || '';
+      const bio = document.getElementById('myProfileBioInput')?.value.trim() || '';
+      const interests = document.getElementById('myProfileInterestsInput')?.value.trim() || '';
+      const instagram = document.getElementById('myProfileInstagramInput')?.value.trim() || '';
+      const linkedin = document.getElementById('myProfileLinkedinInput')?.value.trim() || '';
+      const newPass = document.getElementById('myProfileNewPassInput')?.value || '';
+      const confirmPass = document.getElementById('myProfileConfirmPassInput')?.value || '';
+      const feedback = document.getElementById('myProfileFeedbackMsg');
+      const submitBtn = document.getElementById('btnMyProfileSubmit');
+
+      if (!name) {
+        alert('El nombre es obligatorio.');
+        return;
+      }
+      if (newPass && newPass !== confirmPass) {
+        alert('Las nuevas contraseñas no coinciden.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Guardando perfil...';
+
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+          body: JSON.stringify({
+            action: 'update_my_profile',
+            name: name,
+            handle: handle,
+            avatar: avatar,
+            bio: bio,
+            interests: interests,
+            instagram: instagram,
+            linkedin: linkedin,
+            new_password: newPass,
+            confirm_password: confirmPass,
+            csrf_token: csrfToken
+          })
+        });
+        const data = await res.json();
+
+        if (feedback) {
+          feedback.style.display = 'block';
+          if (data.success) {
+            feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+            feedback.style.color = '#10b981';
+            feedback.textContent = '✅ ' + data.message;
+            setTimeout(() => window.location.reload(), 900);
+          } else {
+            feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+            feedback.style.color = '#ef4444';
+            feedback.textContent = '❌ ' + (data.error || 'Error al actualizar perfil');
+            submitBtn.disabled = false;
+            submitBtn.textContent = '💾 Guardar Cambios de Mi Perfil';
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+          feedback.style.color = '#ef4444';
+          feedback.textContent = '❌ Error de conexión al servidor.';
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = '💾 Guardar Cambios de Mi Perfil';
+      }
+    });
+  }
+
   // Check URL params for Password Reset
   const urlParams = new URLSearchParams(window.location.search);
   const resetTokenParam = urlParams.get('reset_token');
@@ -1250,4 +1445,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
 

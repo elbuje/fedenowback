@@ -56,6 +56,10 @@ function fede_db_init_schema($existing_pdo = null) {
             `avatar` TEXT,
             `role` ENUM('admin', 'member') NOT NULL DEFAULT 'member',
             `bio` TEXT,
+            `interests` TEXT,
+            `instagram` VARCHAR(100) DEFAULT NULL,
+            `linkedin` VARCHAR(255) DEFAULT NULL,
+            `website` VARCHAR(255) DEFAULT NULL,
             `points` INT NOT NULL DEFAULT 0,
             `level` INT NOT NULL DEFAULT 1,
             `level_name` VARCHAR(60) NOT NULL DEFAULT 'Iniciado',
@@ -73,6 +77,11 @@ function fede_db_init_schema($existing_pdo = null) {
 
     // Auto-migration helper for existing installations
     $user_cols = [
+        'bio' => "TEXT DEFAULT NULL",
+        'interests' => "TEXT DEFAULT NULL",
+        'instagram' => "VARCHAR(100) DEFAULT NULL",
+        'linkedin' => "VARCHAR(255) DEFAULT NULL",
+        'website' => "VARCHAR(255) DEFAULT NULL",
         'plan_id' => "INT DEFAULT NULL",
         'plan_name' => "VARCHAR(100) NOT NULL DEFAULT 'Campus Nowback Pro (Mensual)'",
         'plan_expires_at' => "DATE DEFAULT NULL",

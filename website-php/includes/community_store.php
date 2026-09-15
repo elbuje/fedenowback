@@ -723,6 +723,10 @@ function fede_load_community_data() {
                         'expiry_status' => $expiry_status,
                         'status' => $du['status'] ?? 'active',
                         'bio' => $du['bio'] ?? '',
+                        'interests' => $du['interests'] ?? '',
+                        'instagram' => $du['instagram'] ?? '',
+                        'linkedin' => $du['linkedin'] ?? '',
+                        'website' => $du['website'] ?? '',
                         'created_at' => $du['created_at'] ?? date('Y-m-d H:i:s'),
                         'is_current_user' => (isset($_SESSION['fede_user']['email']) && $_SESSION['fede_user']['email'] === $du['email'])
                     ];

@@ -167,8 +167,8 @@ function get_fede_wa($msg = '') {
           "ENCENDÉ TU FUEGO" — 3 Formas de Trabajar y Escalar Conmigo
         </h3>
       </div>
-      <a href="/encende-tu-fuego" class="btn-fede-fire" style="padding: 10px 24px; font-size: 0.9rem;">
-        ⚡ Ver las 3 Opciones de Acompañamiento
+      <a href="/mentorias" class="btn-fede-fire" style="padding: 10px 24px; font-size: 0.9rem;">
+        ⚡ Ver Programas & Mentorías
       </a>
     </div>
   </section>
@@ -587,7 +587,6 @@ function get_fede_wa($msg = '') {
             <li><a href="/metodologia-marca-personal">⚡ Metodología de 4 Fases</a></li>
             <li><a href="/clases-gratuitas-marca-personal">▶️ Clases en YouTube</a></li>
             <li><a href="/mentorias">🎯 Mentorías 1 a 1</a></li>
-            <li><a href="/encende-tu-fuego">🔥 Evento "Encendé tu Fuego"</a></li>
             <li><a href="/comunidad">⚡ Campus & Comunidad Nowback</a></li>
           </ul>
         </div>

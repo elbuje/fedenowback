@@ -26,6 +26,7 @@ $csrf_token = $_POST['csrf_token'] ?? $json_data['csrf_token'] ?? $_SERVER['HTTP
 // Basic CSRF verification for modifying actions
 if (in_array($action, [
     'create_post', 'like_post', 'add_comment', 'complete_lesson', 'send_chat', 'create_meet', 'switch_role',
+    'update_my_profile',
     'delete_post', 'admin_delete_post', 'delete_comment', 'admin_delete_comment', 'delete_chat', 'admin_delete_chat',
     'admin_save_user', 'admin_delete_user', 'admin_save_course', 'admin_delete_course',
     'admin_save_lesson', 'admin_delete_lesson', 'admin_save_plan', 'admin_delete_plan',
@@ -105,6 +106,7 @@ switch ($action) {
                         'completed_lessons' => ['lesson_1_1', 'lesson_1_2', 'lesson_2_1'],
                         'joined_date' => date('F Y', strtotime($db_user['created_at']))
                     ];
+                    $_SESSION['fede_user'] = $user;
                     echo json_encode([
                         'success' => true,
                         'user' => $user,
@@ -143,6 +145,7 @@ switch ($action) {
                     'completed_lessons' => [],
                     'joined_date' => date('F Y')
                 ];
+                $_SESSION['fede_user'] = $user;
 
                 echo json_encode([
                     'success' => true,
@@ -288,6 +291,138 @@ switch ($action) {
             $user['role'] = $target_role;
         }
         echo json_encode(['success' => true, 'user' => $user]);
+        exit;
+
+    // ==========================================
+    // 👤 GESTIÓN DE "MI PERFIL" Y AVATAR
+    // ==========================================
+
+    case 'get_my_profile':
+        fede_require_auth($user);
+        if ($pdo) {
+            $user_id = is_numeric($user['id']) ? (int)$user['id'] : 0;
+            $user_email = $user['email'] ?? '';
+            $stmt = $pdo->prepare("SELECT * FROM `fede_users` WHERE `id` = ? OR `email` = ? LIMIT 1");
+            $stmt->execute([$user_id, $user_email]);
+            $db_user = $stmt->fetch();
+            if ($db_user) {
+                echo json_encode([
+                    'success' => true,
+                    'profile' => [
+                        'id' => (int)$db_user['id'],
+                        'name' => $db_user['name'],
+                        'handle' => $db_user['handle'],
+                        'email' => $db_user['email'],
+                        'avatar' => $db_user['avatar'] ?: '/assets/img/fede_avatar_mini.png',
+                        'bio' => $db_user['bio'] ?? '',
+                        'interests' => $db_user['interests'] ?? '',
+                        'instagram' => $db_user['instagram'] ?? '',
+                        'linkedin' => $db_user['linkedin'] ?? '',
+                        'website' => $db_user['website'] ?? '',
+                        'role' => $db_user['role'],
+                        'points' => (int)$db_user['points'],
+                        'level' => (int)$db_user['level'],
+                        'level_name' => $db_user['level_name'],
+                        'plan_name' => $db_user['plan_name'] ?? 'Campus Nowback Pro (Mensual)',
+                        'plan_expires_at' => $db_user['plan_expires_at'] ?? null,
+                        'status' => $db_user['status'] ?? 'active'
+                    ]
+                ]);
+                exit;
+            }
+        }
+        echo json_encode([
+            'success' => true,
+            'profile' => $user
+        ]);
+        exit;
+
+    case 'update_my_profile':
+        fede_require_auth($user);
+        $name = trim($json_data['name'] ?? $_POST['name'] ?? '');
+        $handle = trim($json_data['handle'] ?? $_POST['handle'] ?? '');
+        $avatar = trim($json_data['avatar'] ?? $_POST['avatar'] ?? '');
+        $bio = trim($json_data['bio'] ?? $_POST['bio'] ?? '');
+        $interests = trim($json_data['interests'] ?? $_POST['interests'] ?? '');
+        $instagram = trim($json_data['instagram'] ?? $_POST['instagram'] ?? '');
+        $linkedin = trim($json_data['linkedin'] ?? $_POST['linkedin'] ?? '');
+        $website = trim($json_data['website'] ?? $_POST['website'] ?? '');
+        $new_password = $json_data['new_password'] ?? $_POST['new_password'] ?? '';
+        $confirm_password = $json_data['confirm_password'] ?? $_POST['confirm_password'] ?? '';
+
+        if (empty($name)) {
+            echo json_encode(['success' => false, 'error' => 'El nombre completo es obligatorio.']);
+            exit;
+        }
+
+        if (!empty($handle)) {
+            $handle = '@' . ltrim($handle, '@');
+        } else {
+            $handle = '@' . strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', explode(' ', $name)[0]));
+        }
+
+        if (!empty($new_password)) {
+            if (strlen($new_password) < 4) {
+                echo json_encode(['success' => false, 'error' => 'La nueva contraseña debe tener al menos 4 caracteres.']);
+                exit;
+            }
+            if ($new_password !== $confirm_password) {
+                echo json_encode(['success' => false, 'error' => 'Las nuevas contraseñas no coinciden.']);
+                exit;
+            }
+        }
+
+        if ($pdo) {
+            $user_id = is_numeric($user['id']) ? (int)$user['id'] : 0;
+            $user_email = $user['email'] ?? '';
+
+            if (!empty($new_password)) {
+                $pass_hash = password_hash($new_password, PASSWORD_BCRYPT);
+                $stmt = $pdo->prepare("
+                    UPDATE `fede_users` 
+                    SET `name`=?, `handle`=?, `avatar`=?, `bio`=?, `interests`=?, `instagram`=?, `linkedin`=?, `website`=?, `password_hash`=? 
+                    WHERE `id`=? OR `email`=?
+                ");
+                $stmt->execute([$name, $handle, $avatar, $bio, $interests, $instagram, $linkedin, $website, $pass_hash, $user_id, $user_email]);
+            } else {
+                $stmt = $pdo->prepare("
+                    UPDATE `fede_users` 
+                    SET `name`=?, `handle`=?, `avatar`=?, `bio`=?, `interests`=?, `instagram`=?, `linkedin`=?, `website`=? 
+                    WHERE `id`=? OR `email`=?
+                ");
+                $stmt->execute([$name, $handle, $avatar, $bio, $interests, $instagram, $linkedin, $website, $user_id, $user_email]);
+            }
+
+            // Sync session
+            $_SESSION['fede_user']['name'] = $name;
+            $_SESSION['fede_user']['handle'] = $handle;
+            if (!empty($avatar)) {
+                $_SESSION['fede_user']['avatar'] = $avatar;
+            }
+            $_SESSION['fede_user']['bio'] = $bio;
+            $_SESSION['fede_user']['interests'] = $interests;
+            $_SESSION['fede_user']['instagram'] = $instagram;
+            $_SESSION['fede_user']['linkedin'] = $linkedin;
+            $_SESSION['fede_user']['website'] = $website;
+
+            echo json_encode([
+                'success' => true,
+                'message' => '¡Tu perfil ha sido actualizado exitosamente!',
+                'user' => $_SESSION['fede_user']
+            ]);
+            exit;
+        }
+
+        $_SESSION['fede_user']['name'] = $name;
+        $_SESSION['fede_user']['handle'] = $handle;
+        if (!empty($avatar)) $_SESSION['fede_user']['avatar'] = $avatar;
+        $_SESSION['fede_user']['bio'] = $bio;
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Perfil actualizado.',
+            'user' => $_SESSION['fede_user']
+        ]);
         exit;
 
     case 'create_post':
