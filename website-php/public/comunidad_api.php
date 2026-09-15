@@ -604,6 +604,7 @@ switch ($action) {
         $user_id = (int)($json_data['user_id'] ?? 0);
         $email = trim(strtolower($json_data['email'] ?? ''));
         $name = trim($json_data['name'] ?? '');
+        $handle = trim($json_data['handle'] ?? '');
         $role = in_array($json_data['role'] ?? '', ['admin', 'member']) ? $json_data['role'] : 'member';
         $points = (int)($json_data['points'] ?? 10);
         $password = $json_data['password'] ?? '';
@@ -614,9 +615,21 @@ switch ($action) {
         $status = in_array($json_data['status'] ?? '', ['active', 'pending', 'expired', 'suspended']) ? $json_data['status'] : 'active';
         $send_email = !empty($json_data['send_email']);
 
+        if ($role === 'admin') {
+            $plan_id = null;
+            $plan_name = 'Acceso Total (Admin)';
+            $plan_expires_at = null;
+        }
+
         if (empty($email) || empty($name)) {
             echo json_encode(['success' => false, 'error' => 'Email y nombre son requeridos.']);
             exit;
+        }
+
+        if (!empty($handle)) {
+            $handle = '@' . ltrim($handle, '@');
+        } else {
+            $handle = '@' . strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', explode('@', $email)[0]));
         }
 
         // Validate passwords if provided
@@ -631,29 +644,45 @@ switch ($action) {
         }
 
         if ($pdo) {
+            // Ensure handle uniqueness
+            $chk_h = $pdo->prepare("SELECT id FROM `fede_users` WHERE `handle` = ? AND `id` != ?");
+            $chk_h->execute([$handle, $user_id]);
+            if ($chk_h->fetchColumn()) {
+                $base_h = $handle;
+                $sfx = 1;
+                while (true) {
+                    $sfx++;
+                    $cand = $base_h . $sfx;
+                    $chk_h->execute([$cand, $user_id]);
+                    if (!$chk_h->fetchColumn()) {
+                        $handle = $cand;
+                        break;
+                    }
+                }
+            }
+
             if ($user_id > 0) {
                 // Update existing user
                 if (!empty($password)) {
                     $pass_hash = password_hash($password, PASSWORD_BCRYPT);
                     $stmt = $pdo->prepare("
                         UPDATE `fede_users` 
-                        SET `email`=?, `name`=?, `role`=?, `points`=?, `password_hash`=?, `plan_id`=?, `plan_name`=?, `plan_expires_at`=?, `status`=? 
+                        SET `email`=?, `name`=?, `handle`=?, `role`=?, `points`=?, `password_hash`=?, `plan_id`=?, `plan_name`=?, `plan_expires_at`=?, `status`=? 
                         WHERE `id`=?
                     ");
-                    $stmt->execute([$email, $name, $role, $points, $pass_hash, $plan_id, $plan_name, $plan_expires_at, $status, $user_id]);
+                    $stmt->execute([$email, $name, $handle, $role, $points, $pass_hash, $plan_id, $plan_name, $plan_expires_at, $status, $user_id]);
                 } else {
                     $stmt = $pdo->prepare("
                         UPDATE `fede_users` 
-                        SET `email`=?, `name`=?, `role`=?, `points`=?, `plan_id`=?, `plan_name`=?, `plan_expires_at`=?, `status`=? 
+                        SET `email`=?, `name`=?, `handle`=?, `role`=?, `points`=?, `plan_id`=?, `plan_name`=?, `plan_expires_at`=?, `status`=? 
                         WHERE `id`=?
                     ");
-                    $stmt->execute([$email, $name, $role, $points, $plan_id, $plan_name, $plan_expires_at, $status, $user_id]);
+                    $stmt->execute([$email, $name, $handle, $role, $points, $plan_id, $plan_name, $plan_expires_at, $status, $user_id]);
                 }
                 $saved_id = $user_id;
             } else {
                 // Create new user in MySQL
                 $pass_hash = password_hash($password, PASSWORD_BCRYPT);
-                $handle = '@' . strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', explode('@', $email)[0]));
                 $avatar = '/assets/img/fede_avatar_mini.png';
                 $stmt = $pdo->prepare("
                     INSERT INTO `fede_users` 

@@ -119,8 +119,8 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
               <ul class="dropdown-menu-links">
                 <li>
-                  <button type="button" onclick="openMyProfileModal(); closeAvatarDropdown();" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 14px; font-size: 0.88rem; color: var(--c-text-main); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 6px;">
-                    <span>👤</span> <span>Mi Perfil & Avatar</span>
+                  <button type="button" onclick="openMyProfileModal(); closeAvatarDropdown();" style="width: 100%; text-align: left; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 9px 12px; font-size: 0.88rem; color: #ffffff; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 6px;">
+                    <span style="font-size: 1.05rem;">👤</span> <span>Mi Perfil & Avatar</span>
                   </button>
                 </li>
                 <?php if ($is_admin): ?>
@@ -1108,12 +1108,23 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                           <?= htmlspecialchars($u_row['email']) ?>
                         </a>
                       </td>
-                      <td>
-                        <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a; background: #e2e8f0; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; display: inline-block; box-shadow: 0 1px 2px rgba(0,0,0,0.06);">
-                          <?= htmlspecialchars($u_row['plan_name'] ?: 'Campus Nowback Pro') ?>
-                        </span>
-                      </td>
-                      <td><?= $expiry_badge ?></td>
+                      <?php if ($u_row['role'] === 'admin'): ?>
+                        <td>
+                          <span style="font-size: 0.8rem; font-weight: 800; color: #b45309; background: #fef3c7; padding: 4px 10px; border-radius: 6px; border: 1px solid #fde68a; display: inline-block;">
+                            👑 Acceso Total (Admin)
+                          </span>
+                        </td>
+                        <td>
+                          <span style="font-size: 0.74rem; font-weight: 800; background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px;">💎 Ilimitado</span>
+                        </td>
+                      <?php else: ?>
+                        <td>
+                          <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a; background: #e2e8f0; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; display: inline-block; box-shadow: 0 1px 2px rgba(0,0,0,0.06);">
+                            <?= htmlspecialchars($u_row['plan_name'] ?: 'Campus Nowback Pro') ?>
+                          </span>
+                        </td>
+                        <td><?= $expiry_badge ?></td>
+                      <?php endif; ?>
                       <td>
                         <span class="dropdown-role-badge <?= $u_row['role'] === 'admin' ? 'admin' : 'member' ?>">
                           <?= $u_row['role'] === 'admin' ? '👑 Admin' : '👤 Alumno' ?>
@@ -1121,13 +1132,13 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                       </td>
                       <td>🔥 <?= (int)$u_row['points'] ?></td>
                       <td style="text-align: right; white-space: nowrap;">
-                        <button type="button" class="admin-btn-action admin-btn-edit" style="padding: 4px 8px; font-size: 0.78rem;" title="Editar Usuario" onclick="openAdminUserModal(<?= $uid ?>, '<?= htmlspecialchars(addslashes($u_row['name'])) ?>', '<?= htmlspecialchars(addslashes($u_row['email'])) ?>', '<?= htmlspecialchars($u_row['role']) ?>', <?= (int)$u_row['points'] ?>, <?= (int)($u_row['plan_id'] ?? 0) ?>, '<?= htmlspecialchars(addslashes($u_row['plan_name'])) ?>', '<?= htmlspecialchars($u_row['plan_expires_at'] ?? '') ?>')">
+                        <button type="button" class="admin-btn-action admin-btn-edit" style="padding: 4px 8px; font-size: 0.78rem;" title="Editar Usuario" onclick="openAdminUserModal(<?= $uid ?>, '<?= htmlspecialchars(addslashes($u_row['name'])) ?>', '<?= htmlspecialchars(addslashes($u_row['email'])) ?>', '<?= htmlspecialchars($u_row['role']) ?>', <?= (int)$u_row['points'] ?>, <?= (int)($u_row['plan_id'] ?? 0) ?>, '<?= htmlspecialchars(addslashes($u_row['plan_name'])) ?>', '<?= htmlspecialchars($u_row['plan_expires_at'] ?? '') ?>', '<?= htmlspecialchars(addslashes($u_row['handle'])) ?>')">
                           ✏️ Editar
                         </button>
-                        <button type="button" class="btn-reaction" style="padding: 4px 8px; font-size: 0.78rem; font-weight: 700; color: #166534; background: #dcfce7; border-color: #86efac;" title="Enviar accesos por WhatsApp" onclick="shareUserViaWhatsapp('<?= htmlspecialchars(addslashes($u_row['name'])) ?>', '<?= htmlspecialchars(addslashes($u_row['email'])) ?>', '<?= htmlspecialchars(addslashes($u_row['plan_name'])) ?>')">
+                        <button type="button" class="admin-btn-action" style="padding: 4px 8px; font-size: 0.78rem; background: #dcfce7; color: #166534; border-color: #86efac;" title="Enviar accesos por WhatsApp" onclick="openWhatsAppModalForUser('<?= htmlspecialchars(addslashes($u_row['name'])) ?>', '<?= htmlspecialchars(addslashes($u_row['email'])) ?>', '<?= htmlspecialchars($u_row['role']) ?>', '<?= htmlspecialchars(addslashes($u_row['plan_name'])) ?>')">
                           📲 WhatsApp
                         </button>
-                        <?php if ($u_row['email'] !== 'mfmujic@gmail.com'): ?>
+                        <?php if ($uid > 1): ?>
                           <button type="button" class="admin-btn-action admin-btn-del" style="padding: 4px 8px; font-size: 0.78rem;" title="Eliminar Usuario" onclick="deleteAdminUser(<?= $uid ?>)">
                             🗑️
                           </button>
@@ -1142,72 +1153,72 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
           <!-- SUBTAB 5: PLANES Y PRECIOS (ABM) -->
           <div id="admin-subtab-plans" class="admin-subtab-content" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Planes de Membresía & Precios</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">Planes de Suscripción & Precios</h3>
+                <p style="font-size: 0.82rem; color: var(--c-text-muted);">Configurá los planes visibles para los alumnos en la web y checkout.</p>
+              </div>
               <button type="button" class="admin-btn-add" onclick="openAdminPlanModal(0)">➕ Nuevo Plan</button>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-              <?php foreach ($data['plans'] as $p_item): ?>
-                <div class="campus-card" style="border: 2px solid var(--c-border); display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+              <?php foreach ($data['plans'] as $plan): ?>
+                <div class="campus-card" style="border: 1px solid var(--c-border); display: flex; flex-direction: column; justify-content: space-between;">
                   <div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                      <span style="font-size: 0.75rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 3px 8px; border-radius: 4px;"><?= htmlspecialchars($p_item['badge']) ?></span>
-                      <small style="color: var(--c-text-muted);">ID: <?= htmlspecialchars($p_item['id']) ?></small>
+                      <span style="font-size: 0.72rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($plan['badge']) ?></span>
+                      <span style="font-size: 0.82rem; color: #16a34a; font-weight: 700;">Activo</span>
                     </div>
-                    <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.15rem; margin-bottom: 6px;"><?= htmlspecialchars($p_item['name']) ?></h4>
-                    <div style="font-size: 1.3rem; font-weight: 900; color: var(--c-fire-primary); margin-bottom: 8px;">
-                      U$D <?= (int)$p_item['price_usd'] ?> <span style="font-size: 0.85rem; color: var(--c-text-muted); font-weight: 600;">($<?= number_format($p_item['price_ars'], 0, ',', '.') ?> ARS)</span>
+                    <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.1rem;"><?= htmlspecialchars($plan['name']) ?></h4>
+                    <div style="font-size: 1.3rem; font-weight: 900; color: var(--c-text-main); margin: 6px 0;">
+                      $<?= number_format($plan['price_ars'], 0, ',', '.') ?> <span style="font-size: 0.8rem; color: var(--c-text-muted); font-weight: 600;">/ <?= htmlspecialchars($plan['period']) ?></span>
+                      <span style="font-size: 0.85rem; color: #0284c7; font-weight: 700;">(U$D <?= (int)$plan['price_usd'] ?>)</span>
                     </div>
-                    <p style="font-size: 0.85rem; color: var(--c-text-sub); margin-bottom: 12px;"><?= htmlspecialchars($p_item['description']) ?></p>
+                    <p style="font-size: 0.82rem; color: var(--c-text-sub); margin-bottom: 12px;"><?= htmlspecialchars($plan['description']) ?></p>
                   </div>
-                  <div style="display: flex; gap: 8px; border-top: 1px solid var(--c-border); padding-top: 12px;">
-                    <button class="admin-btn-action admin-btn-edit" style="flex: 1; text-align: center;" onclick="openAdminPlanModal(<?= (int)$p_item['id'] ?>, '<?= htmlspecialchars(addslashes($p_item['name'])) ?>', '<?= htmlspecialchars(addslashes($p_item['slug'])) ?>', '<?= htmlspecialchars(addslashes($p_item['badge'])) ?>', <?= (int)$p_item['price_ars'] ?>, <?= (int)$p_item['price_usd'] ?>, '<?= htmlspecialchars(addslashes($p_item['period'])) ?>', '<?= htmlspecialchars(addslashes($p_item['description'])) ?>', '<?= htmlspecialchars(addslashes($p_item['checkout_url'])) ?>')">✏️ Editar Plan</button>
-                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminPlan(<?= (int)$p_item['id'] ?>)">🗑️</button>
+                  <div style="display: flex; gap: 8px; border-top: 1px solid var(--c-border); padding-top: 10px;">
+                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminPlanModal(<?= (int)$plan['id'] ?>, '<?= htmlspecialchars(addslashes($plan['name'])) ?>', '<?= htmlspecialchars(addslashes($plan['badge'])) ?>', <?= (int)$plan['price_ars'] ?>, <?= (int)$plan['price_usd'] ?>, '<?= htmlspecialchars(addslashes($plan['period'])) ?>', '<?= htmlspecialchars(addslashes($plan['description'])) ?>', '<?= htmlspecialchars(addslashes($plan['checkout_url'])) ?>')">✏️ Editar Plan</button>
+                    <button class="admin-btn-action admin-btn-del" onclick="deleteAdminPlan(<?= (int)$plan['id'] ?>)">🗑️ Borrar</button>
                   </div>
                 </div>
               <?php endforeach; ?>
             </div>
           </div>
 
-          <!-- SUBTAB 6: CONFIGURACIÓN & GAMIFICACIÓN -->
+          <!-- SUBTAB 6: CONFIGURACIÓN GENERAL & GAMIFICACIÓN -->
           <div id="admin-subtab-settings" class="admin-subtab-content" style="display: none;">
-            <div class="campus-card" style="max-width: 650px;">
-              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Configuración de la Plataforma</h3>
-
-              <form id="formAdminSettings">
-                
-                <!-- Toggle Gamificación / Fuegos -->
-                <div style="background: var(--c-bg-subtle); padding: 18px; border-radius: var(--c-radius); margin-bottom: 20px; border: 1px solid var(--c-border);">
-                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px;">
-                    <div>
-                      <strong style="font-size: 0.95rem; display: block; margin-bottom: 4px;">🎮 Sistema de Fuegos & Ranking (Gamificación)</strong>
-                      <p style="font-size: 0.82rem; color: var(--c-text-muted); line-height: 1.5;">
-                        Si está <strong>desactivado</strong>, la plataforma no muestra puntos de fuego ni rankings, permitiendo una experiencia limpia y directa sin requerir tiempo de administración del mentor.
-                      </p>
-                    </div>
-                    <label class="admin-switch">
-                      <input type="checkbox" id="settingGamificationInput" <?= $gamification_enabled ? 'checked' : '' ?>>
-                      <span class="admin-slider"></span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="admin-form-group">
-                  <label for="settingCommunityName">Nombre de la Comunidad:</label>
-                  <input type="text" id="settingCommunityName" class="admin-form-input" value="<?= htmlspecialchars($settings['community_name'] ?? 'Campus Fede Nowback Pro') ?>" required>
-                </div>
-
-                <div class="admin-form-group">
-                  <label for="settingWhatsapp">Número WhatsApp de Soporte / Mentor (formato internacional sin +):</label>
-                  <input type="text" id="settingWhatsapp" class="admin-form-input" value="<?= htmlspecialchars($settings['admin_whatsapp'] ?? '5491138205570') ?>" required>
-                </div>
-
-                <div id="settingsFeedbackMsg" style="display: none; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 14px;"></div>
-
-                <button type="submit" class="admin-btn-add" style="width: 100%; justify-content: center; padding: 12px 0;">💾 Guardar Cambios de Configuración</button>
-              </form>
+            <div style="margin-bottom: 16px;">
+              <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem;">⚙️ Configuración del Campus & Ecosistema</h3>
+              <p style="font-size: 0.82rem; color: var(--c-text-muted);">Ajustá el nombre del campus, números de contacto y opciones globales.</p>
             </div>
+
+            <form id="formAdminSettings" class="campus-card" style="max-width: 600px;">
+              <div class="admin-form-group">
+                <label for="settingCommunityName">Nombre de la Comunidad / Campus:</label>
+                <input type="text" id="settingCommunityName" class="admin-form-input" value="<?= htmlspecialchars($data['settings']['community_name'] ?? 'Campus Fede Nowback Pro') ?>" required>
+              </div>
+
+              <div class="admin-form-group">
+                <label for="settingAdminWhatsapp">WhatsApp de Soporte / Mentor (con código de país):</label>
+                <input type="text" id="settingAdminWhatsapp" class="admin-form-input" value="<?= htmlspecialchars($data['settings']['admin_whatsapp'] ?? '5491138205570') ?>" required>
+              </div>
+
+              <div style="margin: 18px 0; padding: 14px; background: var(--c-bg-subtle); border-radius: 8px; border: 1px solid var(--c-border);">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <strong style="font-size: 0.95rem; color: var(--c-text-main);">Gamificación & Puntos de Fuego 🔥</strong>
+                    <p style="font-size: 0.8rem; color: var(--c-text-muted); margin-top: 2px;">Permite que los alumnos sumen puntos con likes y desbloqueen rangos y cursos.</p>
+                  </div>
+                  <input type="checkbox" id="settingEnableGamification" style="width: 20px; height: 20px; accent-color: var(--c-fire-primary); cursor: pointer;" <?= $gamification_enabled ? 'checked' : '' ?>>
+                </div>
+              </div>
+
+              <div id="adminSettingsFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
+
+              <button type="submit" id="btnAdminSettingsSubmit" class="admin-btn-add" style="padding: 10px 20px;">
+                💾 Guardar Configuración
+              </button>
+            </form>
           </div>
 
         </section>
@@ -1248,9 +1259,15 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <input type="text" id="adminUserNameInput" class="admin-form-input" placeholder="Ej: Marcela Gómez" required>
             </div>
 
-            <div class="admin-form-group">
-              <label for="adminUserEmailInput">Email de Acceso <span style="color: #ef4444;">*</span>:</label>
-              <input type="email" id="adminUserEmailInput" class="admin-form-input" placeholder="alumno@correo.com" required>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div class="admin-form-group" style="margin-bottom: 0;">
+                <label for="adminUserEmailInput">Email de Acceso <span style="color: #ef4444;">*</span>:</label>
+                <input type="email" id="adminUserEmailInput" class="admin-form-input" placeholder="alumno@correo.com" required>
+              </div>
+              <div class="admin-form-group" style="margin-bottom: 0;">
+                <label for="adminUserHandleInput">Nombre de Usuario (@):</label>
+                <input type="text" id="adminUserHandleInput" class="admin-form-input" placeholder="@usuario">
+              </div>
             </div>
 
             <!-- Password with Eye Toggle -->
@@ -1276,8 +1293,28 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <small id="passwordMatchIndicator" style="display: none; font-size: 0.78rem; font-weight: 700; margin-top: 4px;"></small>
             </div>
 
-            <!-- Plan Selection & Expiration -->
-            <div style="background: var(--c-bg-subtle); padding: 14px; border-radius: 8px; border: 1px solid var(--c-border); margin-bottom: 16px;">
+            <!-- Rol de Usuario y Puntos -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+              <div class="admin-form-group">
+                <label for="adminUserRoleInput">Rol de Usuario:</label>
+                <select id="adminUserRoleInput" class="admin-form-select" onchange="handleAdminUserRoleChange(this.value)">
+                  <option value="member">👤 Alumno (Member)</option>
+                  <option value="admin">👑 Administrador (Admin)</option>
+                </select>
+              </div>
+              <div class="admin-form-group">
+                <label for="adminUserPointsInput">Puntos de Fuego:</label>
+                <input type="number" id="adminUserPointsInput" class="admin-form-input" value="10">
+              </div>
+            </div>
+
+            <!-- Aviso para Administradores (Sin Plan) -->
+            <div id="adminUserRoleNotice" style="display: none; background: #fef3c7; border: 1px solid #fde68a; color: #92400e; padding: 12px 14px; border-radius: 8px; font-size: 0.84rem; font-weight: 700; margin-bottom: 16px; line-height: 1.45;">
+              👑 <strong>Acceso Total de Administrador:</strong> No requiere asignación de plan ni fecha de caducidad. Cuenta con acceso libre y permanente a todos los módulos y salas.
+            </div>
+
+            <!-- Plan Selection & Expiration (Solo para Alumnos) -->
+            <div id="adminUserPlanSection" style="background: var(--c-bg-subtle); padding: 14px; border-radius: 8px; border: 1px solid var(--c-border); margin-bottom: 16px;">
               <div class="admin-form-group" style="margin-bottom: 12px;">
                 <label for="adminUserPlanSelect">Plan de Suscripción Contratado:</label>
                 <select id="adminUserPlanSelect" class="admin-form-select" onchange="syncPlanSelection(this)">
@@ -1304,20 +1341,6 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-              <div class="admin-form-group">
-                <label for="adminUserRoleInput">Rol de Usuario:</label>
-                <select id="adminUserRoleInput" class="admin-form-select">
-                  <option value="member">👤 Alumno (Member)</option>
-                  <option value="admin">👑 Administrador (Admin)</option>
-                </select>
-              </div>
-              <div class="admin-form-group">
-                <label for="adminUserPointsInput">Puntos de Fuego:</label>
-                <input type="number" id="adminUserPointsInput" class="admin-form-input" value="10">
-              </div>
-            </div>
-
             <!-- Checkbox: Send Welcome Email -->
             <div style="display: flex; align-items: center; gap: 8px; margin: 12px 0 16px 0;">
               <input type="checkbox" id="adminUserSendEmailInput" checked style="width: 16px; height: 16px; accent-color: var(--c-fire-primary); cursor: pointer;">
@@ -1329,15 +1352,63 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <div id="adminUserFeedbackMsg" style="display: none; font-size: 0.85rem; padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;"></div>
 
             <div class="admin-modal-actions" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-              <button type="button" class="btn-reaction" style="color: #166534; background: #dcfce7; border-color: #86efac; font-weight: 700; font-size: 0.85rem;" onclick="shareModalUserWhatsApp()">
-                📲 Mensaje WhatsApp
-              </button>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" class="btn-reaction" style="color: #166534; background: #dcfce7; border-color: #86efac; font-weight: 700; font-size: 0.84rem;" onclick="openWhatsAppModalFromForm()">
+                  📲 Mensaje WhatsApp
+                </button>
+                <button type="button" class="btn-reaction" style="color: #1d4ed8; background: #dbeafe; border-color: #93c5fd; font-weight: 700; font-size: 0.84rem;" onclick="copyModalUserWhatsApp()">
+                  📋 Copiar
+                </button>
+              </div>
               <div style="display: flex; gap: 8px;">
                 <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminUser')">Cancelar</button>
                 <button type="submit" id="btnAdminUserSubmit" class="admin-btn-add">💾 Guardar Usuario</button>
               </div>
             </div>
           </form>
+        </div>
+      </div>
+
+      <!-- Modal: Generador / Copiador de Mensaje de WhatsApp -->
+      <div id="modalWhatsAppShare" class="admin-modal-overlay">
+        <div class="admin-modal-box" style="max-width: 540px;">
+          <h3 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 10px; color: #166534; display: flex; align-items: center; gap: 8px;">
+            📲 Mensaje de Acceso para WhatsApp
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--c-text-sub); margin-bottom: 14px; line-height: 1.45;">
+            Copiá y pegá este mensaje directamente en el chat de WhatsApp del alumno o administrador:
+          </p>
+
+          <input type="hidden" id="waShareName">
+          <input type="hidden" id="waShareEmail">
+          <input type="hidden" id="waShareRole">
+          <input type="hidden" id="waSharePlanName">
+
+          <div class="admin-form-group" style="margin-bottom: 12px;">
+            <label for="waSharePasswordInput" style="font-size: 0.82rem; font-weight: 700;">🔑 Contraseña asignada:</label>
+            <input type="text" id="waSharePasswordInput" class="admin-form-input" placeholder="Escribí o modificá la contraseña para el mensaje" oninput="refreshWhatsAppPreviewText()">
+          </div>
+
+          <div class="admin-form-group" style="margin-bottom: 14px;">
+            <label for="waShareMessagePreview" style="font-size: 0.82rem; font-weight: 700;">Texto para WhatsApp (Listo para copiar):</label>
+            <textarea id="waShareMessagePreview" class="admin-form-input" rows="8" style="font-family: monospace; font-size: 0.85rem; line-height: 1.45; background: var(--c-bg-subtle); color: var(--c-text-main); white-space: pre-wrap;"></textarea>
+          </div>
+
+          <div id="waCopyAlert" style="display: none; background: #dcfce7; border: 1px solid #86efac; color: #166534; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; margin-bottom: 14px; text-align: center;">
+            ✅ ¡Mensaje copiado al portapapeles! Listo para pegar en WhatsApp.
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <button type="button" class="btn-reaction" onclick="closeAdminModal('modalWhatsAppShare')">Cerrar</button>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="admin-btn-add" style="background: #2563eb; color: #fff;" onclick="copyWhatsAppGeneratedMessage()">
+                📋 Copiar Mensaje
+              </button>
+              <button type="button" class="admin-btn-add" style="background: #16a34a; color: #fff;" onclick="openWhatsAppDirectLink()">
+                🟢 Abrir en WhatsApp
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

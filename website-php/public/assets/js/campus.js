@@ -143,34 +143,148 @@ window.syncPlanSelection = function(selectEl) {
   if (hiddenInput) hiddenInput.value = planName;
 };
 
-window.shareUserViaWhatsapp = function(name, email, planName) {
-  const siteUrl = window.location.origin + '/campus';
-  const text = `¡Hola ${name}! Te damos la bienvenida oficial al Campus Fede Nowback Pro 🚀.\n\nTu suscripción al plan *${planName || 'Campus Nowback Pro'}* ya se encuentra activa.\n\n📌 *Tus datos de acceso:*\n📧 Email: ${email}\n🔗 Ingreso al Campus: ${siteUrl}\n\n¡Nos vemos adentro para empezar a romperla! 🔥`;
-  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+window.handleAdminUserRoleChange = function(role) {
+  const planSection = document.getElementById('adminUserPlanSection');
+  const roleNotice = document.getElementById('adminUserRoleNotice');
+  if (role === 'admin') {
+    if (planSection) planSection.style.display = 'none';
+    if (roleNotice) roleNotice.style.display = 'block';
+  } else {
+    if (planSection) planSection.style.display = 'block';
+    if (roleNotice) roleNotice.style.display = 'none';
+  }
+};
+
+window.buildWhatsAppAccessMessage = function(name, email, password, role, planName) {
+  const siteUrl = 'https://fedenowback.com.ar/campus';
+  const cleanName = name ? name.trim() : 'Compañero/a';
+  const cleanEmail = email ? email.trim() : '';
+  const cleanPass = password ? password.trim() : '(Tu contraseña asignada)';
+  
+  if (role === 'admin') {
+    return `¡Hola ${cleanName}! Te damos la bienvenida oficial al Campus Fede Nowback Pro 🚀.\n\nTu cuenta de *Administrador* con acceso total ya se encuentra activa.\n\n📌 *Tus datos de acceso:*\n📧 Email: ${cleanEmail}\n🔑 Contraseña: ${cleanPass}\n🔗 Ingreso al Campus: ${siteUrl}\n\n¡Nos vemos adentro para empezar a romperla! 🔥`;
+  } else {
+    const cleanPlan = planName ? planName.trim() : 'Campus Nowback Pro (Mensual)';
+    return `¡Hola ${cleanName}! Te damos la bienvenida oficial al Campus Fede Nowback Pro 🚀.\n\nTu suscripción al plan *${cleanPlan}* ya se encuentra activa.\n\n📌 *Tus datos de acceso:*\n📧 Email: ${cleanEmail}\n🔑 Contraseña: ${cleanPass}\n🔗 Ingreso al Campus: ${siteUrl}\n\n¡Nos vemos adentro para empezar a romperla! 🔥`;
+  }
+};
+
+window.openWhatsAppModalForUser = function(name, email, role, planName, password = '') {
+  document.getElementById('waShareName').value = name || '';
+  document.getElementById('waShareEmail').value = email || '';
+  document.getElementById('waShareRole').value = role || 'member';
+  document.getElementById('waSharePlanName').value = planName || 'Campus Nowback Pro (Mensual)';
+  document.getElementById('waSharePasswordInput').value = password || '';
+  
+  const alertEl = document.getElementById('waCopyAlert');
+  if (alertEl) alertEl.style.display = 'none';
+
+  refreshWhatsAppPreviewText();
+  openAdminModal('modalWhatsAppShare');
+};
+
+window.openWhatsAppModalFromForm = function() {
+  const name = document.getElementById('adminUserNameInput')?.value || '';
+  const email = document.getElementById('adminUserEmailInput')?.value || '';
+  const role = document.getElementById('adminUserRoleInput')?.value || 'member';
+  const password = document.getElementById('adminUserPasswordInput')?.value || '';
+  const planSelect = document.getElementById('adminUserPlanSelect');
+  let planName = 'Campus Nowback Pro (Mensual)';
+  if (planSelect && planSelect.selectedIndex >= 0) {
+    planName = planSelect.options[planSelect.selectedIndex].getAttribute('data-plan-name') || planName;
+  }
+
+  openWhatsAppModalForUser(name, email, role, planName, password);
+};
+
+window.refreshWhatsAppPreviewText = function() {
+  const name = document.getElementById('waShareName')?.value || '';
+  const email = document.getElementById('waShareEmail')?.value || '';
+  const role = document.getElementById('waShareRole')?.value || 'member';
+  const planName = document.getElementById('waSharePlanName')?.value || '';
+  const password = document.getElementById('waSharePasswordInput')?.value || '';
+  
+  const preview = document.getElementById('waShareMessagePreview');
+  if (preview) {
+    preview.value = window.buildWhatsAppAccessMessage(name, email, password, role, planName);
+  }
+};
+
+window.copyWhatsAppGeneratedMessage = async function() {
+  const preview = document.getElementById('waShareMessagePreview');
+  if (!preview || !preview.value) return;
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(preview.value);
+    } else {
+      preview.select();
+      document.execCommand('copy');
+    }
+    const alertEl = document.getElementById('waCopyAlert');
+    if (alertEl) {
+      alertEl.style.display = 'block';
+      setTimeout(() => { if (alertEl) alertEl.style.display = 'none'; }, 4000);
+    }
+  } catch (err) {
+    preview.select();
+    document.execCommand('copy');
+    alert('Mensaje copiado al portapapeles.');
+  }
+};
+
+window.openWhatsAppDirectLink = function() {
+  const preview = document.getElementById('waShareMessagePreview');
+  if (!preview || !preview.value) return;
+  const url = `https://wa.me/?text=${encodeURIComponent(preview.value)}`;
   window.open(url, '_blank');
 };
 
-window.shareModalUserWhatsApp = function() {
-  const name = document.getElementById('adminUserNameInput')?.value.trim() || 'Alumno';
-  const email = document.getElementById('adminUserEmailInput')?.value.trim() || '';
+window.copyModalUserWhatsApp = async function() {
+  const name = document.getElementById('adminUserNameInput')?.value || '';
+  const email = document.getElementById('adminUserEmailInput')?.value || '';
+  const role = document.getElementById('adminUserRoleInput')?.value || 'member';
   const password = document.getElementById('adminUserPasswordInput')?.value || '';
-  const planName = document.getElementById('adminUserPlanNameInput')?.value || 'Campus Nowback Pro';
-  const siteUrl = window.location.origin + '/campus';
+  const planSelect = document.getElementById('adminUserPlanSelect');
+  let planName = 'Campus Nowback Pro (Mensual)';
+  if (planSelect && planSelect.selectedIndex >= 0) {
+    planName = planSelect.options[planSelect.selectedIndex].getAttribute('data-plan-name') || planName;
+  }
 
-  let passText = password ? `\n🔑 Contraseña inicial: ${password}` : '';
-  const text = `¡Hola ${name}! Te damos la bienvenida oficial al Campus Fede Nowback Pro 🚀.\n\nTu suscripción al plan *${planName}* ya se encuentra activa.\n\n📌 *Tus datos de ingreso:*\n📧 Email: ${email}${passText}\n🔗 Ingreso: ${siteUrl}\n\n¡Nos vemos adentro! 🔥`;
-  
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  const msg = window.buildWhatsAppAccessMessage(name, email, password, role, planName);
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(msg);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = msg;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    alert('✅ ¡Mensaje con accesos copiado al portapapeles!\n\nListo para pegar en WhatsApp.');
+  } catch (e) {
+    prompt('Copiá el texto para WhatsApp:', msg);
+  }
 };
 
-window.openAdminUserModal = function(id = 0, name = '', email = '', role = 'member', points = 10, planId = 0, planName = 'Campus Nowback Pro (Mensual)', planExpires = '') {
+window.shareUserViaWhatsapp = function(name, email, planName) {
+  openWhatsAppModalForUser(name, email, 'member', planName);
+};
+
+window.shareModalUserWhatsApp = function() {
+  openWhatsAppModalFromForm();
+};
+
+window.openAdminUserModal = function(id = 0, name = '', email = '', role = 'member', points = 10, planId = 0, planName = 'Campus Nowback Pro (Mensual)', planExpires = '', handle = '') {
   const isEdit = id > 0;
   const titleEl = document.getElementById('modalUserTitle');
   const lblPass = document.getElementById('lblAdminUserPassword');
   const btnSubmit = document.getElementById('btnAdminUserSubmit');
   const feedback = document.getElementById('adminUserFeedbackMsg');
 
-  if (titleEl) titleEl.textContent = isEdit ? `✏️ Editar Usuario: ${name}` : '➕ Alta de Nuevo Usuario / Alumno';
+  if (titleEl) titleEl.textContent = isEdit ? `✏️ Editar Usuario: ${name}` : '➕ Alta de Nuevo Usuario';
   if (lblPass) lblPass.innerHTML = isEdit ? 'Nueva Contraseña (dejar en blanco para mantener actual):' : 'Contraseña <span style="color: #ef4444;">*</span>:';
   if (btnSubmit) btnSubmit.textContent = isEdit ? '💾 Guardar Cambios' : '➕ Crear Usuario';
   if (feedback) feedback.style.display = 'none';
@@ -178,11 +292,17 @@ window.openAdminUserModal = function(id = 0, name = '', email = '', role = 'memb
   document.getElementById('adminUserIdInput').value = id || 0;
   document.getElementById('adminUserNameInput').value = name || '';
   document.getElementById('adminUserEmailInput').value = email || '';
+  if (document.getElementById('adminUserHandleInput')) {
+    document.getElementById('adminUserHandleInput').value = handle || '';
+  }
   document.getElementById('adminUserPasswordInput').value = '';
   document.getElementById('adminUserConfirmPasswordInput').value = '';
   document.getElementById('adminUserRoleInput').value = role || 'member';
   document.getElementById('adminUserPointsInput').value = points || 10;
   
+  // Toggle plan section based on role
+  window.handleAdminUserRoleChange(role || 'member');
+
   // Plan & Expiry
   const planSelect = document.getElementById('adminUserPlanSelect');
   if (planSelect) {
@@ -776,6 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const userId = document.getElementById('adminUserIdInput').value;
       const name = document.getElementById('adminUserNameInput').value.trim();
       const email = document.getElementById('adminUserEmailInput').value.trim();
+      const handle = document.getElementById('adminUserHandleInput')?.value.trim() || '';
       const password = document.getElementById('adminUserPasswordInput').value;
       const confirmPassword = document.getElementById('adminUserConfirmPasswordInput').value;
       const role = document.getElementById('adminUserRoleInput').value;
@@ -811,13 +932,14 @@ document.addEventListener('DOMContentLoaded', () => {
         user_id: userId,
         name: name,
         email: email,
+        handle: handle,
         password: password,
         confirm_password: confirmPassword,
         role: role,
         points: points,
-        plan_id: planId,
-        plan_name: planName,
-        plan_expires_at: planExpires,
+        plan_id: role === 'admin' ? null : planId,
+        plan_name: role === 'admin' ? 'Acceso Total (Admin)' : planName,
+        plan_expires_at: role === 'admin' ? '' : planExpires,
         send_email: sendEmail,
         csrf_token: csrfToken
       };

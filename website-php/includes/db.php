@@ -603,12 +603,41 @@ function fede_db_init_schema($existing_pdo = null) {
                OR `avatar` = '';
         ");
         $pdo->exec("
-            UPDATE `fede_courses`
-            SET `thumbnail` = '/assets/img/evento_encende_tu_fuego.jpg'
-            WHERE `thumbnail` LIKE '%fedenowback/evento_encende%'
-               OR `thumbnail` LIKE '%/assets/img/fedenowback/%'
+            UPDATE `fede_courses` 
+            SET `thumbnail` = '/assets/img/evento_encende_tu_fuego.jpg' 
+            WHERE `thumbnail` LIKE '%fedenowback/evento_encende%' 
+               OR `thumbnail` LIKE '%/assets/img/fedenowback/%' 
                OR `thumbnail` LIKE '%fede_nowback_hero.jpg%';
         ");
+
+        // 14. Ensure unique handles across all users
+        $all_users = $pdo->query("SELECT id, email, name, handle FROM `fede_users` ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
+        $used_handles = [];
+        foreach ($all_users as $u) {
+            $current_handle = trim($u['handle'] ?? '');
+            
+            // Special case: mfmujic@gmail.com should be @mfmujic if fedenowback@gmail.com is @fedenowback
+            if (strtolower($u['email']) === 'mfmujic@gmail.com' && $current_handle === '@fedenowback') {
+                $current_handle = '@mfmujic';
+            }
+
+            if (empty($current_handle) || in_array($current_handle, $used_handles)) {
+                $base = '@' . strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', explode('@', $u['email'])[0]));
+                if (empty(str_replace('@', '', $base))) {
+                    $base = '@user_' . $u['id'];
+                }
+                $candidate = $base;
+                $suffix = 1;
+                while (in_array($candidate, $used_handles)) {
+                    $suffix++;
+                    $candidate = $base . $suffix;
+                }
+                $current_handle = $candidate;
+                $upd = $pdo->prepare("UPDATE `fede_users` SET `handle` = ? WHERE `id` = ?");
+                $upd->execute([$current_handle, $u['id']]);
+            }
+            $used_handles[] = $current_handle;
+        }
     } catch (Exception $e) {
         error_log('Fede DB legacy cleanup warning: ' . $e->getMessage());
     }
