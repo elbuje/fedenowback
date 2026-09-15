@@ -98,6 +98,7 @@ function fede_db_init_schema($existing_pdo = null) {
                 $pdo->exec("ALTER TABLE `fede_users` ADD COLUMN `$col` $def");
             }
         }
+        $pdo->exec("ALTER TABLE `fede_users` MODIFY `avatar` MEDIUMTEXT");
     } catch (Exception $e) {
         error_log("Migration error in fede_users: " . $e->getMessage());
     }

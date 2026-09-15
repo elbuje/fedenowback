@@ -347,6 +347,26 @@ switch ($action) {
             $user_id = is_numeric($user['id']) ? (int)$user['id'] : 0;
             $user_email = $user['email'] ?? '';
 
+            // Process base64 avatar upload to permanent file
+            if (!empty($avatar) && preg_match('/^data:image\/(\w+);base64,/', $avatar, $matches)) {
+                $image_type = strtolower($matches[1]);
+                $base64_data = substr($avatar, strpos($avatar, ',') + 1);
+                $decoded_image = base64_decode($base64_data);
+                
+                if ($decoded_image !== false) {
+                    $upload_dir = __DIR__ . '/assets/uploads/avatars/';
+                    if (!is_dir($upload_dir)) {
+                        @mkdir($upload_dir, 0777, true);
+                    }
+                    $ext = in_array($image_type, ['jpg', 'jpeg', 'png', 'webp', 'gif']) ? ($image_type === 'jpeg' ? 'jpg' : $image_type) : 'png';
+                    $filename = 'avatar_' . ($user_id ?: 'usr') . '_' . time() . '.' . $ext;
+                    $file_path = $upload_dir . $filename;
+                    if (@file_put_contents($file_path, $decoded_image)) {
+                        $avatar = '/assets/uploads/avatars/' . $filename;
+                    }
+                }
+            }
+
             if (!empty($new_password)) {
                 $pass_hash = password_hash($new_password, PASSWORD_BCRYPT);
                 $stmt = $pdo->prepare("

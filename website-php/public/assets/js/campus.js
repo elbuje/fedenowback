@@ -1441,17 +1441,43 @@ document.addEventListener('DOMContentLoaded', () => {
     myProfileFileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
-        if (file.size > 3 * 1024 * 1024) {
-          alert('La imagen seleccionada no debe superar los 3MB.');
+        if (file.size > 5 * 1024 * 1024) {
+          alert('La imagen seleccionada no debe superar los 5MB.');
           return;
         }
         const reader = new FileReader();
         reader.onload = (event) => {
-          const base64Url = event.target.result;
-          const preview = document.getElementById('myProfileAvatarPreview');
-          const input = document.getElementById('myProfileAvatarInput');
-          if (preview) preview.src = base64Url;
-          if (input) input.value = base64Url;
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const maxDim = 320;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxDim) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              }
+            } else {
+              if (height > maxDim) {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+            const preview = document.getElementById('myProfileAvatarPreview');
+            const input = document.getElementById('myProfileAvatarInput');
+            if (preview) preview.src = compressedDataUrl;
+            if (input) input.value = compressedDataUrl;
+          };
+          img.src = event.target.result;
         };
         reader.readAsDataURL(file);
       }
