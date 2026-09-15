@@ -1518,17 +1518,20 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
           <form id="formCampusLogin">
             <div style="margin-bottom: 14px;">
-              <label for="loginEmailInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Email:</label>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <label for="loginEmailInput" style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub);">Email de Usuario:</label>
+                <a href="https://wa.me/5491100000000?text=Hola%20Fede!%20Tengo%20problemas%20para%20recordar%20mi%20usuario%20o%20email%20de%20acceso%20al%20Campus" target="_blank" style="font-size: 0.73rem; color: var(--c-text-muted); text-decoration: underline; font-weight: 500;">¿Olvidaste tu usuario?</a>
+              </div>
               <input type="email" id="loginEmailInput" class="admin-form-input" placeholder="tu@email.com" value="" required>
             </div>
-            <div style="margin-bottom: 8px;">
+            <div style="margin-bottom: 10px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                 <label for="loginPasswordInput" style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub);">Contraseña:</label>
-                <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 0.75rem; color: var(--c-fire-primary); text-decoration: none; font-weight: 600;">¿Olvidaste tu contraseña?</a>
+                <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="font-size: 0.75rem; color: var(--c-fire-primary); text-decoration: none; font-weight: 700;">¿Olvidaste tu contraseña?</a>
               </div>
               <div style="position: relative; display: flex; align-items: center;">
-                <input type="password" id="loginPasswordInput" class="admin-form-input" placeholder="••••••••" value="" style="padding-right: 42px;" required>
-                <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('loginPasswordInput', this)" style="position: absolute; right: 8px; background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px 6px; color: var(--c-text-muted);" title="Mostrar/Ocultar contraseña">
+                <input type="password" id="loginPasswordInput" class="admin-form-input" placeholder="••••••••" value="" style="padding-right: 46px;" required>
+                <button type="button" class="btn-toggle-eye" onclick="togglePasswordEye('loginPasswordInput', this)" style="position: absolute; right: 6px; background: rgba(255,255,255,0.1); border: 1px solid var(--c-border); border-radius: 6px; font-size: 1.15rem; cursor: pointer; padding: 4px 8px; color: var(--c-text-main); display: flex; align-items: center; justify-content: center;" title="Mostrar/Ocultar contraseña">
                   👁️
                 </button>
               </div>
@@ -1620,6 +1623,6 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
   </main>
 
   <!-- JS Controller con soporte completo de ABM, Buscador y Recuperación -->
-  <script src="/assets/js/campus.js?v=6.5"></script>
+  <script src="/assets/js/campus.js?v=6.6"></script>
 </body>
 </html>
