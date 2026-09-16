@@ -232,13 +232,33 @@ function fede_db_init_schema($existing_pdo = null) {
             `description` TEXT,
             `meet_date` VARCHAR(100) NOT NULL,
             `meet_time` VARCHAR(100) NOT NULL,
-            `platform` VARCHAR(60) NOT NULL DEFAULT 'Zoom Pro',
+            `platform` VARCHAR(60) NOT NULL DEFAULT 'Google Meet',
             `zoom_url` TEXT,
             `google_cal_url` TEXT,
+            `is_recurring` TINYINT(1) NOT NULL DEFAULT 1,
+            `recurrence_type` VARCHAR(50) NOT NULL DEFAULT 'semanal',
+            `recurrence_day` VARCHAR(50) NOT NULL DEFAULT 'Viernes',
             `created_by` INT,
             `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ");
+
+    // Migration for fede_meets columns
+    try {
+        $meet_cols = [
+            'is_recurring' => "TINYINT(1) NOT NULL DEFAULT 1",
+            'recurrence_type' => "VARCHAR(50) NOT NULL DEFAULT 'semanal'",
+            'recurrence_day' => "VARCHAR(50) NOT NULL DEFAULT 'Viernes'"
+        ];
+        $existing_mcols = $pdo->query("SHOW COLUMNS FROM `fede_meets`")->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($meet_cols as $col => $def) {
+            if (!in_array($col, $existing_mcols)) {
+                $pdo->exec("ALTER TABLE `fede_meets` ADD COLUMN `$col` $def");
+            }
+        }
+    } catch (Exception $e) {
+        error_log("Migration error in fede_meets: " . $e->getMessage());
+    }
 
     // 11. Chat Messages Table
     $pdo->exec("

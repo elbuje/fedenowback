@@ -191,6 +191,18 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
         <?php endif; ?>
 
         <li><a href="/" class="campus-nav-item" style="color: #0284c7; font-weight: 700; border: 1px solid rgba(2, 132, 199, 0.25); background: rgba(2, 132, 199, 0.06); border-radius: 8px;">🌐 Ir al Sitio Web ↗</a></li>
+
+        <?php if ($is_logged_in): ?>
+          <!-- Acceso Directo de Perfil y Salir en Barra de Navegación -->
+          <li style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+            <button type="button" onclick="openMyProfileModal()" class="campus-nav-item" style="background: rgba(255, 85, 0, 0.08); color: var(--c-fire-primary); border: 1px solid rgba(255, 85, 0, 0.25); font-weight: 700; cursor: pointer;">
+              👤 Mi Perfil
+            </button>
+            <button type="button" onclick="fedeLogout()" class="campus-nav-item" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); font-weight: 700; cursor: pointer;">
+              🚪 Salir
+            </button>
+          </li>
+        <?php endif; ?>
       </ul>
     </div>
   </nav>
@@ -199,22 +211,28 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
     <!-- 👑 BARRA SUPERIOR DE ACCESO RÁPIDO PARA ADMINISTRADOR -->
     <div class="campus-admin-topbar">
       <div class="campus-container">
-        <div class="admin-topbar-wrap">
+        <div class="admin-topbar-wrap" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <div class="admin-topbar-badge">
             <span>👑</span> <strong>MODO ADMINISTRADOR ACTIVO</strong>
           </div>
-          <div class="admin-topbar-actions">
+          <div class="admin-topbar-actions" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <button type="button" class="btn-topbar-action" onclick="openAdminLessonModal(0)" title="Cargar nueva masterclass o video">
               🎬 + Cargar Video / Clase
             </button>
-            <button type="button" class="btn-topbar-action" onclick="openAdminMeetModal(0)" title="Programar sesión en vivo de Zoom">
-              📅 + Configurar Zoom / Meet
+            <button type="button" class="btn-topbar-action" onclick="openAdminMeetModal(0)" title="Programar sesión en vivo de Zoom o Google Meet">
+              📅 + Configurar Meet en Vivo
             </button>
             <button type="button" class="btn-topbar-action" onclick="openAdminCourseModal(0)" title="Crear un nuevo curso en la academia">
               🎓 + Nuevo Curso
             </button>
             <button type="button" class="btn-topbar-action btn-topbar-highlight" onclick="switchTab('admin')">
               ⚙️ Abrir Panel ABM
+            </button>
+            <button type="button" class="btn-topbar-action" onclick="openMyProfileModal()" title="Mi Perfil & Avatar" style="background: rgba(255,255,255,0.12); color: #fff;">
+              👤 Mi Perfil
+            </button>
+            <button type="button" class="btn-topbar-action" onclick="fedeLogout()" title="Cerrar Sesión" style="background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4);">
+              🚪 Salir
             </button>
           </div>
         </div>
@@ -243,6 +261,23 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             </div>
 
             <?php if ($is_logged_in): ?>
+              <!-- VIP WhatsApp Banner para Alumnos y Miembros Registrados -->
+              <div class="campus-card" style="margin-bottom: 20px; border: 2px solid #22c55e; background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(15, 23, 42, 0.02) 100%); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 14px 18px; border-radius: 12px; box-shadow: 0 4px 14px rgba(34, 197, 94, 0.15);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 44px; height: 44px; border-radius: 50%; background: #22c55e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.35);">
+                    💬
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; font-weight: 800; color: #16a34a; text-transform: uppercase; letter-spacing: 0.04em;">GRUPO OFICIAL DE ALUMNOS & MIEMBROS</div>
+                    <div style="font-size: 0.98rem; font-weight: 800; color: var(--c-text-main);">Comunidad Privada de WhatsApp</div>
+                    <div style="font-size: 0.82rem; color: var(--c-text-sub);">Avisos de clases en vivo, links directos a Meets y networking exclusivo con Fede.</div>
+                  </div>
+                </div>
+                <a href="https://chat.whatsapp.com/EUM0qZSn8l7EDkjA7GDq8F" target="_blank" rel="noopener noreferrer" class="btn-post-submit" style="background: #22c55e; color: #ffffff; text-decoration: none; font-weight: 800; font-size: 0.88rem; padding: 9px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);">
+                  🟢 Unirme al Grupo de WhatsApp ↗
+                </a>
+              </div>
+
               <!-- Post Creator Box -->
               <div class="campus-creator-card">
                 <form id="formCreatePost">
@@ -381,8 +416,13 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <!-- Widget Próximo Meet en Vivo -->
             <?php if (!empty($data['meets'][0])): $next_meet = $data['meets'][0]; ?>
               <div class="campus-card" style="border: 2px solid rgba(255, 85, 0, 0.25); background: linear-gradient(180deg, rgba(255, 85, 0, 0.04) 0%, rgba(255, 255, 255, 1) 100%); margin-bottom: 20px;">
-                <div style="font-size: 0.75rem; font-weight: 800; color: var(--c-fire-primary); text-transform: uppercase; margin-bottom: 6px;">
-                  🔴 PRÓXIMA SESIÓN EN DIRECTO
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="font-size: 0.72rem; font-weight: 800; color: var(--c-fire-primary); text-transform: uppercase;">
+                    🔴 <?= !empty($next_meet['is_recurring']) ? 'SESIÓN RECURRENTE' : 'PRÓXIMA SESIÓN' ?>
+                  </span>
+                  <span style="font-size: 0.7rem; font-weight: 800; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px;">
+                    <?= htmlspecialchars($next_meet['platform'] ?? 'Google Meet') ?>
+                  </span>
                 </div>
                 <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 8px;">
                   <?= htmlspecialchars($next_meet['title']) ?>
@@ -396,10 +436,10 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <?php if ($is_logged_in): ?>
                     <a href="<?= htmlspecialchars($next_meet['zoom_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-post-submit" style="flex: 1; text-align: center; text-decoration: none; font-size: 0.85rem;">
-                      🚀 Entrar a <?= htmlspecialchars($next_meet['platform'] ?? 'Zoom') ?>
+                      🚀 Entrar al <?= htmlspecialchars($next_meet['platform'] ?? 'Meet') ?>
                     </a>
                   <?php else: ?>
-                    <button type="button" class="btn-post-submit" style="flex: 1; text-align: center; font-size: 0.85rem;" onclick="openLoginModal('Las sesiones de Zoom son exclusivas para miembros activos.')">
+                    <button type="button" class="btn-post-submit" style="flex: 1; text-align: center; font-size: 0.85rem;" onclick="openLoginModal('Las sesiones de Meet en directo son exclusivas para miembros activos.')">
                       🔒 Acceso Alumnos
                     </button>
                   <?php endif; ?>
@@ -407,8 +447,8 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                     📅 Agendar
                   </a>
                   <?php if ($is_admin): ?>
-                    <button type="button" class="admin-btn-action admin-btn-edit" style="width: 100%; justify-content: center; text-align: center; margin-top: 6px; padding: 6px 12px; font-size: 0.82rem;" onclick="openAdminMeetModal(<?= (int)$next_meet['id'] ?>, '<?= htmlspecialchars(addslashes($next_meet['title'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['description'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['date'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['time'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['platform'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['google_cal_url'])) ?>')">
-                      ✏️ Configurar / Editar este Zoom
+                    <button type="button" class="admin-btn-action admin-btn-edit" style="width: 100%; justify-content: center; text-align: center; margin-top: 6px; padding: 6px 12px; font-size: 0.82rem;" onclick="openAdminMeetModal(<?= (int)$next_meet['id'] ?>, '<?= htmlspecialchars(addslashes($next_meet['title'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['description'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['date'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['time'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['platform'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($next_meet['google_cal_url'])) ?>', <?= !empty($next_meet['is_recurring']) ? 1 : 0 ?>, '<?= htmlspecialchars(addslashes($next_meet['recurrence_type'] ?? 'semanal')) ?>', '<?= htmlspecialchars(addslashes($next_meet['recurrence_day'] ?? 'Viernes')) ?>')">
+                      ✏️ Configurar / Editar Meet
                     </button>
                   <?php endif; ?>
                 </div>
@@ -426,8 +466,8 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <p style="font-size: 0.84rem; color: var(--c-text-sub); margin-bottom: 14px; line-height: 1.45;">
                 Sumate al grupo exclusivo de miembros para debates diarios, networking y avisos directos de Fede.
               </p>
-              <a href="https://wa.me/5491138205570?text=<?= urlencode('Hola Fede! Quiero sumarme al grupo oficial de WhatsApp de la Comunidad Nowback.') ?>" target="_blank" rel="noopener noreferrer" class="btn-post-submit" style="width: 100%; justify-content: center; background: #22c55e; text-decoration: none; padding: 10px 0; font-weight: 800; font-size: 0.88rem;">
-                🚀 Unirme al Grupo de WhatsApp
+              <a href="https://chat.whatsapp.com/EUM0qZSn8l7EDkjA7GDq8F" target="_blank" rel="noopener noreferrer" class="btn-post-submit" style="width: 100%; justify-content: center; background: #22c55e; text-decoration: none; padding: 10px 0; font-weight: 800; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);">
+                🚀 Unirme al Grupo de WhatsApp ↗
               </a>
             </div>
 
@@ -601,10 +641,21 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
           <?php foreach ($data['meets'] as $meet): ?>
             <div class="campus-card meet-card-full" style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
               <div>
-                <span style="font-size: 0.75rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 3px 8px; border-radius: 4px;">
-                  <?= htmlspecialchars($meet['platform'] ?? 'Zoom Pro') ?>
-                </span>
-                <h3 style="font-family: var(--c-font-head); font-size: 1.25rem; font-weight: 800; margin: 8px 0 6px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                  <span style="font-size: 0.75rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 3px 8px; border-radius: 4px;">
+                    <?= htmlspecialchars($meet['platform'] ?? 'Google Meet') ?>
+                  </span>
+                  <?php if (!empty($meet['is_recurring'])): ?>
+                    <span style="font-size: 0.72rem; font-weight: 800; background: #fef3c7; color: #b45309; padding: 2px 8px; border-radius: 4px; border: 1px solid #fde68a;">
+                      🔄 Recurrente <?= htmlspecialchars(ucfirst($meet['recurrence_type'] ?? 'semanal')) ?> (<?= htmlspecialchars($meet['recurrence_day'] ?? 'Viernes') ?>)
+                    </span>
+                  <?php else: ?>
+                    <span style="font-size: 0.72rem; font-weight: 800; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px;">
+                      📅 Sesión Puntual
+                    </span>
+                  <?php endif; ?>
+                </div>
+                <h3 style="font-family: var(--c-font-head); font-size: 1.25rem; font-weight: 800; margin: 6px 0;">
                   <?= htmlspecialchars($meet['title']) ?>
                 </h3>
                 <p style="color: var(--c-text-sub); font-size: 0.9rem; margin-bottom: 10px;">
@@ -618,7 +669,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <div style="display: flex; flex-direction: column; gap: 8px; min-width: 180px;">
                 <?php if ($is_logged_in): ?>
                   <a href="<?= htmlspecialchars($meet['zoom_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-post-submit" style="text-align: center; text-decoration: none;">
-                    🚀 Entrar a la Sesión
+                    🚀 Entrar a la Sesión (<?= htmlspecialchars($meet['platform'] ?? 'Meet') ?>)
                   </a>
                 <?php else: ?>
                   <button type="button" class="btn-post-submit" style="text-align: center;" onclick="openLoginModal('Las sesiones en directo son exclusivas para miembros activos.')">
@@ -626,11 +677,11 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                   </button>
                 <?php endif; ?>
                 <a href="<?= htmlspecialchars($meet['google_cal_url'] ?: '#') ?>" target="_blank" rel="noopener" class="btn-reaction" style="justify-content: center; text-decoration: none;">
-                  📅 Guardar en Calendario
+                  📅 Guardar en Google Calendar
                 </a>
                 <?php if ($is_admin): ?>
                   <div style="display: flex; gap: 6px; margin-top: 4px;">
-                    <button type="button" class="admin-btn-action admin-btn-edit" style="flex: 1; text-align: center;" onclick="openAdminMeetModal(<?= (int)$meet['id'] ?>, '<?= htmlspecialchars(addslashes($meet['title'])) ?>', '<?= htmlspecialchars(addslashes($meet['description'])) ?>', '<?= htmlspecialchars(addslashes($meet['date'])) ?>', '<?= htmlspecialchars(addslashes($meet['time'])) ?>', '<?= htmlspecialchars(addslashes($meet['platform'])) ?>', '<?= htmlspecialchars(addslashes($meet['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($meet['google_cal_url'])) ?>')">
+                    <button type="button" class="admin-btn-action admin-btn-edit" style="flex: 1; text-align: center;" onclick="openAdminMeetModal(<?= (int)$meet['id'] ?>, '<?= htmlspecialchars(addslashes($meet['title'])) ?>', '<?= htmlspecialchars(addslashes($meet['description'])) ?>', '<?= htmlspecialchars(addslashes($meet['date'])) ?>', '<?= htmlspecialchars(addslashes($meet['time'])) ?>', '<?= htmlspecialchars(addslashes($meet['platform'])) ?>', '<?= htmlspecialchars(addslashes($meet['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($meet['google_cal_url'])) ?>', <?= !empty($meet['is_recurring']) ? 1 : 0 ?>, '<?= htmlspecialchars(addslashes($meet['recurrence_type'] ?? 'semanal')) ?>', '<?= htmlspecialchars(addslashes($meet['recurrence_day'] ?? 'Viernes')) ?>')">
                       ✏️ Editar
                     </button>
                     <button type="button" class="admin-btn-action admin-btn-del" onclick="deleteAdminMeet(<?= (int)$meet['id'] ?>)">
@@ -967,7 +1018,12 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <?php foreach ($data['meets'] as $m_row): ?>
                 <div class="campus-card" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
                   <div>
-                    <span style="font-size: 0.72rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($m_row['platform']) ?></span>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                      <span style="font-size: 0.72rem; font-weight: 800; background: var(--c-fire-light); color: var(--c-fire-primary); padding: 2px 6px; border-radius: 4px;"><?= htmlspecialchars($m_row['platform']) ?></span>
+                      <?php if (!empty($m_row['is_recurring'])): ?>
+                        <span style="font-size: 0.7rem; font-weight: 800; background: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 4px;">🔄 <?= htmlspecialchars(ucfirst($m_row['recurrence_type'] ?? 'semanal')) ?> (<?= htmlspecialchars($m_row['recurrence_day'] ?? 'Viernes') ?>)</span>
+                      <?php endif; ?>
+                    </div>
                     <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin: 4px 0;"><?= htmlspecialchars($m_row['title']) ?></h4>
                     <div style="font-size: 0.82rem; color: var(--c-text-main); font-weight: 700;">🗓️ <?= htmlspecialchars($m_row['date']) ?> • ⏰ <?= htmlspecialchars($m_row['time']) ?></div>
                     <?php if (!empty($m_row['zoom_url'])): ?>
@@ -975,7 +1031,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                     <?php endif; ?>
                   </div>
                   <div style="display: flex; gap: 8px;">
-                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminMeetModal(<?= (int)$m_row['id'] ?>, '<?= htmlspecialchars(addslashes($m_row['title'])) ?>', '<?= htmlspecialchars(addslashes($m_row['description'])) ?>', '<?= htmlspecialchars(addslashes($m_row['date'])) ?>', '<?= htmlspecialchars(addslashes($m_row['time'])) ?>', '<?= htmlspecialchars(addslashes($m_row['platform'])) ?>', '<?= htmlspecialchars(addslashes($m_row['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($m_row['google_cal_url'])) ?>')">✏️ Editar Zoom</button>
+                    <button class="admin-btn-action admin-btn-edit" onclick="openAdminMeetModal(<?= (int)$m_row['id'] ?>, '<?= htmlspecialchars(addslashes($m_row['title'])) ?>', '<?= htmlspecialchars(addslashes($m_row['description'])) ?>', '<?= htmlspecialchars(addslashes($m_row['date'])) ?>', '<?= htmlspecialchars(addslashes($m_row['time'])) ?>', '<?= htmlspecialchars(addslashes($m_row['platform'])) ?>', '<?= htmlspecialchars(addslashes($m_row['zoom_url'])) ?>', '<?= htmlspecialchars(addslashes($m_row['google_cal_url'])) ?>', <?= !empty($m_row['is_recurring']) ? 1 : 0 ?>, '<?= htmlspecialchars(addslashes($m_row['recurrence_type'] ?? 'semanal')) ?>', '<?= htmlspecialchars(addslashes($m_row['recurrence_day'] ?? 'Viernes')) ?>')">✏️ Editar Meet</button>
                     <button class="admin-btn-action admin-btn-del" onclick="deleteAdminMeet(<?= (int)$m_row['id'] ?>)">🗑️ Borrar</button>
                   </div>
                 </div>
@@ -1537,40 +1593,77 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
       <!-- 6. Modal Admin: Meet -->
       <div id="modalAdminMeet" class="admin-modal-overlay">
         <div class="admin-modal-box">
-          <h3 id="modalMeetTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Programar Meet en Vivo</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 id="modalMeetTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.25rem; color: var(--c-text-main);">Programar Meet en Vivo</h3>
+            <button type="button" onclick="closeAdminModal('modalAdminMeet')" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-text-muted);">&times;</button>
+          </div>
           <form id="formAdminMeet">
             <input type="hidden" id="adminMeetIdInput" value="0">
+            
             <div class="admin-form-group">
-              <label for="adminMeetTitleInput">Título de la Sesión:</label>
-              <input type="text" id="adminMeetTitleInput" class="admin-form-input" required>
+              <label for="adminMeetTitleInput">Título de la Sesión <span style="color:#ef4444;">*</span>:</label>
+              <input type="text" id="adminMeetTitleInput" class="admin-form-input" placeholder="ej: Mentoría Grupal Semanal & Hot Seat" required>
             </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div>
+                <label for="adminMeetRecurrenceTypeInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Tipo de Frecuencia:</label>
+                <select id="adminMeetRecurrenceTypeInput" class="admin-form-input">
+                  <option value="semanal">🔄 Recurrente Semanal</option>
+                  <option value="quincenal">🔄 Recurrente Quincenal</option>
+                  <option value="mensual">🔄 Recurrente Mensual</option>
+                  <option value="unica">📅 Sesión Única (Puntual)</option>
+                </select>
+              </div>
+              <div>
+                <label for="adminMeetRecurrenceDayInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Día Habitual:</label>
+                <select id="adminMeetRecurrenceDayInput" class="admin-form-input">
+                  <option value="Viernes" selected>Todos los Viernes</option>
+                  <option value="Jueves">Todos los Jueves</option>
+                  <option value="Miércoles">Todos los Miércoles</option>
+                  <option value="Martes">Todos los Martes</option>
+                  <option value="Lunes">Todos los Lunes</option>
+                  <option value="Sábado">Todos los Sábados</option>
+                  <option value="Domingo">Todos los Domingos</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div>
+                <label for="adminMeetDateInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Fecha / Programación <span style="color:#ef4444;">*</span>:</label>
+                <input type="text" id="adminMeetDateInput" class="admin-form-input" placeholder="ej: Viernes 18 de Septiembre" required>
+              </div>
+              <div>
+                <label for="adminMeetTimeInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Hora <span style="color:#ef4444;">*</span>:</label>
+                <input type="text" id="adminMeetTimeInput" class="admin-form-input" placeholder="ej: 10:00 hs (Buenos Aires)" required>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 12px;">
+              <div>
+                <label for="adminMeetPlatformInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Plataforma:</label>
+                <input type="text" id="adminMeetPlatformInput" class="admin-form-input" value="Google Meet" placeholder="Google Meet / Zoom">
+              </div>
+              <div>
+                <label for="adminMeetZoomInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Link de la Reunión (Meet/Zoom) <span style="color:#ef4444;">*</span>:</label>
+                <input type="text" id="adminMeetZoomInput" class="admin-form-input" placeholder="https://meet.google.com/ext-dsoq-hrz" required>
+              </div>
+            </div>
+
             <div class="admin-form-group">
-              <label for="adminMeetDateInput">Fecha (ej: Viernes 18 de Septiembre):</label>
-              <input type="text" id="adminMeetDateInput" class="admin-form-input" required>
+              <label for="adminMeetCalInput">Link de Google Calendar (Opcional - Auto generado si está vacío):</label>
+              <input type="text" id="adminMeetCalInput" class="admin-form-input" placeholder="https://calendar.google.com/calendar/render?...">
             </div>
+
             <div class="admin-form-group">
-              <label for="adminMeetTimeInput">Hora (ej: 19:00 hs Buenos Aires):</label>
-              <input type="text" id="adminMeetTimeInput" class="admin-form-input" required>
+              <label for="adminMeetDescInput">Descripción / Temario de la Sesión:</label>
+              <textarea id="adminMeetDescInput" class="admin-form-textarea" rows="2" placeholder="Explicá de qué tratará esta sesión en vivo para los alumnos..."></textarea>
             </div>
-            <div class="admin-form-group">
-              <label for="adminMeetPlatformInput">Plataforma:</label>
-              <input type="text" id="adminMeetPlatformInput" class="admin-form-input" value="Zoom Pro">
-            </div>
-            <div class="admin-form-group">
-              <label for="adminMeetZoomInput">Link de la Reunión:</label>
-              <input type="text" id="adminMeetZoomInput" class="admin-form-input" placeholder="https://zoom.us/j/...">
-            </div>
-            <div class="admin-form-group">
-              <label for="adminMeetCalInput">Link de Google Calendar:</label>
-              <input type="text" id="adminMeetCalInput" class="admin-form-input" placeholder="https://calendar.google.com/...">
-            </div>
-            <div class="admin-form-group">
-              <label for="adminMeetDescInput">Descripción de la Sesión:</label>
-              <textarea id="adminMeetDescInput" class="admin-form-textarea" rows="2"></textarea>
-            </div>
-            <div class="admin-modal-actions">
+
+            <div class="admin-modal-actions" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
               <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminMeet')">Cancelar</button>
-              <button type="submit" class="admin-btn-add">Guardar Meet</button>
+              <button type="submit" class="admin-btn-add" style="padding: 9px 20px;">💾 Guardar Meet</button>
             </div>
           </form>
         </div>

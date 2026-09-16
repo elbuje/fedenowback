@@ -376,16 +376,22 @@ function openAdminPlanModal(id, name = '', slug = '', badge = 'Recomendado', ars
   openAdminModal('modalAdminPlan');
 }
 
-function openAdminMeetModal(id, title = '', desc = '', date = '', time = '', platform = 'Zoom Pro', zoom = '', cal = '') {
-  document.getElementById('modalMeetTitle').textContent = (id > 0) ? 'Editar Meet' : 'Programar Meet en Vivo';
+function openAdminMeetModal(id, title = '', desc = '', date = '', time = '', platform = 'Google Meet', zoom = '', cal = '', is_recurring = 1, recurrence_type = 'semanal', recurrence_day = 'Viernes') {
+  document.getElementById('modalMeetTitle').textContent = (id > 0) ? 'Editar Sesión en Vivo' : 'Programar Meet en Vivo';
   document.getElementById('adminMeetIdInput').value = id || 0;
   document.getElementById('adminMeetTitleInput').value = title || '';
   document.getElementById('adminMeetDescInput').value = desc || '';
   document.getElementById('adminMeetDateInput').value = date || '';
   document.getElementById('adminMeetTimeInput').value = time || '';
-  document.getElementById('adminMeetPlatformInput').value = platform || 'Zoom Pro';
+  document.getElementById('adminMeetPlatformInput').value = platform || 'Google Meet';
   document.getElementById('adminMeetZoomInput').value = zoom || '';
   document.getElementById('adminMeetCalInput').value = cal || '';
+  if (document.getElementById('adminMeetRecurrenceTypeInput')) {
+    document.getElementById('adminMeetRecurrenceTypeInput').value = recurrence_type || 'semanal';
+  }
+  if (document.getElementById('adminMeetRecurrenceDayInput')) {
+    document.getElementById('adminMeetRecurrenceDayInput').value = recurrence_day || 'Viernes';
+  }
   openAdminModal('modalAdminMeet');
 }
 
@@ -634,21 +640,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 4. Dropdown Logout
+  // 4. Global Logout Function
+  window.fedeLogout = async function() {
+    try {
+      await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+        body: JSON.stringify({ action: 'auth_logout', csrf_token: csrfToken })
+      });
+      window.location.reload();
+    } catch (err) {
+      console.error('Error logging out:', err);
+      window.location.reload();
+    }
+  };
+
   const btnLogout = document.getElementById('btnDropdownLogout');
   if (btnLogout) {
-    btnLogout.addEventListener('click', async () => {
-      try {
-        await fetch(API_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-          body: JSON.stringify({ action: 'auth_logout', csrf_token: csrfToken })
-        });
-        window.location.reload();
-      } catch (err) {
-        console.error('Error logging out:', err);
-      }
-    });
+    btnLogout.addEventListener('click', window.fedeLogout);
   }
 
   // 5. Admin Subtabs Switching (with persistent switchAdminSubtab)
@@ -1153,11 +1162,17 @@ document.addEventListener('DOMContentLoaded', () => {
         action: 'admin_save_meet',
         meet_id: document.getElementById('adminMeetIdInput').value,
         title: document.getElementById('adminMeetTitleInput').value.trim(),
+        meet_date: document.getElementById('adminMeetDateInput').value.trim(),
         date: document.getElementById('adminMeetDateInput').value.trim(),
+        meet_time: document.getElementById('adminMeetTimeInput').value.trim(),
         time: document.getElementById('adminMeetTimeInput').value.trim(),
         platform: document.getElementById('adminMeetPlatformInput').value.trim(),
         zoom_url: document.getElementById('adminMeetZoomInput').value.trim(),
+        meet_url: document.getElementById('adminMeetZoomInput').value.trim(),
         google_cal_url: document.getElementById('adminMeetCalInput').value.trim(),
+        recurrence_type: document.getElementById('adminMeetRecurrenceTypeInput')?.value || 'semanal',
+        recurrence_day: document.getElementById('adminMeetRecurrenceDayInput')?.value || 'Viernes',
+        is_recurring: document.getElementById('adminMeetRecurrenceTypeInput')?.value !== 'unica' ? 1 : 0,
         description: document.getElementById('adminMeetDescInput').value.trim(),
         csrf_token: csrfToken
       };
@@ -1169,16 +1184,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await res.json();
         if (data.success) {
-          alert('Sesión en vivo guardada');
-          localStorage.setItem('fede_active_tab', 'admin');
+          alert('Sesión en vivo guardada y programada en el calendario con éxito.');
+          localStorage.setItem('fede_active_tab', 'calendar');
           localStorage.setItem('fede_active_admin_subtab', 'meets');
-          window.location.hash = 'admin-meets';
+          window.location.hash = 'calendar';
           window.location.reload();
         } else {
-          alert(data.error || 'Error al guardar');
+          alert(data.error || 'Error al guardar la sesión');
         }
       } catch (err) {
         console.error(err);
+        alert('Error al conectar con el servidor.');
       }
     });
   }

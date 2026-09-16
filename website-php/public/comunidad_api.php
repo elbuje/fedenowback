@@ -890,30 +890,54 @@ switch ($action) {
 
     case 'admin_save_meet':
         fede_require_admin($user);
-        $meet_id = (int)($json_data['meet_id'] ?? 0);
-        $title = trim($json_data['title'] ?? '');
-        $description = trim($json_data['description'] ?? '');
-        $meet_date = trim($json_data['meet_date'] ?? '');
-        $meet_time = trim($json_data['meet_time'] ?? '');
-        $platform = trim($json_data['platform'] ?? 'Zoom Pro');
-        $zoom_url = trim($json_data['zoom_url'] ?? '');
-        $google_cal_url = trim($json_data['google_cal_url'] ?? '');
+        $meet_id = (int)($json_data['meet_id'] ?? $_POST['meet_id'] ?? 0);
+        $title = trim($json_data['title'] ?? $_POST['title'] ?? '');
+        $description = trim($json_data['description'] ?? $_POST['description'] ?? '');
+        $meet_date = trim($json_data['meet_date'] ?? $json_data['date'] ?? $_POST['meet_date'] ?? $_POST['date'] ?? '');
+        $meet_time = trim($json_data['meet_time'] ?? $json_data['time'] ?? $_POST['meet_time'] ?? $_POST['time'] ?? '');
+        $platform = trim($json_data['platform'] ?? $_POST['platform'] ?? 'Google Meet');
+        $zoom_url = trim($json_data['zoom_url'] ?? $json_data['meet_url'] ?? $_POST['zoom_url'] ?? '');
+        $google_cal_url = trim($json_data['google_cal_url'] ?? $_POST['google_cal_url'] ?? '');
+        $is_recurring = isset($json_data['is_recurring']) ? ($json_data['is_recurring'] ? 1 : 0) : 1;
+        $recurrence_type = trim($json_data['recurrence_type'] ?? 'semanal');
+        $recurrence_day = trim($json_data['recurrence_day'] ?? 'Viernes');
 
-        if (empty($title) || empty($meet_date)) {
-            echo json_encode(['success' => false, 'error' => 'Título y fecha son requeridos']);
+        if (empty($title)) {
+            echo json_encode(['success' => false, 'error' => 'El título de la sesión es requerido']);
             exit;
+        }
+        if (empty($meet_date)) {
+            $meet_date = 'Todos los ' . $recurrence_day . 's';
+        }
+        if (empty($meet_time)) {
+            $meet_time = '10:00 hs (Buenos Aires)';
+        }
+
+        // Auto-generate Google Calendar Link if empty
+        if (empty($google_cal_url)) {
+            $cal_title = urlencode('Campus Fede Nowback: ' . $title);
+            $cal_details = urlencode($description . "\n\nLink de la reunión: " . $zoom_url);
+            $google_cal_url = "https://calendar.google.com/calendar/render?action=TEMPLATE&text={$cal_title}&details={$cal_details}&location=" . urlencode($zoom_url);
         }
 
         if ($pdo) {
             if ($meet_id > 0) {
-                $stmt = $pdo->prepare("UPDATE `fede_meets` SET `title`=?, `description`=?, `meet_date`=?, `meet_time`=?, `platform`=?, `zoom_url`=?, `google_cal_url`=? WHERE `id`=?");
-                $stmt->execute([$title, $description, $meet_date, $meet_time, $platform, $zoom_url, $google_cal_url, $meet_id]);
+                $stmt = $pdo->prepare("
+                    UPDATE `fede_meets` 
+                    SET `title`=?, `description`=?, `meet_date`=?, `meet_time`=?, `platform`=?, `zoom_url`=?, `google_cal_url`=?, `is_recurring`=?, `recurrence_type`=?, `recurrence_day`=? 
+                    WHERE `id`=?
+                ");
+                $stmt->execute([$title, $description, $meet_date, $meet_time, $platform, $zoom_url, $google_cal_url, $is_recurring, $recurrence_type, $recurrence_day, $meet_id]);
             } else {
                 $admin_id = is_numeric($user['id']) ? (int)$user['id'] : 1;
-                $stmt = $pdo->prepare("INSERT INTO `fede_meets` (`title`, `description`, `meet_date`, `meet_time`, `platform`, `zoom_url`, `google_cal_url`, `created_by`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$title, $description, $meet_date, $meet_time, $platform, $zoom_url, $google_cal_url, $admin_id]);
+                $stmt = $pdo->prepare("
+                    INSERT INTO `fede_meets` 
+                    (`title`, `description`, `meet_date`, `meet_time`, `platform`, `zoom_url`, `google_cal_url`, `is_recurring`, `recurrence_type`, `recurrence_day`, `created_by`) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ");
+                $stmt->execute([$title, $description, $meet_date, $meet_time, $platform, $zoom_url, $google_cal_url, $is_recurring, $recurrence_type, $recurrence_day, $admin_id]);
             }
-            echo json_encode(['success' => true, 'message' => 'Meet en vivo guardado']);
+            echo json_encode(['success' => true, 'message' => 'Sesión en vivo guardada y programada en el calendario']);
             exit;
         }
         echo json_encode(['success' => false, 'error' => 'Error de BD']);

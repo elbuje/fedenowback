@@ -612,9 +612,12 @@ function fede_load_community_data() {
                         'description' => $dm['description'],
                         'date' => $dm['meet_date'],
                         'time' => $dm['meet_time'],
-                        'platform' => $dm['platform'] ?: 'Zoom Pro',
+                        'platform' => $dm['platform'] ?: 'Google Meet',
                         'zoom_url' => $dm['zoom_url'],
                         'google_cal_url' => $dm['google_cal_url'],
+                        'is_recurring' => !empty($dm['is_recurring']),
+                        'recurrence_type' => $dm['recurrence_type'] ?? 'semanal',
+                        'recurrence_day' => $dm['recurrence_day'] ?? 'Viernes',
                         'attendees' => 38
                     ];
                 }
