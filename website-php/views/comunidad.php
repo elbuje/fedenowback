@@ -277,7 +277,26 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                   🟢 Unirme al Grupo de WhatsApp ↗
                 </a>
               </div>
+            <?php else: ?>
+              <!-- VIP WhatsApp Banner Bloqueado para Visitantes -->
+              <div class="campus-card" style="margin-bottom: 20px; border: 1px solid var(--c-border); background: linear-gradient(135deg, rgba(100, 116, 139, 0.08) 0%, rgba(15, 23, 42, 0.02) 100%); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding: 14px 18px; border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 44px; height: 44px; border-radius: 50%; background: #64748b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                    🔒
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em;">GRUPO PRIVADO DE ALUMNOS & MIEMBROS</div>
+                    <div style="font-size: 0.98rem; font-weight: 800; color: var(--c-text-main);">Comunidad Privada en WhatsApp</div>
+                    <div style="font-size: 0.82rem; color: var(--c-text-sub);">Acceso exclusivo para alumnos y miembros registrados con membresía activa.</div>
+                  </div>
+                </div>
+                <button type="button" class="btn-post-submit" style="background: #475569; color: #ffffff; border: none; cursor: pointer; font-weight: 800; font-size: 0.88rem; padding: 9px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onclick="openLoginModal('El grupo privado de WhatsApp es exclusivo para alumnos y miembros registrados.')">
+                  🔒 Acceso Alumnos
+                </button>
+              </div>
+            <?php endif; ?>
 
+            <?php if ($is_logged_in): ?>
               <!-- Post Creator Box -->
               <div class="campus-creator-card">
                 <form id="formCreatePost">
@@ -456,9 +475,9 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <?php endif; ?>
 
             <!-- Comunidad WhatsApp Box -->
-            <div class="campus-card" style="margin-bottom: 20px; border-left: 4px solid #22c55e; background: linear-gradient(135deg, rgba(34, 197, 94, 0.06) 0%, var(--c-card) 100%);">
+            <div class="campus-card" style="margin-bottom: 20px; border-left: 4px solid <?= $is_logged_in ? '#22c55e' : '#64748b' ?>; background: linear-gradient(135deg, <?= $is_logged_in ? 'rgba(34, 197, 94, 0.06)' : 'rgba(100, 116, 139, 0.06)' ?> 0%, var(--c-card) 100%);">
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span style="font-size: 1.3rem;">💬</span>
+                <span style="font-size: 1.3rem;"><?= $is_logged_in ? '💬' : '🔒' ?></span>
                 <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.02rem; color: var(--c-text-main);">
                   Comunidad en WhatsApp
                 </h4>
@@ -466,9 +485,15 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <p style="font-size: 0.84rem; color: var(--c-text-sub); margin-bottom: 14px; line-height: 1.45;">
                 Sumate al grupo exclusivo de miembros para debates diarios, networking y avisos directos de Fede.
               </p>
-              <a href="https://chat.whatsapp.com/EUM0qZSn8l7EDkjA7GDq8F" target="_blank" rel="noopener noreferrer" class="btn-post-submit" style="width: 100%; justify-content: center; background: #22c55e; text-decoration: none; padding: 10px 0; font-weight: 800; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);">
-                🚀 Unirme al Grupo de WhatsApp ↗
-              </a>
+              <?php if ($is_logged_in): ?>
+                <a href="https://chat.whatsapp.com/EUM0qZSn8l7EDkjA7GDq8F" target="_blank" rel="noopener noreferrer" class="btn-post-submit" style="width: 100%; justify-content: center; background: #22c55e; text-decoration: none; padding: 10px 0; font-weight: 800; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);">
+                  🚀 Unirme al Grupo de WhatsApp ↗
+                </a>
+              <?php else: ?>
+                <button type="button" class="btn-post-submit" style="width: 100%; justify-content: center; background: #475569; color: #ffffff; border: none; cursor: pointer; padding: 10px 0; font-weight: 800; font-size: 0.88rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onclick="openLoginModal('El grupo privado de WhatsApp es exclusivo para alumnos y miembros registrados.')">
+                  🔒 Acceso Alumnos / Miembros
+                </button>
+              <?php endif; ?>
             </div>
 
             <!-- Planes & Precios Box -->
