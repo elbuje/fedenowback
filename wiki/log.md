@@ -7,6 +7,13 @@ tags: [log, changelog, history, fedenowback]
 
 # 🪵 Bitácora de Cambios (Log) — Fede Nowback
 
+## [2026-09-16] - Campus Pro: Meets Recurrentes, Avatares, Carga de Portadas y Seguridad WhatsApp
+- **SECURITY & WHATSAPP:** Protección y privacidad del grupo VIP de WhatsApp (`https://chat.whatsapp.com/EUM0qZSn8l7EDkjA7GDq8F`); los usuarios no autenticados solo ven un botón con candado (`🔒 Acceso Alumnos / Miembros`) que abre el modal de ingreso sin exponer el link directo.
+- **FEAT (ACADEMY & MEDIA):** Carga de portadas de cursos en la Academia mediante selector de archivos (`📁 Subir Foto de Portada`), previsualización instantánea, compresión en Canvas del cliente y guardado en servidor (`/assets/uploads/courses/`).
+- **FEAT (MEETS & CALENDAR):** Corrección y mejora de sesiones en vivo en MySQL con soporte de frecuencia recurrente (Semanal, Quincenal, Mensual, Puntual), botón para unirse directamente a Google Meet / Zoom y enlace de agendamiento automático en Google Calendar.
+- **UI/UX & AUTH:** Integración accesible de botones `👤 Mi Perfil` y `🚪 Salir` en el topbar de administración y en la barra de navegación del campus con logout reactivo.
+- **USERS & AVATARS:** Exclusión de la foto oficial de Fede de la galería de avatares predeterminados para alumnos; asignación aleatoria de avatares limpios y de alta calidad al registrar nuevos usuarios, reservando la foto oficial exclusivamente para Fede Nowback.
+
 ## [2026-09-15] - Gestión Integral Campus: Usuarios, Planes, Recuperación, Clases y MySQL
 - **FEAT (USERS & ADMIN):** Manejo diferenciado de Administradores (acceso total permanente sin plan ni vencimiento en UI y MySQL).
 - **FEAT (PROFILE & AVATAR):** Módulo integral "Mi Perfil & Avatar" para todos los usuarios con compresión de imágenes en Canvas del cliente, persistencia en disco de servidor (`/assets/uploads/avatars/`), nombre, bio, intereses, redes sociales y cambio seguro de clave.

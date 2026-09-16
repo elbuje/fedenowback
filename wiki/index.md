@@ -30,6 +30,7 @@ Bienvenido a la base de conocimiento viva del proyecto **Fede Nowback**, gestion
 
 ## 📜 Historial de Sesiones
 
+- [[sessions/2026-09-16-campus-reuniones-recurrentes-avatares-portadas-y-privacidad]] — Campus Pro: Meets Recurrentes, Avatares, Carga de Portadas y Protección Grupo WhatsApp.
 - [[sessions/2026-09-15-gestion-campus-usuarios-clases-mysql]] — Gestión Integral del Campus, Usuarios, Clases, Recuperación de Contraseñas y MySQL.
 - [[sessions/2026-09-12-landing-tecnobrain-campus-estrategia-social-metricool]] — Landing PHP Tecnobrain, Estrategia Social 3 Meses y Configuración Metricool.
 - [[sessions/2026-09-12-landing-precios-tecnobrain-campus-virtual]] — Landing Page SEO 5 Capas & Precios Ecosistema Campus Virtual Tecnobrain.

@@ -1,8 +1,8 @@
 # 📊 Estado del Proyecto — Fede Nowback (`v1.1.0`)
 
-**Última actualización:** 2026-09-15  
+**Última actualización:** 2026-09-16  
 **Rama activa:** `main` / `dev`  
-**Deploy en Producción:** ✅ Activo (`18d09b7`)  
+**Deploy en Producción:** ✅ Activo (`75a1f3a`)  
 **Servidor Dev:** ✅ Activo en `:8015` y `:8011`  
 **LLM Wiki 3 Capas:** ✅ 100% Estandarizada e Indexada en Grafo 3D  
 
