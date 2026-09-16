@@ -1465,33 +1465,60 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
       <!-- 3. Modal Admin: Curso -->
       <div id="modalAdminCourse" class="admin-modal-overlay">
-        <div class="admin-modal-box">
-          <h3 id="modalCourseTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.2rem; margin-bottom: 16px;">Curso de la Academia</h3>
+        <div class="admin-modal-box" style="max-width: 520px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 id="modalCourseTitle" style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.25rem; color: var(--c-text-main);">Curso de la Academia</h3>
+            <button type="button" onclick="closeAdminModal('modalAdminCourse')" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-text-muted);">&times;</button>
+          </div>
           <form id="formAdminCourse">
             <input type="hidden" id="adminCourseIdInput" value="0">
             <div class="admin-form-group">
-              <label for="adminCourseTitleInput">Título del Curso:</label>
-              <input type="text" id="adminCourseTitleInput" class="admin-form-input" required>
+              <label for="adminCourseTitleInput">Título del Curso <span style="color:#ef4444;">*</span>:</label>
+              <input type="text" id="adminCourseTitleInput" class="admin-form-input" placeholder="ej: Método Nowback: De Cero a $1,000 USD" required>
             </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div>
+                <label for="adminCourseSlugInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Slug URL:</label>
+                <input type="text" id="adminCourseSlugInput" class="admin-form-input" placeholder="ej: metodo-nowback">
+              </div>
+              <div>
+                <label for="adminCourseDurationInput" style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-sub); margin-bottom: 5px;">Duración Total:</label>
+                <input type="text" id="adminCourseDurationInput" class="admin-form-input" value="3h 00m" placeholder="ej: 4h 30m">
+              </div>
+            </div>
+
+            <!-- Sección de Carga de Portada con Preview y Archivo -->
+            <div class="admin-form-group" style="padding: 12px; background: var(--c-bg-subtle); border-radius: 10px; border: 1px solid var(--c-border);">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 8px;">
+                🖼️ Foto de Portada del Curso:
+              </label>
+              
+              <div style="position: relative; margin-bottom: 10px; border-radius: 8px; overflow: hidden; background: #000; max-height: 150px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--c-border);">
+                <img id="adminCourseThumbnailPreview" src="/assets/img/fede_nowback_hero.jpg" alt="Preview Portada" style="width: 100%; height: 140px; object-fit: cover;" onerror="this.src='/assets/img/fede_nowback_hero.jpg'">
+              </div>
+
+              <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                <label for="adminCourseFileInput" class="btn-post-submit" style="cursor: pointer; font-size: 0.82rem; padding: 7px 14px; background: var(--c-fire-primary); color: #fff; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;" title="Cargar imagen desde tu computadora o celular">
+                  📁 Subir Foto de Portada
+                </label>
+                <input type="file" id="adminCourseFileInput" accept="image/*" style="display: none;">
+                <span style="font-size: 0.74rem; color: var(--c-text-muted);">JPG, PNG o WEBP (se optimiza automáticamente)</span>
+              </div>
+
+              <div>
+                <input type="text" id="adminCourseThumbnailInput" class="admin-form-input" value="/assets/img/fede_nowback_hero.jpg" placeholder="O ingresá URL externa o ruta interna...">
+              </div>
+            </div>
+
             <div class="admin-form-group">
-              <label for="adminCourseSlugInput">Slug URL (ej: metodo-nowback):</label>
-              <input type="text" id="adminCourseSlugInput" class="admin-form-input">
+              <label for="adminCourseDescInput">Descripción del Curso:</label>
+              <textarea id="adminCourseDescInput" class="admin-form-textarea" rows="2" placeholder="Resumen y aprendizajes clave del curso..."></textarea>
             </div>
-            <div class="admin-form-group">
-              <label for="adminCourseDurationInput">Duración (ej: 4h 30m):</label>
-              <input type="text" id="adminCourseDurationInput" class="admin-form-input" value="3h 00m">
-            </div>
-            <div class="admin-form-group">
-              <label for="adminCourseThumbnailInput">URL Imagen de Portada:</label>
-              <input type="text" id="adminCourseThumbnailInput" class="admin-form-input" value="/assets/img/fede_nowback_hero.jpg">
-            </div>
-            <div class="admin-form-group">
-              <label for="adminCourseDescInput">Descripción:</label>
-              <textarea id="adminCourseDescInput" class="admin-form-textarea" rows="3"></textarea>
-            </div>
-            <div class="admin-modal-actions">
+            
+            <div class="admin-modal-actions" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
               <button type="button" class="btn-reaction" onclick="closeAdminModal('modalAdminCourse')">Cancelar</button>
-              <button type="submit" class="admin-btn-add">Guardar Curso</button>
+              <button type="submit" class="admin-btn-add" style="padding: 9px 20px;">💾 Guardar Curso</button>
             </div>
           </form>
         </div>

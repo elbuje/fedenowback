@@ -807,6 +807,26 @@ switch ($action) {
             exit;
         }
 
+        // Process base64 course thumbnail upload to permanent file
+        if (!empty($thumbnail) && preg_match('/^data:image\/(\w+);base64,/', $thumbnail, $matches)) {
+            $image_type = strtolower($matches[1]);
+            $base64_data = substr($thumbnail, strpos($thumbnail, ',') + 1);
+            $decoded_image = base64_decode($base64_data);
+            
+            if ($decoded_image !== false) {
+                $upload_dir = __DIR__ . '/assets/uploads/courses/';
+                if (!is_dir($upload_dir)) {
+                    @mkdir($upload_dir, 0777, true);
+                }
+                $ext = in_array($image_type, ['jpg', 'jpeg', 'png', 'webp', 'gif']) ? ($image_type === 'jpeg' ? 'jpg' : $image_type) : 'jpg';
+                $filename = 'course_' . ($slug ?: 'portada') . '_' . time() . '.' . $ext;
+                $file_path = $upload_dir . $filename;
+                if (@file_put_contents($file_path, $decoded_image)) {
+                    $thumbnail = '/assets/uploads/courses/' . $filename;
+                }
+            }
+        }
+
         if ($pdo) {
             if ($course_id > 0) {
                 $stmt = $pdo->prepare("UPDATE `fede_courses` SET `title`=?, `slug`=?, `description`=?, `thumbnail`=?, `duration`=?, `level_required`=? WHERE `id`=?");
@@ -818,7 +838,7 @@ switch ($action) {
                 // Create a default module
                 $pdo->prepare("INSERT INTO `fede_modules` (`course_id`, `title`, `order_num`) VALUES (?, 'Módulo 1: Introducción', 1)")->execute([$course_id]);
             }
-            echo json_encode(['success' => true, 'message' => 'Curso guardado', 'course_id' => $course_id]);
+            echo json_encode(['success' => true, 'message' => 'Curso guardado', 'course_id' => $course_id, 'thumbnail' => $thumbnail]);
             exit;
         }
         echo json_encode(['success' => false, 'error' => 'Error de BD']);

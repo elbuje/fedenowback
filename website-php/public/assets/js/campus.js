@@ -344,7 +344,10 @@ function openAdminCourseModal(id, title = '', slug = '', desc = '', duration = '
   document.getElementById('adminCourseSlugInput').value = slug || '';
   document.getElementById('adminCourseDescInput').value = desc || '';
   document.getElementById('adminCourseDurationInput').value = duration || '3h 00m';
-  document.getElementById('adminCourseThumbnailInput').value = thumb || '/assets/img/fede_nowback_hero.jpg';
+  const initialThumb = thumb || '/assets/img/fede_nowback_hero.jpg';
+  document.getElementById('adminCourseThumbnailInput').value = initialThumb;
+  const preview = document.getElementById('adminCourseThumbnailPreview');
+  if (preview) preview.src = initialThumb;
   openAdminModal('modalAdminCourse');
 }
 
@@ -1028,6 +1031,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rows.forEach(r => tbody.appendChild(r));
   };
+
+  // Course Thumbnail Upload Listener & Preview
+  const adminCourseFileInput = document.getElementById('adminCourseFileInput');
+  const adminCourseThumbInput = document.getElementById('adminCourseThumbnailInput');
+  const adminCourseThumbPreview = document.getElementById('adminCourseThumbnailPreview');
+
+  if (adminCourseThumbInput && adminCourseThumbPreview) {
+    adminCourseThumbInput.addEventListener('input', () => {
+      const val = adminCourseThumbInput.value.trim();
+      adminCourseThumbPreview.src = val || '/assets/img/fede_nowback_hero.jpg';
+    });
+  }
+
+  if (adminCourseFileInput && adminCourseThumbInput && adminCourseThumbPreview) {
+    adminCourseFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1280;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+          adminCourseThumbPreview.src = compressedBase64;
+          adminCourseThumbInput.value = compressedBase64;
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
   // Course Form
   const formAdminCourse = document.getElementById('formAdminCourse');

@@ -27,6 +27,7 @@
 - [x] **Programación de Meets & Sesiones Recurrentes:** Corrección integral del guardado de sesiones en vivo en MySQL con soporte de frecuencia recurrente (Semanal / Quincenal / Mensual / Puntual), selección de día de la semana, integración directa con Google Meet / Zoom y generación automática de enlaces para Google Calendar.
 - [x] **Acceso a Perfil & Cierre de Sesión:** Botones visibles y accesibles permanentemente de `👤 Mi Perfil` y `🚪 Salir / Cerrar Sesión` integrados en la barra de navegación principal (`campus-nav-bar`) y en la barra superior de administrador (`campus-admin-topbar`).
 - [x] **Grupo VIP de WhatsApp en el Muro:** Banner destacado en el muro y widget lateral exclusivo para miembros registrados y alumnos con enlace directo al grupo oficial de WhatsApp (`https://chat.whatsapp.com/EUM0qZSn8l7EDkjA7GDq8F`).
+- [x] **Carga de Foto de Portada para Cursos:** Selector de archivo (`📁 Subir Foto de Portada`) con previsualización en vivo, compresión en Canvas y guardado permanente en disco (`/assets/uploads/courses/`) al crear o editar cursos en la Academia.
 
 ---
 
