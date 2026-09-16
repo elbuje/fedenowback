@@ -67,7 +67,7 @@ function fede_verify_csrf($token) {
     return isset($_SESSION['fede_csrf_token']) && hash_equals($_SESSION['fede_csrf_token'], $token ?? '');
 }
 
-function fede_clean_avatar(?string $avatar, string $default = '/assets/img/fede_avatar_mini.png'): string {
+function fede_clean_avatar(?string $avatar, string $default = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'): string {
     if (empty($avatar)) return $default;
     return str_replace('/assets/img/fedenowback/', '/assets/img/', $avatar);
 }
@@ -78,7 +78,7 @@ function fede_get_default_user(): array {
         'email' => '',
         'name' => 'Invitado',
         'handle' => '@invitado',
-        'avatar' => '/assets/img/fede_avatar_mini.png',
+        'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
         'role' => 'guest', // 'admin', 'member', or 'guest'
         'is_logged_in' => false,
         'points' => 0,
@@ -740,7 +740,7 @@ function fede_load_community_data() {
                         'name' => $du['name'] ?: 'Usuario #' . $du['id'],
                         'handle' => $du['handle'] ?: ('@user' . $du['id']),
                         'email' => $du['email'] ?: '',
-                        'avatar' => fede_clean_avatar($du['avatar'], '/assets/img/fede_avatar_mini.png'),
+                        'avatar' => fede_clean_avatar($du['avatar'], 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'),
                         'role' => $du['role'] ?: 'member',
                         'points' => (int)($du['points'] ?? 10),
                         'level' => (int)($du['level'] ?? 1),
@@ -783,7 +783,7 @@ function fede_load_community_data() {
                     $chat_list[] = [
                         'id' => (string)$dc['id'],
                         'author' => $dc['author_name'],
-                        'avatar' => fede_clean_avatar($dc['author_avatar'], '/assets/img/fede_avatar_mini.png'),
+                        'avatar' => fede_clean_avatar($dc['author_avatar'], 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'),
                         'is_host' => ($dc['author_role'] === 'admin'),
                         'content' => $dc['content'],
                         'time' => date('H:i', strtotime($dc['created_at']))

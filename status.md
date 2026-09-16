@@ -23,6 +23,7 @@
 - [x] **Búsqueda & Ordenamiento:** Búsqueda en vivo y ordenamiento ascendente/descendente por columnas en la tabla de miembros del admin.
 - [x] **Gestión de Academia & Clases:** Listado interactivo de clases cargadas por curso en el Admin con preview modal de video (`▶️ Ver / Probar Video`).
 - [x] **Soporte YouTube:** Normalización automática de URLs cortas (`youtu.be/ID`) y estándar a formato `embed/ID`.
+- [x] **Avatares de Usuarios & Alumnos:** Eliminación definitiva de la foto de Fede de la galería de avatares predefinidos para alumnos; asignación automática y aleatoria de avatares de la comunidad al registrarse o darse de alta en el sistema.
 
 ---
 

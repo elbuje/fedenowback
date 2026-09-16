@@ -85,7 +85,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
           <?php if ($is_logged_in): ?>
             <!-- Trigger del Avatar Dropdown -->
             <div id="campusAvatarTrigger" class="campus-avatar-trigger" title="Menú de tu cuenta (<?= htmlspecialchars($user['name']) ?>)">
-              <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($user['name']) ?>" class="campus-user-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+              <img src="<?= htmlspecialchars($user['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80') ?>" alt="<?= htmlspecialchars($user['name']) ?>" class="campus-user-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
               <span class="campus-avatar-role-dot">
                 <?= $user['role'] === 'admin' ? '👑 Admin' : '👤 ' . htmlspecialchars(explode(' ', $user['name'])[0]) ?> ▾
               </span>
@@ -94,7 +94,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <!-- Menú Flotante del Avatar del Alumno / Admin -->
             <div id="campusAvatarDropdown" class="campus-avatar-dropdown">
               <div class="dropdown-user-header">
-                <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="dropdown-avatar-lg" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+                <img src="<?= htmlspecialchars($user['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80') ?>" alt="Avatar" class="dropdown-avatar-lg" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
                 <div class="dropdown-user-info">
                   <div class="dropdown-user-name"><?= htmlspecialchars($user['name']) ?></div>
                   <div class="dropdown-user-handle"><?= htmlspecialchars($user['handle']) ?></div>
@@ -247,7 +247,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
               <div class="campus-creator-card">
                 <form id="formCreatePost">
                   <div class="post-creator-header">
-                    <img src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Avatar" class="creator-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+                    <img src="<?= htmlspecialchars($user['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80') ?>" alt="Avatar" class="creator-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
                     <div class="creator-inputs">
                       <input type="text" id="postTitleInput" class="creator-title-input" placeholder="Título de tu aporte, pregunta o victoria..." required>
                       <textarea id="postBodyInput" class="creator-body-input" placeholder="Escribí acá tu mensaje. Compartí contexto, aprendizajes o dudas para que la comunidad y Fede te respondan..." required></textarea>
@@ -297,7 +297,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
 
                   <div class="post-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
                     <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-                      <img src="<?= htmlspecialchars($post['author']['avatar']) ?>" alt="<?= htmlspecialchars($post['author']['name']) ?>" class="post-author-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+                      <img src="<?= htmlspecialchars($post['author']['avatar']) ?>" alt="<?= htmlspecialchars($post['author']['name']) ?>" class="post-author-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
                       <div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                           <span class="post-author-name"><?= htmlspecialchars($post['author']['name']) ?></span>
@@ -337,7 +337,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                     <div class="comments-list">
                       <?php foreach ($post['comments'] as $comm): ?>
                         <div class="comment-bubble" id="comment-<?= htmlspecialchars($comm['id']) ?>">
-                          <img src="<?= htmlspecialchars($comm['author']['avatar']) ?>" alt="Avatar" class="comment-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+                          <img src="<?= htmlspecialchars($comm['author']['avatar']) ?>" alt="Avatar" class="comment-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
                           <div class="comment-body" style="width: 100%;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                               <div class="comment-author-title">
@@ -661,7 +661,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <div id="chatMessagesScroll" class="chat-messages-scroll">
               <?php foreach ($data['chat_messages'] as $msg): ?>
                 <div class="chat-bubble-row" id="chat-msg-<?= htmlspecialchars($msg['id']) ?>">
-                  <img src="<?= htmlspecialchars($msg['avatar']) ?>" alt="<?= htmlspecialchars($msg['author']) ?>" class="comment-avatar" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+                  <img src="<?= htmlspecialchars($msg['avatar']) ?>" alt="<?= htmlspecialchars($msg['author']) ?>" class="comment-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
                   <div class="chat-bubble-content <?= !empty($msg['is_host']) ? 'host-msg' : '' ?>" style="position: relative;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
                       <div style="font-size: 0.78rem; font-weight: 700; color: var(--c-text-muted);">
@@ -765,7 +765,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
           <?php foreach ($data['members'] as $mem): ?>
             <div class="campus-card" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-              <img src="<?= htmlspecialchars($mem['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="<?= htmlspecialchars($mem['name']) ?>" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--c-border);" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+              <img src="<?= htmlspecialchars($mem['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80') ?>" alt="<?= htmlspecialchars($mem['name']) ?>" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--c-border);" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
               <h4 style="font-family: var(--c-font-head); font-weight: 800; font-size: 1.05rem; margin-bottom: 2px;"><?= htmlspecialchars($mem['name']) ?></h4>
               <div style="font-size: 0.78rem; color: var(--c-text-muted); margin-bottom: 8px;"><?= htmlspecialchars($mem['handle']) ?></div>
               
@@ -1091,7 +1091,7 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                         data-expiry="<?= htmlspecialchars($u_row['plan_expires_at'] ?: '9999-12-31') ?>">
                       <td>
                         <div style="display: flex; align-items: center; gap: 8px;">
-                          <img src="<?= htmlspecialchars($u_row['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--c-border);">
+                          <img src="<?= htmlspecialchars($u_row['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80') ?>" alt="" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--c-border);">
                           <div>
                             <strong style="display: block; font-size: 0.9rem; color: var(--c-text-main);"><?= htmlspecialchars($u_row['name']) ?></strong>
                             <span style="font-size: 0.75rem; color: var(--c-text-muted);"><?= htmlspecialchars($u_row['handle']) ?></span>
@@ -1705,22 +1705,19 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
             <!-- Sección de Avatar -->
             <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 20px; padding: 14px; background: var(--c-bg-subtle); border-radius: 12px; border: 1px solid var(--c-border);">
               <div style="position: relative; margin-bottom: 12px;">
-                <img id="myProfileAvatarPreview" src="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>" alt="Mi Avatar" style="width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--c-fire-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onerror="this.src='/assets/img/fede_avatar_mini.png'">
+                <img id="myProfileAvatarPreview" src="<?= htmlspecialchars($user['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80') ?>" alt="Mi Avatar" style="width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--c-fire-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'">
                 <label for="myProfileFileInput" style="position: absolute; bottom: 0; right: 0; background: var(--c-fire-primary); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; box-shadow: 0 2px 6px rgba(0,0,0,0.2);" title="Subir foto desde tu dispositivo">
                   📷
                 </label>
                 <input type="file" id="myProfileFileInput" accept="image/*" style="display: none;">
               </div>
-              <input type="hidden" id="myProfileAvatarInput" value="<?= htmlspecialchars($user['avatar'] ?: '/assets/img/fede_avatar_mini.png') ?>">
+              <input type="hidden" id="myProfileAvatarInput" value="<?= htmlspecialchars($user['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80') ?>">
               
               <div style="font-size: 0.82rem; font-weight: 700; color: var(--c-text-main); margin-bottom: 6px;">Foto de Perfil / Avatar</div>
               <p style="font-size: 0.75rem; color: var(--c-text-muted); margin-bottom: 10px;">Subí tu propia foto o elegí un avatar predefinido:</p>
               
               <!-- Galería de Avatares Predefinidos -->
               <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('/assets/img/fede_avatar_mini.png')" title="Avatar Fede Nowback" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
-                  <img src="/assets/img/fede_avatar_mini.png" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
-                </button>
                 <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80')" title="Avatar Creadora 1" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
                   <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
                 </button>
@@ -1733,7 +1730,10 @@ $page_desc = "Campus privado de alto rendimiento para creadores y emprendedores.
                 <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80')" title="Avatar Creador 4" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
                   <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
                 </button>
-                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80')" title="Avatar Creador 5" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
+                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80')" title="Avatar Creadora 5" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
+                  <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
+                </button>
+                <button type="button" class="btn-avatar-preset" onclick="selectPresetAvatar('https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80')" title="Avatar Creador 6" style="border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer;">
                   <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
                 </button>
               </div>

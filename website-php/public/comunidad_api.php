@@ -97,7 +97,7 @@ switch ($action) {
                         'email' => $db_user['email'],
                         'name' => $db_user['name'],
                         'handle' => $db_user['handle'],
-                        'avatar' => $db_user['avatar'] ?: '/assets/img/fede_avatar_mini.png',
+                        'avatar' => $db_user['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
                         'role' => $db_user['role'],
                         'is_logged_in' => true,
                         'points' => (int)$db_user['points'],
@@ -121,7 +121,15 @@ switch ($action) {
                 // Auto register student user
                 $name = ucfirst(explode('@', $email)[0]);
                 $handle = '@' . strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', explode('@', $email)[0]));
-                $avatar = '/assets/img/fede_avatar_mini.png';
+                $student_avatars = [
+                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80'
+                ];
+                $avatar = $student_avatars[array_rand($student_avatars)];
                 $pass_hash = password_hash($password, PASSWORD_BCRYPT);
 
                 $ins = $pdo->prepare("
@@ -251,7 +259,7 @@ switch ($action) {
             'email' => '',
             'name' => 'Invitado',
             'handle' => '@invitado',
-            'avatar' => '/assets/img/fede_avatar_mini.png',
+            'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
             'role' => 'guest',
             'is_logged_in' => false,
             'points' => 0,
@@ -284,7 +292,7 @@ switch ($action) {
                         'name' => $db_user['name'],
                         'handle' => $db_user['handle'],
                         'email' => $db_user['email'],
-                        'avatar' => $db_user['avatar'] ?: '/assets/img/fede_avatar_mini.png',
+                        'avatar' => $db_user['avatar'] ?: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
                         'bio' => $db_user['bio'] ?? '',
                         'interests' => $db_user['interests'] ?? '',
                         'instagram' => $db_user['instagram'] ?? '',
@@ -674,7 +682,15 @@ switch ($action) {
             } else {
                 // Create new user in MySQL
                 $pass_hash = password_hash($password, PASSWORD_BCRYPT);
-                $avatar = '/assets/img/fede_avatar_mini.png';
+                $student_avatars = [
+                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80'
+                ];
+                $avatar = $student_avatars[array_rand($student_avatars)];
                 $stmt = $pdo->prepare("
                     INSERT INTO `fede_users` 
                     (`email`, `password_hash`, `name`, `handle`, `avatar`, `role`, `points`, `level`, `level_name`, `plan_id`, `plan_name`, `plan_expires_at`, `status`, `email_verified`) 

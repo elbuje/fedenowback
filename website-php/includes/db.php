@@ -597,11 +597,19 @@ function fede_db_init_schema($existing_pdo = null) {
         ");
         $pdo->exec("
             UPDATE `fede_users`
-            SET `avatar` = '/assets/img/fede_avatar_mini.png'
-            WHERE `avatar` LIKE '%fedenowback/fede_nowback%' 
+            SET `avatar` = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+            WHERE `role` != 'admin' AND (
+               `avatar` LIKE '%fede_avatar_mini%'
+               OR `avatar` LIKE '%fedenowback/fede_nowback%' 
                OR `avatar` LIKE '%/assets/img/fedenowback/%'
                OR `avatar` IS NULL 
-               OR `avatar` = '';
+               OR `avatar` = ''
+            );
+        ");
+        $pdo->exec("
+            UPDATE `fede_users`
+            SET `avatar` = '/assets/img/fede_nowback_fuego.jpg'
+            WHERE `role` = 'admin' AND (`avatar` IS NULL OR `avatar` = '' OR `avatar` LIKE '%fede_avatar_mini%');
         ");
         $pdo->exec("
             UPDATE `fede_courses` 

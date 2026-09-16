@@ -1417,8 +1417,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.getElementById('myProfileInterestsInput')) document.getElementById('myProfileInterestsInput').value = p.interests || '';
         if (document.getElementById('myProfileInstagramInput')) document.getElementById('myProfileInstagramInput').value = p.instagram || '';
         if (document.getElementById('myProfileLinkedinInput')) document.getElementById('myProfileLinkedinInput').value = p.linkedin || '';
-        if (document.getElementById('myProfileAvatarInput')) document.getElementById('myProfileAvatarInput').value = p.avatar || '/assets/img/fede_avatar_mini.png';
-        if (document.getElementById('myProfileAvatarPreview')) document.getElementById('myProfileAvatarPreview').src = p.avatar || '/assets/img/fede_avatar_mini.png';
+        if (document.getElementById('myProfileAvatarInput')) document.getElementById('myProfileAvatarInput').value = p.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
+        if (document.getElementById('myProfileAvatarPreview')) document.getElementById('myProfileAvatarPreview').src = p.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
         if (document.getElementById('myProfileNewPassInput')) document.getElementById('myProfileNewPassInput').value = '';
         if (document.getElementById('myProfileConfirmPassInput')) document.getElementById('myProfileConfirmPassInput').value = '';
       }
