@@ -8,7 +8,8 @@
 
 ---
 
-## 🎯 Tareas Completadas (v1.1.0 - Gestión Campus, Auth, Clases & MySQL)
+## 🎯 Tareas Completadas (v1.1.0 - Gestión Campus, Auth, Clases, MySQL & Eventos)
+- [x] **Landing Evento Presencial "Mentalidad y Marketing — Neuroventas con IA":** Implementación completa y exacta del diseño Desktop y Mobile según mockups oficiales (`/mentalidad-marketing-neuroventas-ia`), sin menú de distracción para maximizar conversiones, integrada al router con SEO estructurado, imágenes de speakers (Fede Nowback, Anthony Altuna, Christian Cencherle) y botones directos a WhatsApp.
 - [x] **Auth & Login:** Remoción de botones demo residuales del modal de acceso.
 - [x] **Seguridad de Contraseñas:** Toggle de visibilidad (ojo 👁️), confirmación de contraseña, hash `PASSWORD_BCRYPT`.
 - [x] **Gestión de Planes y Vencimientos:** Selector de planes (`Gratuito`, `Pro`, `Mentoría VIP`, `Vitalicio`), atajos de vigencia (+30d, +90d, +1y, Vitalicio), etiquetas semánticas de caducidad.

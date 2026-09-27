@@ -30,6 +30,16 @@ $routes = [
     "campus"                              => __DIR__ . "/../views/comunidad.php",
     "skool"                               => __DIR__ . "/../views/comunidad.php",
     "contacto"                            => __DIR__ . "/../views/contacto.php",
+    "landing-octubre"                                     => __DIR__ . "/../views/landing-octubre.php",
+    "landin-octubre"                                      => __DIR__ . "/../views/landing-octubre.php",
+    "mentalidad-marketing-neuroventas-ia"                 => __DIR__ . "/../views/landing-octubre.php",
+    "mentalidad-marketing-neuroventas-con-ia"             => __DIR__ . "/../views/landing-octubre.php",
+    "mentalidad-y-marketing"                              => __DIR__ . "/../views/landing-octubre.php",
+    "evento-mentalidad-marketing-neuroventas-ia"          => __DIR__ . "/../views/landing-octubre.php",
+    "evento-presencial"                                   => __DIR__ . "/../views/landing-octubre.php",
+    "neuroventas-con-ia"                                  => __DIR__ . "/../views/landing-octubre.php",
+    "neuroventas-ia"                                      => __DIR__ . "/../views/landing-octubre.php",
+    "evento-ia"                                           => __DIR__ . "/../views/landing-octubre.php",
     "campus-virtual-para-coaches-mentores-marca-personal" => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
     "campus-virtual-para-coaches-y-mentores"              => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
     "tecnobrain-campus-virtual"                           => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
@@ -105,6 +115,12 @@ if ($path === "sitemap.xml") {
     <lastmod><?= date("Y-m-d") ?></lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
+  </url>
+  <url>
+    <loc><?= SITE_URL ?>/mentalidad-marketing-neuroventas-ia</loc>
+    <lastmod><?= date("Y-m-d") ?></lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.98</priority>
   </url>
   <url>
     <loc><?= SITE_URL ?>/comunidad</loc>
