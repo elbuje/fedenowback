@@ -7,6 +7,12 @@ tags: [log, changelog, history, fedenowback]
 
 # 🪵 Bitácora de Cambios (Log) — Fede Nowback
 
+## [2026-09-27] - Landing Evento Presencial "Mentalidad y Marketing — Neuroventas con IA" (Octubre)
+- **FEAT (LANDING & EVENTO):** Implementación de la landing page de alta conversión para el evento presencial de Octubre en Buenos Aires protagonizado por Fede Nowback, Anthony Altuna y Christian Cencherle.
+- **ROUTING:** Integración de rutas amigables en `website-php/public/index.php` (`/mentalidad-marketing-neuroventas-ia`, `/landing-octubre`, `/evento-presencial`, `/neuroventas-con-ia`, `/evento-ia`).
+- **ASSETS & MEDIA:** Integración de imágenes y flyers en alta resolución de los 3 disertantes en `/public/events_new/` y `/public/assets/events/`.
+- **UI/UX & CONVERSIÓN:** Diseño enfocado en conversión directa sin menú superior de distracción, con llamado a la acción prioritario hacia WhatsApp.
+
 ## [2026-09-16] - Campus Pro: Meets Recurrentes, Avatares, Carga de Portadas y Seguridad WhatsApp
 - **SECURITY & WHATSAPP:** Protección y privacidad del grupo VIP de WhatsApp (`https://chat.whatsapp.com/EUM0qZSn8l7EDkjA7GDq8F`); los usuarios no autenticados solo ven un botón con candado (`🔒 Acceso Alumnos / Miembros`) que abre el modal de ingreso sin exponer el link directo.
 - **FEAT (ACADEMY & MEDIA):** Carga de portadas de cursos en la Academia mediante selector de archivos (`📁 Subir Foto de Portada`), previsualización instantánea, compresión en Canvas del cliente y guardado en servidor (`/assets/uploads/courses/`).

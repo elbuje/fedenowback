@@ -13,6 +13,7 @@ Todas las páginas están optimizadas para posicionamiento orgánico en búsqued
 | URL | Vista | Título SEO | Schema JSON-LD |
 |:---|:---|:---|:---|
 | `/` | `views/index.php` | Fede Nowback \| Estrategia de Marca Personal, Mentalidad y Negocios Digitales | `Person`, `WebSite` |
+| `/mentalidad-marketing-neuroventas-ia` | `views/landing-octubre.php` | Mentalidad y Marketing — Neuroventas con IA \| Evento Presencial Buenos Aires | `Event`, `Place`, `Offer` |
 | `/encende-tu-fuego` | `views/encende-tu-fuego.php` | Encendé tu Fuego \| Masterclass Presencial en CABA | `Event`, `Place`, `Offer` |
 | `/mentorias` | `views/mentorias.php` | Mentorías & Programas de Acompañamiento \| Fede Nowback | `Service`, `OfferCatalog` |
 | `/sobre-mi` | `views/sobre-mi.php` | Sobre Fede Nowback \| Mi Historia, Filosofía y Trayectoria | `Person`, `ProfilePage` |
