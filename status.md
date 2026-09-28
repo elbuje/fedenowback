@@ -18,8 +18,7 @@
 - [x] **Unicidad de Handles:** Deduplicación automática en MySQL (`@fedenowback` exclusivo para Fede, `@mfmujic` para Marcelo Mujica) y validación en tiempo real.
 - [x] **Herramienta WhatsApp:** Modal y botón `📋 Copiar Mensaje` con credenciales completas y contraseña asignada sin errores de codificación.
 - [x] **Blindaje de Sesión:** Eliminación definitiva del switcher de rol demo y sincronización estricta de sesión en tiempo real contra MySQL (`fede_users`).
-- [x] **Notificaciones y Accesos:** Envío de correo de bienvenida y generador de mensaje con link directo a WhatsApp con un solo clic.
-- [x] **Recuperación de Contraseña:** Flujo completo de "¿Olvidaste tu contraseña?" y "Cambiar Contraseña" mediante tokens seguros SHA-256 (`reset_token`).
+- [x] **Recuperación de Contraseña & Notificaciones SMTP:** Integración de cliente SMTP nativo con autenticación SSL (`smtp.hostinger.com:465`) para el remitente oficial `contacto@fedenowback.com.ar`, enviando exitosamente los correos de restablecimiento con tokens seguros SHA-256 (`reset_token`) y bienvenida.
 - [x] **MySQL Fix & Persistencia Real:** Corrección del error de fetch en `community_store.php`, migración DDL automática de columnas en `fede_users` y eliminación segura de usuarios con protección de superadmin.
 - [x] **Búsqueda & Ordenamiento:** Búsqueda en vivo y ordenamiento ascendente/descendente por columnas en la tabla de miembros del admin.
 - [x] **Gestión de Academia & Clases:** Listado interactivo de clases cargadas por curso en el Admin con preview modal de video (`▶️ Ver / Probar Video`).
