@@ -7,6 +7,12 @@ tags: [log, changelog, history, fedenowback]
 
 # 🪵 Bitácora de Cambios (Log) — Fede Nowback
 
+## [2026-09-28] - Motor SMTP Hostinger SSL, Recuperación de Password & Precios Landing Octubre
+- **FEAT (SMTP & AUTH):** Creación del cliente SMTP nativo en PHP (`website-php/includes/smtp_mailer.php`) con autenticación SSL (`smtp.hostinger.com:465`) para el remitente `contacto@fedenowback.com.ar`.
+- **FIX (EMAIL):** Corrección definitiva de la entrega de correos de recuperación de contraseña y bienvenida al Campus sin depender de MTA/sendmail local.
+- **FEAT (PRICING):** Actualización comercial de precios para el evento presencial de Octubre: Preventa $80.000 hasta el 3 de Octubre (Ahorro de $70.000) y precio regular de $150.000 desde el 4 de Octubre.
+- **INFRA (PLOI):** Configuración de variables de entorno SMTP en el `.env` de producción en servidor `errante` y deploy sincronizado.
+
 ## [2026-09-27] - Landing Evento Presencial "Mentalidad y Marketing — Neuroventas con IA" (Octubre)
 - **FEAT (LANDING & EVENTO):** Implementación de la landing page de alta conversión para el evento presencial de Octubre en Buenos Aires protagonizado por Fede Nowback, Anthony Altuna y Christian Cencherle.
 - **ROUTING:** Integración de rutas amigables en `website-php/public/index.php` (`/mentalidad-marketing-neuroventas-ia`, `/landing-octubre`, `/evento-presencial`, `/neuroventas-con-ia`, `/evento-ia`).

@@ -30,6 +30,7 @@ Bienvenido a la base de conocimiento viva del proyecto **Fede Nowback**, gestion
 
 ## 📜 Historial de Sesiones
 
+- [[sessions/2026-09-28-smtp-recuperacion-password-y-precios-landing-octubre]] — Motor SMTP Hostinger SSL, Recuperación de Password y Actualización de Precios Landing Octubre.
 - [[sessions/2026-09-27-landing-octubre-evento-presencial-mentalidad-marketing-ia]] — Landing Evento Presencial "Mentalidad y Marketing — Neuroventas con IA" (Octubre).
 - [[sessions/2026-09-16-campus-reuniones-recurrentes-avatares-portadas-y-privacidad]] — Campus Pro: Meets Recurrentes, Avatares, Carga de Portadas y Protección Grupo WhatsApp.
 - [[sessions/2026-09-15-gestion-campus-usuarios-clases-mysql]] — Gestión Integral del Campus, Usuarios, Clases, Recuperación de Contraseñas y MySQL.
