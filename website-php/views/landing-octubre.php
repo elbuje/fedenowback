@@ -1465,7 +1465,7 @@
       <div class="section-header" style="text-align: center;">
         <div class="section-tag">TU INVERSIÓN</div>
         <h2 class="section-main-title" style="margin-bottom: 10px;">
-          Asegurá tu lugar <span class="gold-gradient">antes del 30 de septiembre.</span>
+          Asegurá tu lugar <span class="gold-gradient">hasta el 3 de octubre con precio especial.</span>
         </h2>
       </div>
 
@@ -1474,10 +1474,10 @@
         <div class="p-card featured">
           <div class="p-ribbon">⭐ PREVENTA EXCLUSIVA</div>
           <div class="p-tier">PREVENTA</div>
-          <div class="p-validity">HASTA EL 30 DE SEPTIEMBRE</div>
-          <div class="p-old-price">$200.000</div>
-          <div class="p-amount">$150.000</div>
-          <div class="p-savings">Ahorrás $50.000</div>
+          <div class="p-validity">HASTA EL 3 DE OCTUBRE</div>
+          <div class="p-old-price">$150.000</div>
+          <div class="p-amount">$80.000</div>
+          <div class="p-savings">Ahorrás $70.000</div>
 
           <ul class="p-list">
             <li>Acceso a la jornada completa (10 a 17 hs)</li>
@@ -1487,7 +1487,7 @@
             <li>Certificado de asistencia</li>
           </ul>
 
-          <a href="https://wa.me/5491170610766?text=Hola%2C%20quiero%20reservar%20mi%20lugar%20con%20precio%20de%20PREVENTA%20($150.000)%20para%20el%20evento%20Mentalidad%20y%20Marketing%20del%2010%20de%20octubre." target="_blank" rel="noopener noreferrer" class="btn-gold-main" style="width: 100%;">
+          <a href="https://wa.me/5491170610766?text=Hola%2C%20quiero%20reservar%20mi%20lugar%20con%20precio%20de%20PREVENTA%20($80.000)%20para%20el%20evento%20Mentalidad%20y%20Marketing%20del%2010%20de%20octubre." target="_blank" rel="noopener noreferrer" class="btn-gold-main" style="width: 100%;">
             RESERVAR MI LUGAR →
           </a>
         </div>
@@ -1495,9 +1495,9 @@
         <!-- Box 2: Precio de Lista -->
         <div class="p-card">
           <div class="p-tier">PRECIO DE LISTA</div>
-          <div class="p-validity">DESDE EL 1 DE OCTUBRE</div>
+          <div class="p-validity">LUEGO DEL 3 DE OCTUBRE</div>
           <div style="height: 22px;"></div>
-          <div class="p-amount">$200.000</div>
+          <div class="p-amount">$150.000</div>
           <div style="font-size: 12px; color: rgba(237, 232, 223, 0.5); margin-bottom: 24px;">Precio regular</div>
 
           <ul class="p-list">
@@ -1687,10 +1687,10 @@
   <div class="mobile-sticky-cta">
     <div class="mobile-sticky-flex">
       <div class="sticky-price-col">
-        <span class="sticky-tag">PREVENTA 10 OCT</span>
-        <span class="sticky-val">$150.000</span>
+        <span class="sticky-tag">PREVENTA HASTA 3 OCT</span>
+        <span class="sticky-val">$80.000</span>
       </div>
-      <a href="https://wa.me/5491170610766?text=Hola%2C%20quiero%20reservar%20mi%20lugar%20con%20precio%20de%20PREVENTA%20($150.000)%20para%20el%20evento%20Mentalidad%20y%20Marketing." target="_blank" rel="noopener noreferrer" class="btn-gold-main" style="padding: 11px 22px; font-size: 13px;">
+      <a href="https://wa.me/5491170610766?text=Hola%2C%20quiero%20reservar%20mi%20lugar%20con%20precio%20de%20PREVENTA%20($80.000)%20para%20el%20evento%20Mentalidad%20y%20Marketing." target="_blank" rel="noopener noreferrer" class="btn-gold-main" style="padding: 11px 22px; font-size: 13px;">
         RESERVAR →
       </a>
     </div>
