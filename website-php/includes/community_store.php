@@ -879,12 +879,9 @@ function fede_send_welcome_user_email($email, $name, $password, $plan_name = 'Ca
     </html>
     ';
 
-    $headers = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8\r\n";
-    $headers .= "From: Fede Nowback <contacto@fedenowback.com.ar>\r\n";
-    $headers .= "Reply-To: contacto@fedenowback.com.ar\r\n";
-
-    return @mail($email, $subject, $html, $headers);
+    require_once __DIR__ . '/smtp_mailer.php';
+    $res = fede_send_smtp_email($email, $subject, $html);
+    return $res['success'] ?? false;
 }
 
 /**
@@ -931,11 +928,8 @@ function fede_send_reset_password_email($email, $name, $reset_url) {
     </html>
     ';
 
-    $headers = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8\r\n";
-    $headers .= "From: Fede Nowback <contacto@fedenowback.com.ar>\r\n";
-    $headers .= "Reply-To: contacto@fedenowback.com.ar\r\n";
-
-    return @mail($email, $subject, $html, $headers);
+    require_once __DIR__ . '/smtp_mailer.php';
+    $res = fede_send_smtp_email($email, $subject, $html);
+    return $res['success'] ?? false;
 }
 
