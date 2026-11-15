@@ -39,3 +39,4 @@ Resolver el problema de indexación y posicionamiento orgánico en Google, donde
 - **Redirecciones 301 y Limpieza de Rutas:** Redirección permanente de URLs secundarias hacia la ruta canónica limpia.
 - **Descubrimiento para Modelos de IA:** Creación del archivo `llms.txt` con la información oficial estructurada de Fede Nowback.
 - **Informe de Auditoría Completo:** Generado en `docs/auditoria_seo_2026-11-15.md`.
+

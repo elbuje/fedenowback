@@ -76,3 +76,4 @@ El usuario reportó que la página del evento presencial y las búsquedas relaci
 4. **Metadatos y Redes Sociales:** Títulos, descripciones, etiquetas canónicas y OpenGraph con imágenes absolutas.
 5. **Datos Estructurados JSON-LD:** Marcado Schema.org para eventos educativos, expositores y enlaces de autoridad social.
 6. **AI Search Discovery:** Archivo `llms.txt` publicado para motores de búsqueda con IA.
+
