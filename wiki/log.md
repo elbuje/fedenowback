@@ -7,6 +7,15 @@ tags: [log, changelog, history, fedenowback]
 
 # 🪵 Bitácora de Cambios (Log) — Fede Nowback
 
+## [2026-11-15] - Optimización SEO Integral de Evento con IA, Mentorías y Enlazado Interno
+- **SEO & ENTITY FIX:** Corrección del error de nombre "Fede Novak" -> "Fede Nowback" en 5 ubicaciones críticas de la landing del evento presencial (firmas, agenda, comunidad y organizadores) para unificar la señal de autoría en el índice de Google.
+- **ON-PAGE & METADATA:** Optimización del `<title>` y `<meta description>` integrando las palabras clave objetivo (`fede nowback`, `mentorias`, `eventos`, `mentalidad y marketing con ia`), canónica auto-referenciada y etiquetas Open Graph con URLs absolutas para previsualizaciones sociales y rich snippets.
+- **STRUCTURED DATA (SCHEMA.ORG):** Implementación de marcado JSON-LD completo de tipo `EducationEvent`, `Person`, `Place`, `Offer` y `BreadcrumbList`, vinculando el evento con Fede Nowback y sus perfiles de Instagram, YouTube y TikTok.
+- **INTERLINKING (INTERNAL LINK BUILDING):** Eliminación del estado de página huérfana añadiendo enlaces destacados al evento en el encabezado global (`🎟️ Eventos & IA`), pie de página, portada principal y la landing de Mentorías 1 a 1.
+- **ROUTING & 301 REDIRECTS:** Consolidación de URLs secundarias y archivos estáticos duplicados (`landing-octubre`, `Mentalidad-Marketing-Neuroventas-con-IA.html`) hacia la ruta canónica única `/mentalidad-marketing-neuroventas-ia`.
+- **AI SEARCH DISCOVERY:** Creación y despliegue del estándar `/llms.txt` con la ficha de autoridad y servicios oficiales de Fede Nowback.
+- **DOCS & AUDIT:** Publicación de la auditoría completa de 5 capas en `docs/auditoria_seo_2026-11-15.md`.
+
 ## [2026-09-28] - Motor SMTP Hostinger SSL, Recuperación de Password & Precios Landing Octubre
 - **FEAT (SMTP & AUTH):** Creación del cliente SMTP nativo en PHP (`website-php/includes/smtp_mailer.php`) con autenticación SSL (`smtp.hostinger.com:465`) para el remitente `contacto@fedenowback.com.ar`.
 - **FIX (EMAIL):** Corrección definitiva de la entrega de correos de recuperación de contraseña y bienvenida al Campus sin depender de MTA/sendmail local.

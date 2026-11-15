@@ -1,10 +1,22 @@
-# 📊 Estado del Proyecto — Fede Nowback (`v1.1.0`)
+# 📊 Estado del Proyecto — Fede Nowback (`v1.2.0`)
 
-**Última actualización:** 2026-09-16  
-**Rama activa:** `main` / `dev`  
-**Deploy en Producción:** ✅ Activo (`75a1f3a`)  
-**Servidor Dev:** ✅ Activo en `:8015` y `:8011`  
+**Última actualización:** 2026-11-15  
+**Rama activa:** `main`  
+**Deploy en Producción:** ✅ Activo  
+**Servidor Dev:** ✅ Activo en `:8015`  
 **LLM Wiki 3 Capas:** ✅ 100% Estandarizada e Indexada en Grafo 3D  
+
+---
+
+## 🎯 Tareas Completadas (v1.2.0 - Optimización SEO 5 Capas, Eventos & Mentorías)
+- [x] **Auditoría SEO 5 Capas:** Diagnóstico exhaustivo y resolución de desindexación reportada para búsquedas `fede nowback mentorias eventos`.
+- [x] **Corrección de Identidad de Autor (Entidad Google):** Corrección del error crítico tipográfico "Fede Novak" -> "Fede Nowback" en 5 puntos de la landing del evento (firmas, agenda, comunidad y créditos de organizadores).
+- [x] **Optimización On-Page & Metadatos:** Títulos, descripciones y palabras clave alineadas a la intención de búsqueda, etiquetas Open Graph y Twitter Cards con imágenes absolutas para rich previews en Google y WhatsApp.
+- [x] **Marcado Estructurado Schema.org (JSON-LD):** Implementación de esquemas `EducationEvent`, `Person`, `Place`, `Offer` y `BreadcrumbList` vinculando a Fede Nowback como organizador/speaker con sus perfiles sociales oficiales.
+- [x] **Estrategia de Interlinking (Romper Estado de Página Huérfana):** Incorporación del enlace "🎟️ Eventos & IA" en el menú global, pie de página, portada principal y la landing de Mentorías 1 a 1.
+- [x] **Consolidación Canónica & Redirecciones 301:** Redirección permanente de URLs secundarias y archivos estáticos duplicados hacia la URL canónica `/mentalidad-marketing-neuroventas-ia`.
+- [x] **AI Search Engine Discovery:** Publicación de `/llms.txt` con la ficha de autoridad y servicios oficiales de Fede Nowback.
+- [x] **Documentación de Auditoría:** Creación del informe detallado en `docs/auditoria_seo_2026-11-15.md` con puntaje de 95.4 / 100.
 
 ---
 

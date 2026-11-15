@@ -24,7 +24,7 @@ function get_fede_wa($msg = '') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($page_title) ?></title>
   <meta name="description" content="<?= htmlspecialchars($page_desc) ?>">
-  <meta name="keywords" content="fede nowback, marca personal, mentoría negocios digitales, creador de contenido, vender en instagram, monetizar redes, dejar de postergar, clases youtube fedenowback">
+  <meta name="keywords" content="fede nowback mentorias eventos, fede nowback, marca personal, mentoría negocios digitales, eventos presenciales caba, mentalidad y marketing con ia, neuroventas con ia, creador de contenido, vender en instagram, monetizar redes, dejar de postergar, clases youtube fedenowback">
   <meta name="author" content="Fede Nowback">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="<?= htmlspecialchars($canonical_url) ?>">
@@ -88,6 +88,31 @@ function get_fede_wa($msg = '') {
         "publisher": {
           "@id": "https://fedenowback.com.ar#person"
         }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://fedenowback.com.ar#events-programs",
+        "name": "Eventos Presenciales y Programas de Fede Nowback",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "url": "https://fedenowback.com.ar/mentalidad-marketing-neuroventas-ia",
+            "name": "Mentalidad y Marketing — Neuroventas con IA"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "url": "https://fedenowback.com.ar/encende-tu-fuego",
+            "name": "Programa Encendé tu Fuego"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "url": "https://fedenowback.com.ar/mentorias",
+            "name": "Mentoría 1 a 1 de Marca Personal"
+          }
+        ]
       }
     ]
   }
@@ -409,6 +434,79 @@ function get_fede_wa($msg = '') {
           </div>
         </div>
 
+      </div>
+    </div>
+  </section>
+
+  <!-- Eventos Presenciales & Masterclasses con Fede Nowback -->
+  <section class="fede-section" id="eventos" style="background: linear-gradient(180deg, rgba(234,179,8,0.04) 0%, rgba(0,0,0,0) 100%); border-top: 1px solid rgba(234,179,8,0.15); border-bottom: 1px solid rgba(234,179,8,0.15);">
+    <div class="fede-container">
+      <div class="fede-sec-header">
+        <span class="fede-sec-tag" style="background: rgba(234,179,8,0.15); color: #eab308; border-color: rgba(234,179,8,0.3);">🎟️ En Vivo & Presencial</span>
+        <h2 class="fede-sec-title">Eventos Presenciales, Jornadas y Masterclasses</h2>
+        <p class="fede-sec-desc">Experiencias inmersivas en Buenos Aires para transformar tu mentalidad, aprender neuroventas con inteligencia artificial y potenciar tu marca personal cara a cara.</p>
+      </div>
+
+      <div class="fede-grid-2">
+        <!-- Evento 1: Mentalidad y Marketing con IA -->
+        <div class="fede-card" style="border: 2px solid rgba(212,175,55,0.5); background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(212,175,55,0.05) 100%); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="background: #D4AF37; color: #000; font-family: var(--fede-font-heading); font-weight: 900; font-size: 0.75rem; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase;">
+                ⭐ Evento Destacado CABA
+              </span>
+              <span style="font-size: 0.85rem; color: #D4AF37; font-weight: 700;">
+                Lavalle 362, Piso 7
+              </span>
+            </div>
+            <h3 class="fede-card-h3" style="font-size: 1.45rem; color: #fff;">
+              Mentalidad y Marketing — Neuroventas con IA
+            </h3>
+            <p class="fede-card-p">
+              Jornada intensiva presencial con <strong>Fede Nowback</strong>, <strong>Anthony Sánchez Altuna</strong> y <strong>Christian Cencherle</strong>. Aprendé a vender en redes sociales, aplicar inteligencia artificial a tus contenidos y desarrollar mentalidad empresarial.
+            </p>
+            <ul style="list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 8px; font-size: 0.92rem; color: var(--fede-text-sub);">
+              <li><strong style="color: #D4AF37;">✓</strong> 3 expositores y casos reales de éxito</li>
+              <li><strong style="color: #D4AF37;">✓</strong> Neuroventas e IA aplicada a creación de contenido</li>
+              <li><strong style="color: #D4AF37;">✓</strong> Espacio de networking de alto nivel en Microcentro</li>
+            </ul>
+          </div>
+          <div>
+            <a href="/mentalidad-marketing-neuroventas-ia" class="btn-fede-fire" style="width: 100%; text-align: center; background: linear-gradient(135deg, #ECC868 0%, #D4AF37 50%, #A88114 100%); color: #000; font-weight: 800; border: none; margin-bottom: 8px;" title="Ver todos los detalles del Evento Mentalidad y Marketing con IA">
+              🎟️ Ver Detalles e Inscribirme →
+            </a>
+          </div>
+        </div>
+
+        <!-- Evento 2: Encendé tu Fuego -->
+        <div class="fede-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="background: rgba(249,115,22,0.15); color: #f97316; font-family: var(--fede-font-heading); font-weight: 800; font-size: 0.75rem; padding: 4px 12px; border-radius: 9999px; text-transform: uppercase;">
+                🔥 Programa & Encuentros
+              </span>
+              <span style="font-size: 0.85rem; color: #f97316; font-weight: 700;">
+                Comunidad & En Vivo
+              </span>
+            </div>
+            <h3 class="fede-card-h3" style="font-size: 1.45rem; color: #fff;">
+              Encendé tu Fuego: Aceleración de Marca
+            </h3>
+            <p class="fede-card-p">
+              Modalidades de acompañamiento y jornadas presenciales diseñadas para despertar tu potencial comunicador, estructurar ofertas de alto valor y acelerar resultados.
+            </p>
+            <ul style="list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 8px; font-size: 0.92rem; color: var(--fede-text-sub);">
+              <li><strong style="color: #f97316;">✓</strong> Encuentros intensivos presenciales y virtuales</li>
+              <li><strong style="color: #f97316;">✓</strong> Feedback táctico directo de Fede Nowback</li>
+              <li><strong style="color: #f97316;">✓</strong> Beneficios exclusivos para miembros de la comunidad</li>
+            </ul>
+          </div>
+          <div>
+            <a href="/encende-tu-fuego" class="btn-fede-outline" style="width: 100%; text-align: center; border-color: #f97316; color: #f97316;" title="Ver Programa Encendé tu Fuego">
+              Conocé Encendé tu Fuego →
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>

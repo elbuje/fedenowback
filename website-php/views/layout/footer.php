@@ -32,6 +32,8 @@
           <li><a href="/fede-nowback-especialista-filmmaker" style="color: #a1a1aa; text-decoration: none;">Mi Recorrido & Historia</a></li>
           <li><a href="/metodologia-marca-personal" style="color: #a1a1aa; text-decoration: none;">Metodología de 4 Fases</a></li>
           <li><a href="/clases-gratuitas-marca-personal" style="color: #ff5555; text-decoration: none;">▶️ Clases en YouTube</a></li>
+          <li><a href="/mentalidad-marketing-neuroventas-ia" style="color: #eab308; text-decoration: none; font-weight: 600;">🎟️ Evento Mentalidad y Marketing con IA</a></li>
+          <li><a href="/encende-tu-fuego" style="color: #a1a1aa; text-decoration: none;">🔥 Programa Encendé tu Fuego</a></li>
           <li><a href="/mentorias" style="color: #a1a1aa; text-decoration: none;">Mentoría 1 a 1</a></li>
           <li><a href="/comunidad" style="color: #f97316; text-decoration: none;">⚡ Campus Pro</a></li>
           <li><a href="/contacto" style="color: #a1a1aa; text-decoration: none;">Contacto & Prensa</a></li>

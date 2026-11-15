@@ -9,15 +9,15 @@ require_once __DIR__ . '/../includes/seo_helper.php';
 $current_slug = 'mentorias';
 
 $page_seo = [
-    'title' => 'Mentoría 1 a 1 de Marca Personal y Negocios Digitales | Fede Nowback',
-    'description' => 'Programa intensivo y personalizado de mentoría 1 a 1 con Fede Nowback. Construí tu autoridad, dominá la creación de contenidos y monetizá tu audiencia.',
-    'keywords' => 'mentoria marca personal, consultoria negocios digitales, como vender en instagram, crear contenido para vender, mentor de creadores argentina, fede nowback',
+    'title' => 'Mentoría 1 a 1 de Marca Personal, Eventos y Negocios Digitales | Fede Nowback',
+    'description' => 'Programa intensivo de mentoría 1 a 1 y eventos presenciales con Fede Nowback. Construí tu autoridad, dominá la creación de contenidos y monetizá tu audiencia.',
+    'keywords' => 'fede nowback mentorias eventos, mentoria marca personal, eventos presenciales caba, consultoria negocios digitales, como vender en instagram, crear contenido para vender, mentor de creadores argentina, fede nowback',
     'canonical' => SITE_URL . '/mentorias',
     'og_image' => SITE_URL . '/assets/img/fede_nowback_mentor.jpg',
     'extra_schema' => [
         '@type' => 'Course',
-        'name' => 'Mentoría 1 a 1: Escalado de Marca Personal y Negocios Digitales',
-        'description' => 'Programa de mentoría y consultoría estratégica uno a uno para creadores, profesionales y consultores que buscan monetizar su conocimiento.',
+        'name' => 'Mentoría 1 a 1: Escalado de Marca Personal, Eventos y Negocios Digitales',
+        'description' => 'Programa de mentoría y consultoría estratégica uno a uno para creadores, profesionales y consultores que buscan monetizar su conocimiento y participar en eventos de alto impacto.',
         'provider' => [
             '@type' => 'Person',
             'name' => 'Fede Nowback',
@@ -129,6 +129,27 @@ $page_seo = [
         <span style="font-size: 2.5rem; font-weight: 900; color: #22c55e;">04</span>
         <h3 style="color: #fff; font-size: 1.25rem; margin: 12px 0;">Mentalidad y Hábitos</h3>
         <p style="color: #a1a1aa; font-size: 0.9rem; line-height: 1.6;">Vencer la postergación, crear sistemas de grabación eficientes y sostener la disciplina a largo plazo.</p>
+      </div>
+    </div>
+
+    <!-- Eventos Presenciales & Workshops Complementarios -->
+    <div style="margin-top: 48px; background: rgba(255,255,255,0.02); border: 1px solid rgba(234,179,8,0.3); border-radius: 16px; padding: 32px 30px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px;">
+      <div style="width: 100%;">
+        <span style="background: rgba(234,179,8,0.15); color: #eab308; font-size: 0.78rem; font-weight: 800; padding: 5px 14px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px;">
+          🎟️ Formación Presencial & Workshops en CABA
+        </span>
+        <h3 style="color: #fff; font-size: 1.5rem; font-weight: 800; margin: 14px 0 8px;">Eventos y Masterclasses con Fede Nowback</h3>
+        <p style="color: #a1a1aa; font-size: 0.95rem; margin: 0; line-height: 1.6; max-width: 750px;">
+          Además de las mentorías privadas 1 a 1, Fede Nowback produce y participa como speaker en eventos presenciales de alto impacto, como la jornada <strong><a href="/mentalidad-marketing-neuroventas-ia" style="color: #eab308; text-decoration: underline;" title="Ver Evento Mentalidad y Marketing con IA">Mentalidad y Marketing — Neuroventas con IA</a></strong> (junto a Anthony Sánchez Altuna y Christian Cencherle) y el programa presencial <strong><a href="/encende-tu-fuego" style="color: #f97316; text-decoration: underline;" title="Ver Programa Encendé tu Fuego">Encendé tu Fuego</a></strong>.
+        </p>
+      </div>
+      <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+        <a href="/mentalidad-marketing-neuroventas-ia" class="btn-fede-outline" style="border-color: #eab308; color: #eab308; font-size: 0.92rem; padding: 10px 22px;" title="Ver Evento Mentalidad y Marketing con IA">
+          Ver Evento Mentalidad y Marketing con IA →
+        </a>
+        <a href="/encende-tu-fuego" class="btn-fede-outline" style="border-color: #f97316; color: #f97316; font-size: 0.92rem; padding: 10px 22px;" title="Ver Programa Encendé tu Fuego">
+          Programa Encendé tu Fuego →
+        </a>
       </div>
     </div>
 

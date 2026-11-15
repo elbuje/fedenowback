@@ -2,17 +2,142 @@
 <html lang="es-AR" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mentalidad y Marketing — Neuroventas con IA | Evento Presencial 10 de Octubre</title>
-  <meta name="description" content="Una jornada para transformar la forma en que pensás, comunicás y vendés tu negocio, con neurociencia, inteligencia artificial, marca personal y casos reales. Sábado 10 de octubre, Lavalle 362, CABA.">
-  <meta name="keywords" content="Mentalidad y Marketing, Neuroventas con IA, Anthony Sánchez Altuna, Fede Nowback, Christian Cencherle, Evento Presencial CABA, Lavalle 362">
-  <meta name="robots" content="index, follow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Mentalidad y Marketing con IA — Evento Presencial en CABA | Fede Nowback Mentor</title>
+  <meta name="description" content="Jornada y masterclass presencial en CABA con Fede Nowback (mentor de marca personal), Anthony Sánchez Altuna y Christian Cencherle. Neuroventas con IA, mentalidad y estrategias para vender y escalar tu negocio.">
+  <meta name="keywords" content="fede nowback mentorias eventos, fede nowback, mentalidad y marketing con ia, neuroventas con ia, anthony sanchez altuna, christian cencherle, mentor marca personal argentina, evento presencial caba, lavalle 362">
+  <meta name="author" content="Fede Nowback">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://fedenowback.com.ar/mentalidad-marketing-neuroventas-ia">
 
-  <!-- Open Graph / Meta -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Mentalidad y Marketing — Neuroventas con IA">
-  <meta property="og:description" content="Evento presencial exclusivo para dueños de negocio y emprendedores. Sábado 10 de octubre en CABA.">
-  <meta property="og:image" content="/events_new/hero-speakers-group-wide.jpg">
+  <!-- Favicons Oficiales -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=6">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png?v=6">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180x180.png?v=6">
+
+  <!-- Geo-Targeting & Local SEO -->
+  <meta name="geo.region" content="AR-C">
+  <meta name="geo.placename" content="Buenos Aires, Argentina">
+  <meta name="geo.position" content="-34.6037;-58.3816">
+  <meta name="ICBM" content="-34.6037, -58.3816">
+
+  <!-- Open Graph / Redes Sociales & WhatsApp -->
+  <meta property="og:type" content="event">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:site_name" content="Fede Nowback">
+  <meta property="og:title" content="Mentalidad y Marketing con IA — Evento Presencial en CABA | Fede Nowback Mentor">
+  <meta property="og:description" content="Jornada intensiva con Fede Nowback, Anthony Sánchez Altuna y Christian Cencherle en CABA. Neuroventas con IA, mentalidad y monetización de marca personal.">
+  <meta property="og:url" content="https://fedenowback.com.ar/mentalidad-marketing-neuroventas-ia">
+  <meta property="og:image" content="https://fedenowback.com.ar/events_new/hero-speakers-group-wide.jpg">
+  <meta property="og:image:secure_url" content="https://fedenowback.com.ar/events_new/hero-speakers-group-wide.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Evento Mentalidad y Marketing — Neuroventas con IA con Fede Nowback, Anthony Sánchez Altuna y Christian Cencherle">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mentalidad y Marketing con IA — Evento Presencial | Fede Nowback Mentor">
+  <meta name="twitter:description" content="Masterclass y evento presencial en CABA: neuroventas con IA, mentalidad y marca personal con Fede Nowback.">
+  <meta name="twitter:image" content="https://fedenowback.com.ar/events_new/hero-speakers-group-wide.jpg">
+
+  <!-- Schema.org JSON-LD Específico para Evento & Speakers -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "EducationEvent",
+        "@id": "https://fedenowback.com.ar/mentalidad-marketing-neuroventas-ia#event",
+        "name": "Mentalidad y Marketing — Neuroventas con IA y Marca Personal",
+        "description": "Una jornada intensiva y presencial para transformar la forma de comunicar, vender y escalar negocios con neurociencia, inteligencia artificial, marca personal y casos reales.",
+        "startDate": "2026-10-10T10:00:00-03:00",
+        "endDate": "2026-10-10T17:00:00-03:00",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "location": {
+          "@type": "Place",
+          "name": "Auditorio Lavalle 362",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Lavalle 362, Piso 7",
+            "addressLocality": "Buenos Aires",
+            "addressRegion": "CABA",
+            "postalCode": "C1047AAH",
+            "addressCountry": "AR"
+          }
+        },
+        "image": [
+          "https://fedenowback.com.ar/events_new/hero-speakers-group-wide.jpg"
+        ],
+        "organizer": {
+          "@type": "Person",
+          "@id": "https://fedenowback.com.ar/#person",
+          "name": "Fede Nowback",
+          "alternateName": "Federico Nowback",
+          "jobTitle": "Estratega de Marca Personal & Mentor de Negocios Digitales",
+          "url": "https://fedenowback.com.ar",
+          "sameAs": [
+            "https://www.instagram.com/fedenowback/",
+            "https://www.youtube.com/@fedenowback6170",
+            "https://www.tiktok.com/@fedenowback"
+          ]
+        },
+        "performer": [
+          {
+            "@type": "Person",
+            "name": "Fede Nowback",
+            "jobTitle": "Mentor de Marca Personal y Productor",
+            "url": "https://fedenowback.com.ar/mentorias",
+            "sameAs": "https://www.instagram.com/fedenowback/"
+          },
+          {
+            "@type": "Person",
+            "name": "Anthony Sánchez Altuna",
+            "jobTitle": "Especialista en Neuroventas con IA",
+            "sameAs": "https://www.instagram.com/anthonyaltuna/"
+          },
+          {
+            "@type": "Person",
+            "name": "Christian Cencherle",
+            "jobTitle": "Empresario y Referente Textil"
+          }
+        ],
+        "offers": {
+          "@type": "Offer",
+          "url": "https://fedenowback.com.ar/mentalidad-marketing-neuroventas-ia",
+          "price": "80000",
+          "priceCurrency": "ARS",
+          "availability": "https://schema.org/InStock",
+          "validFrom": "2026-09-01T00:00:00-03:00"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://fedenowback.com.ar/mentalidad-marketing-neuroventas-ia#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Inicio",
+            "item": "https://fedenowback.com.ar/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Mentorías & Programas",
+            "item": "https://fedenowback.com.ar/mentorias"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Evento Mentalidad y Marketing con IA",
+            "item": "https://fedenowback.com.ar/mentalidad-marketing-neuroventas-ia"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <!-- Google Fonts: Cormorant Garamond, Playfair Display, Cinzel, Inter, Caveat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1110,11 +1235,20 @@
 <body>
 
   <!-- =========================================================
-       1. TOP BAR (MOCKUP EXACTO: SIN MENÚ DE NAVEGACIÓN)
+       1. TOP BAR (MOCKUP EXACTO: CON ENLACES SEO ESTRATÉGICOS)
        ========================================================= -->
   <header class="container top-meta-bar">
-    <div class="top-event-tag">EVENTO PRESENCIAL</div>
-    <div class="top-right-keywords">IDEAS // HERRAMIENTAS // CASOS REALES // RESULTADOS</div>
+    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+      <a href="/" style="color: #D4AF37; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px;" title="Volver al Sitio Oficial de Fede Nowback">
+        <span>←</span> FEDENOWBACK.COM.AR
+      </a>
+      <span style="color: rgba(212, 175, 55, 0.4);">|</span>
+      <div class="top-event-tag">EVENTO PRESENCIAL</div>
+    </div>
+    <div class="top-right-keywords">
+      <a href="/mentorias" style="color: #D4AF37; text-decoration: underline; text-underline-offset: 3px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-right: 14px;" title="Ver Mentoría 1 a 1 de Fede Nowback">MENTORÍA 1 A 1 →</a>
+      <span>IDEAS // HERRAMIENTAS // CASOS REALES // RESULTADOS</span>
+    </div>
   </header>
 
   <!-- =========================================================
@@ -1180,7 +1314,7 @@
           >
           <div class="hero-speakers-signatures">
             <div class="sig-block">
-              <div class="sig-name">Fede Novak</div>
+              <div class="sig-name">Fede Nowback</div>
               <div class="sig-topic">Marca Personal y Mentalidad</div>
             </div>
             <div class="sig-block">
@@ -1314,16 +1448,21 @@
           </div>
           <div class="speaker-details">
             <h3 class="speaker-h3">Fede <span class="last-name">Nowback</span></h3>
-            <div class="speaker-subrole">Productor · Creador de contenido · Referente en Marca Personal</div>
+            <div class="speaker-subrole">Mentor de Marca Personal · Productor · Creador de Contenido</div>
             <ul class="speaker-bullets-list">
-              <li>Marca personal consolidada.</li>
-              <li>Referente e influencer en redes sociales.</li>
-              <li>Especialista en monetización digital y mentalidad.</li>
+              <li>Estratega y mentor de marcas personales de alto impacto.</li>
+              <li>Referente en redes sociales con comunidad activa de +65K seguidores.</li>
+              <li>Especialista en monetización digital, mentalidad y ventas de servicios.</li>
             </ul>
             <div class="speaker-topic-pill">MARCA PERSONAL, MENTALIDAD Y VENTAS EN REDES SOCIALES</div>
             <p class="speaker-summary-text">
               Cómo vender a través de redes sociales, humanizar tu marca personal, trabajar la mentalidad y la autoconfianza, y dar los primeros pasos para vender online.
             </p>
+            <div style="margin-top: 14px;">
+              <a href="/mentorias" style="display: inline-flex; align-items: center; gap: 6px; color: #D4AF37; font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px;" title="Conocé el programa de Mentoría 1 a 1 de Fede Nowback">
+                Conocé también la Mentoría 1 a 1 de Fede Nowback →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -1440,7 +1579,7 @@
               <div class="agenda-info">
                 <h4>Charla motivacional & Marca personal</h4>
                 <p>Christian Cencherle: Charla motivacional para empresarios</p>
-                <p style="margin-top: 4px;">Fede Novak: Marca personal y mentalidad</p>
+                <p style="margin-top: 4px;">Fede Nowback: Marca personal, mentoría y mentalidad</p>
               </div>
             </div>
 
@@ -1512,13 +1651,13 @@
           </a>
         </div>
 
-        <!-- Box 3: Comunidad Fede Novak -->
+        <!-- Box 3: Comunidad Fede Nowback -->
         <div class="p-card">
-          <div class="p-tier">COMUNIDAD FEDE NOVAK</div>
+          <div class="p-tier">COMUNIDAD FEDE NOWBACK</div>
           <div class="p-validity">BENEFICIO PARA ALUMNOS / SEGUIDORES</div>
           <div style="font-size: 18px; font-weight: 700; color: #D4AF37; margin: 18px 0 8px;">Valor especial</div>
           <p style="font-size: 13px; color: rgba(237, 232, 223, 0.7); line-height: 1.5; margin-bottom: 24px;">
-            Valor especial para su comunidad.
+            Valor especial para su comunidad y alumnos de mentorías.
           </p>
 
           <ul class="p-list">
@@ -1669,7 +1808,7 @@
         <div class="org-item">GEN · Gestión Empresarial de Negocios</div>
         <div class="org-item">⚡ tecnobrain</div>
         <div class="org-item">Cencherle LANAS</div>
-        <div class="org-item">Fede Novak</div>
+        <div class="org-item">Fede Nowback</div>
       </div>
     </div>
   </section>
@@ -1677,7 +1816,14 @@
   <!-- Copyright -->
   <footer class="copyright-bar">
     <div class="container">
-      © 2026 · Mentalidad y Marketing — Neuroventas con IA · Todos los derechos reservados.
+      <p style="margin-bottom: 10px; font-size: 12px;">
+        <a href="/" style="color: #D4AF37; text-decoration: none; margin: 0 8px;" title="Inicio Fede Nowback">Inicio</a> •
+        <a href="/mentorias" style="color: #D4AF37; text-decoration: none; margin: 0 8px;" title="Mentoría 1 a 1 de Fede Nowback">Mentoría 1 a 1</a> •
+        <a href="/fede-nowback-especialista-filmmaker" style="color: #D4AF37; text-decoration: none; margin: 0 8px;" title="Sobre Fede Nowback">Sobre Fede Nowback</a> •
+        <a href="/comunidad" style="color: #D4AF37; text-decoration: none; margin: 0 8px;" title="Campus Pro">Campus Pro</a> •
+        <a href="/contacto" style="color: #D4AF37; text-decoration: none; margin: 0 8px;" title="Contacto Oficial">Contacto</a>
+      </p>
+      © 2026 Fede Nowback · Mentalidad, Marketing &amp; Neuroventas con IA · Todos los derechos reservados.
     </div>
   </footer>
 

@@ -18,6 +18,7 @@ $current_slug = $current_slug ?? '';
         <li><a href="/metodologia-marca-personal" class="<?= $current_slug === 'metodologia-marca-personal' ? 'active' : '' ?>">Metodología</a></li>
         <li><a href="/fede-nowback-especialista-filmmaker" class="<?= $current_slug === 'fede-nowback-especialista-filmmaker' ? 'active' : '' ?>">Mi Recorrido</a></li>
         <li><a href="/clases-gratuitas-marca-personal" class="<?= $current_slug === 'clases-gratuitas-marca-personal' ? 'active' : '' ?>" style="color: #ff5555; font-weight: 700;">▶️ Clases YouTube</a></li>
+        <li><a href="/mentalidad-marketing-neuroventas-ia" class="<?= $current_slug === 'mentalidad-marketing-neuroventas-ia' ? 'active' : '' ?>" style="color: #eab308; font-weight: 700;" title="Evento Presencial Mentalidad y Marketing con IA">🎟️ Eventos &amp; IA</a></li>
         <li><a href="/mentorias" class="<?= $current_slug === 'mentorias' ? 'active' : '' ?>">Mentoría 1a1</a></li>
         <li><a href="/comunidad" class="<?= $current_slug === 'comunidad' ? 'active' : '' ?>" style="color: var(--fede-fire-orange, #f97316); font-weight: 700;">⚡ Campus Pro</a></li>
       </ul>

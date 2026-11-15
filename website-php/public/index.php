@@ -9,6 +9,28 @@ require_once __DIR__ . "/../includes/config.php";
 $request_uri = parse_url($_SERVER["REQUEST_URI"] ?? "/", PHP_URL_PATH);
 $path = trim($request_uri, "/");
 
+// 301 Permanent Redirects for canonical SEO consolidation
+$redirects_301 = [
+    "landing-octubre"                             => "/mentalidad-marketing-neuroventas-ia",
+    "landin-octubre"                              => "/mentalidad-marketing-neuroventas-ia",
+    "landing-octubre.html"                        => "/mentalidad-marketing-neuroventas-ia",
+    "landin-octubre.html"                         => "/mentalidad-marketing-neuroventas-ia",
+    "Mentalidad-Marketing-Neuroventas-con-IA.html" => "/mentalidad-marketing-neuroventas-ia",
+    "mentalidad-marketing-neuroventas-con-ia"     => "/mentalidad-marketing-neuroventas-ia",
+    "mentalidad-y-marketing"                      => "/mentalidad-marketing-neuroventas-ia",
+    "evento-mentalidad-marketing-neuroventas-ia"  => "/mentalidad-marketing-neuroventas-ia",
+    "evento-presencial"                           => "/mentalidad-marketing-neuroventas-ia",
+    "neuroventas-con-ia"                          => "/mentalidad-marketing-neuroventas-ia",
+    "neuroventas-ia"                              => "/mentalidad-marketing-neuroventas-ia",
+    "evento-ia"                                   => "/mentalidad-marketing-neuroventas-ia",
+    "eventos"                                     => "/mentalidad-marketing-neuroventas-ia",
+];
+
+if (isset($redirects_301[$path])) {
+    header("Location: " . $redirects_301[$path], true, 301);
+    exit;
+}
+
 // Router table (Friendly URLs)
 $routes = [
     ""                                    => __DIR__ . "/../views/index.php",
@@ -30,16 +52,7 @@ $routes = [
     "campus"                              => __DIR__ . "/../views/comunidad.php",
     "skool"                               => __DIR__ . "/../views/comunidad.php",
     "contacto"                            => __DIR__ . "/../views/contacto.php",
-    "landing-octubre"                                     => __DIR__ . "/../views/landing-octubre.php",
-    "landin-octubre"                                      => __DIR__ . "/../views/landing-octubre.php",
-    "mentalidad-marketing-neuroventas-ia"                 => __DIR__ . "/../views/landing-octubre.php",
-    "mentalidad-marketing-neuroventas-con-ia"             => __DIR__ . "/../views/landing-octubre.php",
-    "mentalidad-y-marketing"                              => __DIR__ . "/../views/landing-octubre.php",
-    "evento-mentalidad-marketing-neuroventas-ia"          => __DIR__ . "/../views/landing-octubre.php",
-    "evento-presencial"                                   => __DIR__ . "/../views/landing-octubre.php",
-    "neuroventas-con-ia"                                  => __DIR__ . "/../views/landing-octubre.php",
-    "neuroventas-ia"                                      => __DIR__ . "/../views/landing-octubre.php",
-    "evento-ia"                                           => __DIR__ . "/../views/landing-octubre.php",
+    "mentalidad-marketing-neuroventas-ia" => __DIR__ . "/../views/mentalidad-marketing-neuroventas-ia.php",
     "campus-virtual-para-coaches-mentores-marca-personal" => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
     "campus-virtual-para-coaches-y-mentores"              => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
     "tecnobrain-campus-virtual"                           => __DIR__ . "/../views/tecnobrain-campus-virtual.php",
